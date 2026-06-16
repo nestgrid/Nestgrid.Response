@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Nestgrid.Response</PackageId>
+        <Description>Immutable, status-driven result types for .NET applications.</Description>
+        <Description> A lightweight Result pattern library for .NET applications with support for typed results, messages, and error handling.</Description>
+        <PackageTags>response;result;results;result-pattern;error-handling</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>
