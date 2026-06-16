@@ -1,0 +1,103 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{97BDCA50-841E-4AEE-BB95-410535FC3F4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{754924BC-2928-4E93-B399-71BA4638D122}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "stryker", "stryker", "{8F28C327-7178-4C72-8BEF-773D629C3138}"
+	ProjectSection(SolutionItems) = preProject
+		stryker\stryker-config-aspnetcore.json = stryker\stryker-config-aspnetcore.json
+		stryker\stryker-config-core.json = stryker\stryker-config-core.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C7E0D643-0102-4CD0-AA54-1464932B3828}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{9E4F34E5-5F6C-4AA6-BD0E-CD07EE7CEEFE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\adr\ADR-001-Result-Pattern-Philosophy.md = docs\adr\ADR-001-Result-Pattern-Philosophy.md
+		docs\adr\ADR-002-Status-Driven-Results.md = docs\adr\ADR-002-Status-Driven-Results.md
+		docs\adr\ADR-003-Immutable-Results.md = docs\adr\ADR-003-Immutable-Results.md
+		docs\adr\ADR-004-AspNetCore-Separation.md = docs\adr\ADR-004-AspNetCore-Separation.md
+		docs\adr\ADR-005-Core-Object-Model.md = docs\adr\ADR-005-Core-Object-Model.md
+		docs\adr\ADR-006-AspNetCore-And-Mvc-Package-Separation.md = docs\adr\ADR-006-AspNetCore-And-Mvc-Package-Separation.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{5114115E-74C3-461B-B714-B6E416FD1D88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "internal", "internal", "{DD840865-3023-4BD1-8CEA-A195EAA69691}"
+	ProjectSection(SolutionItems) = preProject
+		docs\architecture\internal\aspnetcore-api-design.md = docs\architecture\internal\aspnetcore-api-design.md
+		docs\architecture\internal\aspnetcore-api-review.md = docs\architecture\internal\aspnetcore-api-review.md
+		docs\architecture\internal\core-api-design.md = docs\architecture\internal\core-api-design.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "roadmap", "roadmap", "{F6E2EFF0-3736-49C7-83C3-DB8A1709DFE1}"
+	ProjectSection(SolutionItems) = preProject
+		docs\roadmap\roadmap.md = docs\roadmap\roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution-items", ".solution-items", "{947367E3-D732-48F3-9270-08F8378F5BDE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response", "src\Nestgrid.Response\Nestgrid.Response.csproj", "{2206CEEE-354D-4ADD-A8A3-9757113BCF44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.AspNetCore", "src\Nestgrid.Response.AspNetCore\Nestgrid.Response.AspNetCore.csproj", "{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Tests", "tests\Nestgrid.Response.Tests\Nestgrid.Response.Tests.csproj", "{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.AspNetCore.Tests", "tests\Nestgrid.Response.AspNetCore.Tests\Nestgrid.Response.AspNetCore.Tests.csproj", "{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testing", "testing", "{851E6B13-BA33-4737-8E2B-5BB4E6BE24C3}"
+	ProjectSection(SolutionItems) = preProject
+		docs\testing\mutation-testing.md = docs\testing\mutation-testing.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E4F34E5-5F6C-4AA6-BD0E-CD07EE7CEEFE} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{5114115E-74C3-461B-B714-B6E416FD1D88} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{DD840865-3023-4BD1-8CEA-A195EAA69691} = {5114115E-74C3-461B-B714-B6E416FD1D88}
+		{F6E2EFF0-3736-49C7-83C3-DB8A1709DFE1} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{2206CEEE-354D-4ADD-A8A3-9757113BCF44} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
+		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
+		{851E6B13-BA33-4737-8E2B-5BB4E6BE24C3} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F626B07-ED3D-4E25-A6E3-0B85EDE0E25C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65BA0DC-03B0-49A4-9A76-2B99B5D9DE9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
