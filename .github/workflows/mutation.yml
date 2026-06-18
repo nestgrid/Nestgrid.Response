@@ -1,0 +1,84 @@
+name: mutation
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  stryker:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: core
+            config: stryker/stryker-config-core.json
+          - name: aspnetcore
+            config: stryker/stryker-config-aspnetcore.json
+
+    env:
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Stryker.NET
+        run: dotnet tool install --global dotnet-stryker
+
+      - name: Restore
+        run: dotnet restore Nestgrid.Response.sln
+
+      - name: Build
+        run: dotnet build Nestgrid.Response.sln -c Release --no-restore
+
+      - name: Run Stryker (${{ matrix.name }}) - PR
+        if: github.event_name == 'pull_request'
+        run: |
+          dotnet stryker \
+            --solution Nestgrid.Response.sln \
+            --config-file ${{ matrix.config }} \
+            --reporter html \
+            --reporter json
+
+      - name: Check Dashboard secret
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if [ -z "${{ secrets.STRYKER_DASHBOARD_API_KEY }}" ]; then
+            echo "::error::STRYKER_DASHBOARD_API_KEY is not configured"; exit 1
+          fi
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "Expecting dashboard name: github.com/$GITHUB_REPOSITORY"
+
+      - name: Run Stryker (${{ matrix.name }}) - main
+        if: github.ref == 'refs/heads/main'
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+        run: |
+          dotnet stryker \
+            --solution Nestgrid.Response.sln \
+            --config-file ${{ matrix.config }} \
+            --reporter html \
+            --reporter json \
+            --reporter dashboard \
+            --dashboard-api-key "$STRYKER_DASHBOARD_API_KEY" \
+            --version "$GITHUB_SHA"
+
+      - name: Upload Stryker report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-report-${{ matrix.name }}
+          path: StrykerOutput/**/reports/*
+          if-no-files-found: warn
