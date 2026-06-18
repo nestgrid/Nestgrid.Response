@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore Nestgrid.Response.sln
+
+      - name: Build
+        run: dotnet build Nestgrid.Response.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test Nestgrid.Response.sln -c Release --no-build --verbosity normal
+
+      - name: Pack
+        run: |
+          mkdir -p artifacts
+          dotnet pack Nestgrid.Response.sln \
+            -c Release \
+            -o artifacts \
+            --no-build \
+            /p:ContinuousIntegrationBuild=true
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: artifacts/*
+          if-no-files-found: error
