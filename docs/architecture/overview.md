@@ -166,7 +166,64 @@ Error
 
 Status is the authoritative source of outcome information.
 
-The core model does not expose parallel `IsSuccess` or `IsFailure` flags.
+`IsSuccess()` and `IsFailure()` are public extension methods for code that only needs the fixed success classification.
+
+Success statuses:
+
+- `Ok`
+- `Created`
+- `Accepted`
+- `NoContent`
+
+Failure statuses:
+
+- `Invalid`
+- `Unauthorized`
+- `Forbidden`
+- `NotFound`
+- `Conflict`
+- `Cancelled`
+- `Failed`
+- `Error`
+
+This classification is not configurable. Code that needs to distinguish specific outcomes should inspect `Result.Status`.
+
+---
+
+## Functional Extensions
+
+The core package includes lightweight functional extensions in `Nestgrid.Response.Extensions`.
+
+`Map()` is status-driven. It invokes the mapper only when `IsSuccess()` returns `true`, preserves the original status and messages, and returns a result with no value for non-success statuses.
+
+```csharp
+Result<UserDto> dto = user.Map(x => mapper.Map<UserDto>(x));
+```
+
+`Match()` is also status-driven. It invokes the success delegate for `Ok`, `Created`, `Accepted`, and `NoContent`, and invokes the failure delegate for all other statuses.
+
+```csharp
+var text = result.Match(
+    success => success?.Name ?? "Unknown",
+    failure => $"Failed: {failure.Status}");
+```
+
+---
+
+## NoContent Results
+
+`Results.NoContent<T>()` exists for strongly typed service signatures:
+
+```csharp
+Task<Result<UserDto>> GetAsync(int id)
+{
+    return Task.FromResult(Results.NoContent<UserDto>());
+}
+```
+
+The generic factory creates a `Result<T>` with `ResultStatus.NoContent` and the default value for `T`.
+
+ASP.NET Core adapters treat `ResultStatus.NoContent` as a true no-content response. `ToIResult()` and `ToActionResult()` return a response with no body for `NoContent`, regardless of whether the result is generic, whether a value is associated with the result, or whether `SuccessResponseMode` is `FullResult` or `ValueOnly`.
 
 ---
 

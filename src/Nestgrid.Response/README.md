@@ -98,6 +98,75 @@ User? value = result.Value;
 
 Results are immutable. Create them through `Results` rather than constructing them directly.
 
+## Functional Extensions
+
+Import the extension namespace:
+
+```csharp
+using Nestgrid.Response.Extensions;
+```
+
+### IsSuccess and IsFailure
+
+Use `IsSuccess()` and `IsFailure()` when a branch only needs to distinguish successful outcomes from non-success outcomes:
+
+```csharp
+if (result.IsSuccess())
+{
+    // Continue the successful flow.
+}
+```
+
+Success statuses:
+
+- `Ok`
+- `Created`
+- `Accepted`
+- `NoContent`
+
+Failure statuses:
+
+- `Invalid`
+- `Unauthorized`
+- `Forbidden`
+- `NotFound`
+- `Conflict`
+- `Cancelled`
+- `Failed`
+- `Error`
+
+This definition is fixed and not configurable. Use `Result.Status` when code needs to distinguish specific outcomes.
+
+### Map
+
+`Map` is status-driven. It transforms the value of a successful `Result<T>` while preserving the original status and messages:
+
+```csharp
+Result<User> user = await service.GetAsync(id);
+
+Result<UserDto> dto = user.Map(x => mapper.Map<UserDto>(x));
+```
+
+The mapper is invoked only when the source result status is `Ok`, `Created`, `Accepted`, or `NoContent`. For all other statuses, the mapper is not invoked. The returned result keeps the original status and messages, and has no mapped value.
+
+### Match
+
+`Match` is status-driven. It uses the same fixed success and failure status groups:
+
+```csharp
+var name = user.Match(
+    success => success?.Name ?? "Unknown",
+    failure => "Unknown");
+```
+
+Non-generic results are also supported:
+
+```csharp
+var text = result.Match(
+    () => "Success",
+    failure => $"Failed: {failure.Status}");
+```
+
 ## Status Values
 
 | Status | Meaning |
@@ -116,6 +185,21 @@ Results are immutable. Create them through `Results` rather than constructing th
 | `Error` | Failed because of an unexpected error |
 
 Statuses are semantic application outcomes, not HTTP status codes. Presentation packages decide how to map them.
+
+## NoContent<T>
+
+`Results.NoContent<T>()` supports strongly typed service signatures that can complete without returning a value:
+
+```csharp
+Task<Result<UserDto>> GetAsync(int id)
+{
+    return Task.FromResult(Results.NoContent<UserDto>());
+}
+```
+
+The generic factory creates a `Result<T>` with `ResultStatus.NoContent` and the default value for `T`.
+
+ASP.NET Core adapters treat `ResultStatus.NoContent` as a true no-content response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body. This also applies in `SuccessResponseMode.FullResult` and `SuccessResponseMode.ValueOnly`.
 
 ## Why Status Is Not Serialized
 

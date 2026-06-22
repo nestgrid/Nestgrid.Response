@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{9E4F34E5-5F6
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{5114115E-74C3-461B-B714-B6E416FD1D88}"
+	ProjectSection(SolutionItems) = preProject
+		docs\architecture\overview.md = docs\architecture\overview.md
+		docs\architecture\coding-standards.md = docs\architecture\coding-standards.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "internal", "internal", "{DD840865-3023-4BD1-8CEA-A195EAA69691}"
 	ProjectSection(SolutionItems) = preProject
@@ -71,6 +75,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\mutation.yml = .github\workflows\mutation.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "development", "development", "{9C9100B5-5755-4718-A554-58E2D89866D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +96,7 @@ Global
 		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 		{851E6B13-BA33-4737-8E2B-5BB4E6BE24C3} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 		{8F1097C5-E8D5-4ECA-BB26-A2FD87413F6E} = {8FA61A3A-3309-4967-AACF-F126BF1BB917}
+		{9C9100B5-5755-4718-A554-58E2D89866D3} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

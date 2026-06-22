@@ -102,10 +102,10 @@ public static class Results
     public static Result NoContent() => new(ResultStatus.NoContent);
 
     /// <summary>
-    /// Creates a result with a <see cref="ResultStatus.NoContent"/> status.
+    /// Creates a typed result with a <see cref="ResultStatus.NoContent"/> status.
     /// </summary>
     /// <typeparam name="T">The value type.</typeparam>
-    /// <returns>A no-content result.</returns>
+    /// <returns>A typed no-content result with the default value for <typeparamref name="T"/>.</returns>
     public static Result<T> NoContent<T>() => new(ResultStatus.NoContent);
 
     /// <summary>
