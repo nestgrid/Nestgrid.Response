@@ -46,6 +46,31 @@ app.MapGet("/users/{id:int}", (int id) =>
     FindUser(id).ToIResult());
 ```
 
+Compose result values with the core functional extensions:
+
+```csharp
+using Nestgrid.Response.Extensions;
+
+Result<UserDto> dto = user.Map(x => mapper.Map<UserDto>(x));
+
+var name = dto.Match(
+    success => success?.Name ?? "Unknown",
+    failure => "Unknown");
+```
+
+`Map()` and `Match()` are status-driven. They use the fixed `IsSuccess()` classification: `Ok`, `Created`, `Accepted`, and `NoContent` are successful; all other statuses are non-success outcomes. `Map()` preserves status and messages, and does not invoke the mapper for non-success results.
+
+For typed no-content service signatures, use `Results.NoContent<T>()`:
+
+```csharp
+Task<Result<UserDto>> GetAsync(int id)
+{
+    return Task.FromResult(Results.NoContent<UserDto>());
+}
+```
+
+ASP.NET Core adapters always treat `ResultStatus.NoContent` as a bodyless response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body, regardless of `SuccessResponseMode`.
+
 See the package documentation for the [core library](src/Nestgrid.Response/README.md) and [ASP.NET Core integration](src/Nestgrid.Response.AspNetCore/README.md).
 
 ## Roadmap

@@ -64,7 +64,9 @@ builder.Services.AddNestgridResponse(options =>
 }
 ```
 
-`ValueOnly` does not remove failure details. Failure results and non-generic results retain the full result payload. `NoContent` results never write a response body.
+`ValueOnly` does not remove failure details. Failure results and non-generic results retain the full result payload.
+
+`NoContent` results never write a response body. This rule is based on `ResultStatus.NoContent`, not the configured HTTP status code.
 
 Options can also be supplied for a single conversion:
 
@@ -122,6 +124,8 @@ Default mappings:
 
 If a configured mapping is removed, the adapter falls back to the built-in mapping for that status.
 
+`ResultStatus.NoContent` always suppresses the response body. Changing its status mapping changes only the HTTP status code; it does not cause the adapter to serialize the result envelope or value.
+
 ## Minimal API Examples
 
 Convert `Result` or `Result<T>` with `ToIResult()`:
@@ -168,6 +172,43 @@ public sealed class UsersController(IUserService service) : ControllerBase
 ```
 
 Both conversion methods support per-call `NestgridResponseOptions`.
+
+## Examples With Mapping
+
+### Minimal
+```csharp
+app.MapGet("/users/{id:int}", async (int id, IUserService service) =>
+{
+    Result<User> result = await service.FindAsync(id);
+
+    return result
+        .Map(UserMapper.ToDto)
+        .ToIResult();
+});
+```
+
+### Controller
+```csharp
+[HttpGet("{id:int}")]
+public async Task<IActionResult> Get(int id)
+{
+    Result<User> result = await service.FindAsync(id);
+
+    return result
+        .Map(UserMapper.ToDto)
+        .ToActionResult();
+}
+```
+
+> `Map()` only executes for successful results (`Ok`, `Created`, `Accepted`, `NoContent`). Non-success statuses preserve their status and messages and bypass the mapper.
+
+When converted through `ToIResult()` or `ToActionResult()`, `ResultStatus.NoContent` produces a response without a body:
+
+```csharp
+Results.NoContent<UserDto>().ToIResult();
+```
+
+With the default mapping this returns `204 No Content`. The body is still suppressed when `SuccessResponseMode` is `FullResult` or `ValueOnly`, and any value associated with a `NoContent` result is ignored by the HTTP adapters.
 
 ## Result.Status Is Not Serialized
 

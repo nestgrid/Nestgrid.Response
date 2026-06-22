@@ -1,4 +1,5 @@
 using Nestgrid.Response.AspNetCore.Options;
+using Nestgrid.Response.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -35,7 +36,7 @@ internal static class HttpResultMapper
         }
 
         if (hasValue &&
-            IsSuccess(result.Status) &&
+            result.IsSuccess() &&
             options.SuccessResponseMode == SuccessResponseMode.ValueOnly)
         {
             return new HttpResultMapping(statusCode, value);
@@ -54,12 +55,4 @@ internal static class HttpResultMapper
         return DefaultOptions.StatusMappings[result.Status];
     }
 
-    private static bool IsSuccess(ResultStatus status)
-    {
-        return status is
-            ResultStatus.Ok or
-            ResultStatus.Created or
-            ResultStatus.Accepted or
-            ResultStatus.NoContent;
-    }
 }
