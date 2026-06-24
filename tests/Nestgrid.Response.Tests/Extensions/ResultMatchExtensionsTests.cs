@@ -187,6 +187,7 @@ public sealed class ResultMatchExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(result));
+        exception.StackTrace.ShouldStartWith("   at Nestgrid.Response.Extensions.ResultMatchExtensions.Match");
     }
 
     [Fact]
@@ -231,6 +232,7 @@ public sealed class ResultMatchExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(result));
+        exception.StackTrace.ShouldStartWith("   at Nestgrid.Response.Extensions.ResultMatchExtensions.Match");
     }
 
     [Fact]

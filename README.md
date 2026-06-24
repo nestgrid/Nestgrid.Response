@@ -8,6 +8,7 @@ Nestgrid.Response is a small, status-driven result model for .NET applications. 
 |---|---|---------------------|
 | `Nestgrid.Response` | Framework-independent `Result` and `Result<T>` types, statuses, messages, and factories. | Available           |
 | `Nestgrid.Response.AspNetCore` | Converts results to Minimal API `IResult` and MVC `IActionResult` responses. | Available           |
+| `Nestgrid.Response.Extensions.Validation` | Converts data annotations validation results to messages and invalid results. | Available           |
 | `Nestgrid.Response.Mvc` | Integration for ASP.NET MVC applications. | Under Consideration |
 
 ## Quick Start
@@ -77,6 +78,7 @@ See the package documentation for the [core library](src/Nestgrid.Response/READM
 
 - `Nestgrid.Response`: core result model
 - `Nestgrid.Response.AspNetCore`: Minimal API and controller integration
+- `Nestgrid.Response.Extensions.Validation`: data annotations validation extensions
 - `Nestgrid.Response.Mvc`: ASP.NET MVC integration - under consideration
 
 ## Contributing

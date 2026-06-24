@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "stryker", "stryker", "{8F28
 	ProjectSection(SolutionItems) = preProject
 		stryker\stryker-config-aspnetcore.json = stryker\stryker-config-aspnetcore.json
 		stryker\stryker-config-core.json = stryker\stryker-config-core.json
+		stryker\stryker-config-validation.json = stryker\stryker-config-validation.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C7E0D643-0102-4CD0-AA54-1464932B3828}"
@@ -77,6 +78,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "development", "development", "{9C9100B5-5755-4718-A554-58E2D89866D3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analysis", "analysis", "{5A3E28F8-02C9-4CE4-AEBD-B460ACA825C7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\analysis\system-text-json-compatibility-review.md = docs\analysis\system-text-json-compatibility-review.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Extensions.Validation", "src\Nestgrid.Response.Extensions.Validation\Nestgrid.Response.Extensions.Validation.csproj", "{139DCB80-E147-420F-9ACE-F3F4D18E63C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Extensions.Validation.Tests", "tests\Nestgrid.Response.Extensions.Validation.Tests\Nestgrid.Response.Extensions.Validation.Tests.csproj", "{B0644996-8739-4AC2-B701-2C734F0644E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +107,9 @@ Global
 		{851E6B13-BA33-4737-8E2B-5BB4E6BE24C3} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 		{8F1097C5-E8D5-4ECA-BB26-A2FD87413F6E} = {8FA61A3A-3309-4967-AACF-F126BF1BB917}
 		{9C9100B5-5755-4718-A554-58E2D89866D3} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{5A3E28F8-02C9-4CE4-AEBD-B460ACA825C7} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{139DCB80-E147-420F-9ACE-F3F4D18E63C1} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{B0644996-8739-4AC2-B701-2C734F0644E5} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -115,5 +128,13 @@ Global
 		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D72EE6BB-F8AB-4FAE-9559-232E92B8C1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{139DCB80-E147-420F-9ACE-F3F4D18E63C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{139DCB80-E147-420F-9ACE-F3F4D18E63C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{139DCB80-E147-420F-9ACE-F3F4D18E63C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{139DCB80-E147-420F-9ACE-F3F4D18E63C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0644996-8739-4AC2-B701-2C734F0644E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0644996-8739-4AC2-B701-2C734F0644E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0644996-8739-4AC2-B701-2C734F0644E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0644996-8739-4AC2-B701-2C734F0644E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
