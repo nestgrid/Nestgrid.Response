@@ -94,6 +94,7 @@ public sealed class ResultExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(result));
+        exception.StackTrace.ShouldStartWith("   at Nestgrid.Response.Extensions.ResultExtensions.IsSuccess");
     }
 
     [Fact]
@@ -107,5 +108,6 @@ public sealed class ResultExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(result));
+        exception.StackTrace.ShouldStartWith("   at Nestgrid.Response.Extensions.ResultExtensions.IsFailure");
     }
 }

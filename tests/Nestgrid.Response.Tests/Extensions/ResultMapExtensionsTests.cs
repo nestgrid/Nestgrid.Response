@@ -82,6 +82,7 @@ public sealed class ResultMapExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(result));
+        exception.StackTrace.ShouldStartWith("   at Nestgrid.Response.Extensions.ResultMapExtensions.Map");
     }
 
     [Fact]

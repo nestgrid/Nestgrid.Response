@@ -19,6 +19,8 @@ jobs:
             config: stryker/stryker-config-core.json
           - name: aspnetcore
             config: stryker/stryker-config-aspnetcore.json
+          - name: validation
+            config: stryker/stryker-config-validation.json
 
     env:
       DOTNET_NOLOGO: true

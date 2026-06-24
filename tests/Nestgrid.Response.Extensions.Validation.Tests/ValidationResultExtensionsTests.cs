@@ -58,6 +58,7 @@ public sealed class ValidationResultExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(severity));
+        exception.Message.ShouldContain("Unsupported message severity.");
     }
 
     [Fact]
