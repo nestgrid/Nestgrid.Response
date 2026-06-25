@@ -1,6 +1,6 @@
-using Nestgrid.Response.AspNetCore.Mappings;
+using Nestgrid.Response.Http.Mappings;
 
-namespace Nestgrid.Response.AspNetCore.Options;
+namespace Nestgrid.Response.Http.Options;
 
 /// <summary>
 /// Configures result-to-response conversion.

@@ -1,10 +1,11 @@
 using System.Text.Json;
 using Nestgrid.Response.AspNetCore.Extensions;
-using Nestgrid.Response.AspNetCore.Options;
+using Nestgrid.Response.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Nestgrid.Response.Http.Options;
 using Shouldly;
 
 namespace Nestgrid.Response.AspNetCore.Tests.Extensions;

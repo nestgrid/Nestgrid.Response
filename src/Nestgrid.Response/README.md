@@ -199,7 +199,7 @@ Task<Result<UserDto>> GetAsync(int id)
 
 The generic factory creates a `Result<T>` with `ResultStatus.NoContent` and the default value for `T`.
 
-ASP.NET Core adapters treat `ResultStatus.NoContent` as a true no-content response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body. This also applies in `SuccessResponseMode.FullResult` and `SuccessResponseMode.ValueOnly`.
+HTTP adapters treat `ResultStatus.NoContent` as a true no-content response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body. This also applies in `SuccessResponseMode.FullResult` and `SuccessResponseMode.ValueOnly`.
 
 ## Why Status Is Not Serialized
 

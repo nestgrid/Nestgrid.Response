@@ -1,12 +1,11 @@
-using Nestgrid.Response.AspNetCore.Extensions;
 using Nestgrid.Response.Http;
-using Microsoft.AspNetCore.Http;
+using Nestgrid.Response.Mvc.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nestgrid.Response.Http.Options;
 using Shouldly;
 
-namespace Nestgrid.Response.AspNetCore.Tests.Extensions;
+namespace Nestgrid.Response.Mvc.Tests;
 
 public sealed class AddNestgridResponseTests
 {
@@ -21,8 +20,8 @@ public sealed class AddNestgridResponseTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(services));
-        exception.StackTrace.ShouldNotBeNull();
-        exception.StackTrace.ShouldNotContain(nameof(OptionsServiceCollectionExtensions));
+        exception.StackTrace.ShouldStartWith(
+            "   at Nestgrid.Response.Mvc.Extensions.ResponseServiceCollectionExtensions.AddNestgridResponse");
     }
 
     [Fact]
@@ -52,8 +51,8 @@ public sealed class AddNestgridResponseTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(services));
-        exception.StackTrace.ShouldNotBeNull();
-        exception.StackTrace.ShouldNotContain(nameof(OptionsServiceCollectionExtensions));
+        exception.StackTrace.ShouldStartWith(
+            "   at Nestgrid.Response.Mvc.Extensions.ResponseServiceCollectionExtensions.AddNestgridResponse");
     }
 
     [Fact]
@@ -81,7 +80,7 @@ public sealed class AddNestgridResponseTests
         services.AddNestgridResponse(options =>
         {
             options.SuccessResponseMode = SuccessResponseMode.ValueOnly;
-            options.StatusMappings[ResultStatus.Failed] = StatusCodes.Status400BadRequest;
+            options.StatusMappings[ResultStatus.Failed] = 400;
         });
 
         using var provider = services.BuildServiceProvider();
@@ -89,6 +88,6 @@ public sealed class AddNestgridResponseTests
         // Assert
         var options = provider.GetRequiredService<IOptions<NestgridResponseOptions>>().Value;
         options.SuccessResponseMode.ShouldBe(SuccessResponseMode.ValueOnly);
-        options.StatusMappings[ResultStatus.Failed].ShouldBe(StatusCodes.Status400BadRequest);
+        options.StatusMappings[ResultStatus.Failed].ShouldBe(400);
     }
 }

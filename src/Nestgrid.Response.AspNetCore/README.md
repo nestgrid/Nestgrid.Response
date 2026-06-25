@@ -2,6 +2,8 @@
 
 `Nestgrid.Response.AspNetCore` converts `Nestgrid.Response` results into ASP.NET Core Minimal API and controller responses.
 
+HTTP status mapping and payload selection are provided by `Nestgrid.Response.Http`. This package only performs ASP.NET Core execution.
+
 ## Installation
 
 ```bash
@@ -13,7 +15,7 @@ Import the extension namespaces:
 ```csharp
 using Nestgrid.Response;
 using Nestgrid.Response.AspNetCore.Extensions;
-using Nestgrid.Response.AspNetCore.Options;
+using Nestgrid.Response.Http;
 ```
 
 ## AddNestgridResponse()

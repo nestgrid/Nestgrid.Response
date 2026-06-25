@@ -1,33 +1,39 @@
-using Nestgrid.Response.AspNetCore.Options;
 using Nestgrid.Response.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Nestgrid.Response.Http.Options;
 
-namespace Nestgrid.Response.AspNetCore.Internal;
+namespace Nestgrid.Response.Http.Mappings;
 
-internal static class HttpResultMapper
+/// <summary>
+/// Maps results to HTTP response metadata.
+/// </summary>
+public static class HttpResultMapper
 {
-    private static NestgridResponseOptions DefaultOptions { get; } = new();
+    private static readonly NestgridResponseOptions DefaultOptions = new();
 
-    internal static NestgridResponseOptions ResolveOptions(
-        IServiceProvider requestServices,
-        NestgridResponseOptions? perCallOptions)
-    {
-        if (perCallOptions is not null)
-        {
-            return perCallOptions;
-        }
-
-        return requestServices.GetService<IOptions<NestgridResponseOptions>>()?.Value
-            ?? DefaultOptions;
-    }
-
-    internal static HttpResultMapping Map(
+    /// <summary>
+    /// Maps a result to HTTP response metadata.
+    /// </summary>
+    /// <param name="result">The result to map.</param>
+    /// <param name="options">The response options.</param>
+    /// <param name="hasValue">Whether a typed value is available.</param>
+    /// <param name="value">The typed value.</param>
+    /// <returns>The HTTP response mapping.</returns>
+    public static HttpResultMapping Map(
         Result result,
         NestgridResponseOptions options,
         bool hasValue,
         object? value)
     {
+        if (result is null)
+        {
+            throw new ArgumentNullException(nameof(result));
+        }
+
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
         var statusCode = ResolveStatusCode(result, options);
 
         if (result.Status == ResultStatus.NoContent)
@@ -54,5 +60,4 @@ internal static class HttpResultMapper
 
         return DefaultOptions.StatusMappings[result.Status];
     }
-
 }

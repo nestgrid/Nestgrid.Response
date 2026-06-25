@@ -17,8 +17,12 @@ jobs:
         include:
           - name: core
             config: stryker/stryker-config-core.json
+          - name: http
+            config: stryker/stryker-config-http.json
           - name: aspnetcore
             config: stryker/stryker-config-aspnetcore.json
+          - name: mvc
+            config: stryker/stryker-config-mvc.json
           - name: validation
             config: stryker/stryker-config-validation.json
 

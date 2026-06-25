@@ -7,9 +7,10 @@ Nestgrid.Response is a small, status-driven result model for .NET applications. 
 | Package | Purpose | Status              |
 |---|---|---------------------|
 | `Nestgrid.Response` | Framework-independent `Result` and `Result<T>` types, statuses, messages, and factories. | Available           |
+| `Nestgrid.Response.Http` | Shared HTTP status and payload mapping policy used by response adapters. | Available           |
 | `Nestgrid.Response.AspNetCore` | Converts results to Minimal API `IResult` and MVC `IActionResult` responses. | Available           |
+| `Nestgrid.Response.Mvc` | Converts results to MVC `IActionResult` responses for older ASP.NET Core MVC applications. | Available           |
 | `Nestgrid.Response.Extensions.Validation` | Converts data annotations validation results to messages and invalid results. | Available           |
-| `Nestgrid.Response.Mvc` | Integration for ASP.NET MVC applications. | Under Consideration |
 
 ## Quick Start
 
@@ -52,7 +53,7 @@ Compose result values with the core functional extensions:
 ```csharp
 using Nestgrid.Response.Extensions;
 
-Result<UserDto> dto = user.Map(x => mapper.Map<UserDto>(x));
+Result<UserDto> dto = result.Map(x => mapper.Map<UserDto>(x));
 
 var name = dto.Match(
     success => success?.Name ?? "Unknown",
@@ -70,16 +71,17 @@ Task<Result<UserDto>> GetAsync(int id)
 }
 ```
 
-ASP.NET Core adapters always treat `ResultStatus.NoContent` as a bodyless response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body, regardless of `SuccessResponseMode`.
+HTTP adapters always treat `ResultStatus.NoContent` as a bodyless response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body, regardless of `SuccessResponseMode`.
 
-See the package documentation for the [core library](src/Nestgrid.Response/README.md) and [ASP.NET Core integration](src/Nestgrid.Response.AspNetCore/README.md).
+See the package documentation for the [core library](src/Nestgrid.Response/README.md), [HTTP mapping](src/Nestgrid.Response.Http/README.md), [ASP.NET Core integration](src/Nestgrid.Response.AspNetCore/README.md), and [MVC integration](src/Nestgrid.Response.Mvc/README.md).
 
 ## Roadmap
 
 - `Nestgrid.Response`: core result model
+- `Nestgrid.Response.Http`: shared HTTP mapping policy
 - `Nestgrid.Response.AspNetCore`: Minimal API and controller integration
+- `Nestgrid.Response.Mvc`: MVC controller integration
 - `Nestgrid.Response.Extensions.Validation`: data annotations validation extensions
-- `Nestgrid.Response.Mvc`: ASP.NET MVC integration - under consideration
 
 ## Contributing
 
