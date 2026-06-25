@@ -1,8 +1,8 @@
-using Nestgrid.Response.AspNetCore.Mappings;
-using Nestgrid.Response.AspNetCore.Options;
+using Nestgrid.Response.Http.Mappings;
+using Nestgrid.Response.Http.Options;
 using Shouldly;
 
-namespace Nestgrid.Response.AspNetCore.Tests.Options;
+namespace Nestgrid.Response.Http.Tests.Options;
 
 public sealed class NestgridResponseOptionsTests
 {

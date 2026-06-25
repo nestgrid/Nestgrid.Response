@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Nestgrid.Response.Http</PackageId>
+        <Description>Shared HTTP response mapping policy for Nestgrid.Response adapters.</Description>
+        <PackageTags>response;result;results;result-pattern;http;mapping</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Nestgrid.Response\Nestgrid.Response.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>

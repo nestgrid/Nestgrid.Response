@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Nestgrid.Response\Nestgrid.Response.csproj" />
+        <ProjectReference Include="..\Nestgrid.Response.Http\Nestgrid.Response.Http.csproj" />
     </ItemGroup>
 
     <ItemGroup>

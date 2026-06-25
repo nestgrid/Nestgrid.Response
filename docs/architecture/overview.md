@@ -38,25 +38,24 @@ Nestgrid.Response is not intended to be:
 
 ## Architecture
 
-The solution is separated into a lightweight core package and optional framework-specific adapters.
+The solution is separated into a lightweight core package, shared HTTP policy, and optional framework-specific adapters.
 
 ```text
-Application Layer
-        │
-        ▼
 Nestgrid.Response
         │
         ▼
-Presentation Layer
+Nestgrid.Response.Http
         │
-        ▼
-Nestgrid.Response.AspNetCore
-Nestgrid.Response.Mvc
+        ├───────────────┐
+        ▼               ▼
+AspNetCore             Mvc
 ```
 
 The core package contains the result model and supporting abstractions.
 
-Adapter packages are responsible for converting results into framework-specific responses.
+`Nestgrid.Response.Http` owns HTTP status and payload mapping policy.
+
+Adapter packages are responsible for resolving options and writing framework-specific responses.
 
 ---
 
@@ -64,8 +63,10 @@ Adapter packages are responsible for converting results into framework-specific 
 
 ```text
 Nestgrid.Response
+Nestgrid.Response.Http
 Nestgrid.Response.AspNetCore
-Nestgrid.Response.Mvc (under consideration)
+Nestgrid.Response.Mvc
+Nestgrid.Response.Extensions.Validation
 ```
 
 ### Nestgrid.Response
@@ -82,31 +83,50 @@ Contains:
 
 No framework-specific dependencies.
 
+### Nestgrid.Response.Http
+
+Contains:
+
+- NestgridResponseOptions
+- SuccessResponseMode
+- Default HTTP status mappings
+- HttpResultMapper
+- HttpResultMapping
+
+Depends on:
+
+- Nestgrid.Response
+
+No ASP.NET Core or MVC dependencies.
+
 ### Nestgrid.Response.AspNetCore
 
 Contains:
 
 - Minimal API `IResult` conversion
 - Controller `IActionResult` conversion
-- Configurable success payloads
-- Configurable HTTP status mappings
+- ASP.NET Core service registration
+- ASP.NET Core response execution
 
 Depends on:
 
-- Nestgrid.Response
+- Nestgrid.Response.Http
 - ASP.NET Core
 
 ### Nestgrid.Response.Mvc
 
-This package is under consideration. Its expected scope is:
+Contains:
 
-- ASP.NET MVC Extensions
-- IActionResult Mapping
+- MVC `IActionResult` conversion
+- MVC service registration
+- MVC response execution
 
 Depends on:
 
-- Nestgrid.Response
-- ASP.NET MVC
+- Nestgrid.Response.Http
+- Microsoft.AspNetCore.Mvc.Core
+
+Adapters intentionally do not duplicate HTTP policy. They consume `Nestgrid.Response.Http` and translate the mapping into framework execution.
 
 ---
 
@@ -223,7 +243,7 @@ Task<Result<UserDto>> GetAsync(int id)
 
 The generic factory creates a `Result<T>` with `ResultStatus.NoContent` and the default value for `T`.
 
-ASP.NET Core adapters treat `ResultStatus.NoContent` as a true no-content response. `ToIResult()` and `ToActionResult()` return a response with no body for `NoContent`, regardless of whether the result is generic, whether a value is associated with the result, or whether `SuccessResponseMode` is `FullResult` or `ValueOnly`.
+HTTP adapters treat `ResultStatus.NoContent` as a true no-content response. `ToIResult()` and `ToActionResult()` return a response with no body for `NoContent`, regardless of whether the result is generic, whether a value is associated with the result, or whether `SuccessResponseMode` is `FullResult` or `ValueOnly`.
 
 ---
 

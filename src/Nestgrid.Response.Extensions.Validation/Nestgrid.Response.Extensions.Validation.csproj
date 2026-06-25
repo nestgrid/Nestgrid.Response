@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Nestgrid.Response.Extensions.Validation</PackageId>
         <Description>Data annotations validation extensions for Nestgrid.Response.</Description>
-        <PackageTags>response;result;results;validation;data-annotations</PackageTags>
+        <PackageTags>response;result;results;result-pattern;validation;data-annotations</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>

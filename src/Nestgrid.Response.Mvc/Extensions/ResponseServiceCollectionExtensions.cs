@@ -2,10 +2,10 @@ using Nestgrid.Response.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Nestgrid.Response.Http.Options;
 
-namespace Nestgrid.Response.AspNetCore.Extensions;
+namespace Nestgrid.Response.Mvc.Extensions;
 
 /// <summary>
-/// Provides Nestgrid.Response service registration.
+/// Provides Nestgrid.Response service registration for MVC adapters.
 /// </summary>
 public static class ResponseServiceCollectionExtensions
 {
@@ -16,7 +16,10 @@ public static class ResponseServiceCollectionExtensions
     /// <returns>The same service collection.</returns>
     public static IServiceCollection AddNestgridResponse(this IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(services);
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
 
         services.AddOptions<NestgridResponseOptions>();
 
@@ -33,8 +36,15 @@ public static class ResponseServiceCollectionExtensions
         this IServiceCollection services,
         Action<NestgridResponseOptions> configure)
     {
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configure);
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+
+        if (configure is null)
+        {
+            throw new ArgumentNullException(nameof(configure));
+        }
 
         services.Configure(configure);
 

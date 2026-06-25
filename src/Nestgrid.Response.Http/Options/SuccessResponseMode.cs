@@ -1,4 +1,4 @@
-namespace Nestgrid.Response.AspNetCore.Options;
+namespace Nestgrid.Response.Http.Options;
 
 /// <summary>
 /// Defines the payload shape for successful results.
