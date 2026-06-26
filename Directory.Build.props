@@ -1,11 +1,18 @@
 <Project>
     <PropertyGroup>
-        <Version>0.4.0</Version>
+        <Version>0.5.0</Version>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+        <Deterministic>true</Deterministic>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IsPackable>true</IsPackable>
 
         <Authors>Nestgrid</Authors>
         <Company>Nestgrid</Company>
@@ -16,5 +23,16 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+        <PackageIcon>assets/nestgrid-128.png</PackageIcon>
     </PropertyGroup>
+
+
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)assets/nestgrid-128.png"
+              Pack="true"
+              PackagePath="assets/" />
+    </ItemGroup>
+
 </Project>

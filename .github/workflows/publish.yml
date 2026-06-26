@@ -1,0 +1,95 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_NOLOGO: true
+      NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore Nestgrid.Response.sln
+
+      - name: Build
+        run: dotnet build Nestgrid.Response.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test Nestgrid.Response.sln -c Release --no-build --verbosity normal
+
+      - name: Pack
+        run: |
+          mkdir -p artifacts
+          dotnet pack Nestgrid.Response.sln \
+            -c Release \
+            -o artifacts \
+            --no-build \
+            --no-restore \
+            /p:ContinuousIntegrationBuild=true
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
+          if-no-files-found: error
+
+      - name: Authenticate with NuGet Trusted Publishing
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: Nestgrid
+
+      - name: Publish NuGet packages
+        run: |
+          packages=(artifacts/*.nupkg)
+          if [ ${#packages[@]} -eq 0 ]; then
+            echo "No NuGet packages found."
+            exit 1
+          fi
+
+          for package in "${packages[@]}"; do
+            dotnet nuget push "$package" \
+              --source "$NUGET_SOURCE" \
+              --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
+              --skip-duplicate
+          done
+
+      - name: Publish symbol packages
+        run: |
+          symbols=(artifacts/*.snupkg)
+          if [ ${#symbols[@]} -eq 0 ]; then
+            echo "No symbol packages found."
+            exit 1
+          fi
+
+          for symbol in "${symbols[@]}"; do
+            dotnet nuget push "$symbol" \
+              --source "$NUGET_SOURCE" \
+              --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
+              --skip-duplicate
+          done

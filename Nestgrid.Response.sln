@@ -76,6 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 		.github\workflows\mutation.yml = .github\workflows\mutation.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "development", "development", "{9C9100B5-5755-4718-A554-58E2D89866D3}"
@@ -97,6 +98,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http", "src\Nestgrid.Response.Http\Nestgrid.Response.Http.csproj", "{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc", "src\Nestgrid.Response.Mvc\Nestgrid.Response.Mvc.csproj", "{2EF077E3-96CD-44F7-8835-F74FD3472ADD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E990D2EE-87B1-4950-9E32-F94A3D1FFA80}"
+	ProjectSection(SolutionItems) = preProject
+		assets\nestgrid-128.png = assets\nestgrid-128.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
