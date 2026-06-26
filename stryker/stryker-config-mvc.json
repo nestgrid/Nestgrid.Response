@@ -5,7 +5,7 @@
     "test-projects": [
       "tests/Nestgrid.Response.Mvc.Tests/Nestgrid.Response.Mvc.Tests.csproj"
     ],
-    "reporters": ["html", "progress", "cleartext", "json"],
+    "reporters": ["html", "progress", "cleartext", "json", "dashboard"],
     "coverage-analysis": "off",
     "verbosity": "info",
     "concurrency": 1,
