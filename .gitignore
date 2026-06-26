@@ -28,3 +28,8 @@ Thumbs.db
 docs/architecture/internal
 docs/development
 docs/analysis
+
+# Ignore development settings across all projects
+**/Properties/launchSettings.json
+**/appsettings.Development.json
+**/appsettings.development.json

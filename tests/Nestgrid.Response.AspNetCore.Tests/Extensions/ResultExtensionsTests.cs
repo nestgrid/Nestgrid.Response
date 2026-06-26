@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Nestgrid.Response.AspNetCore.Extensions;
-using Nestgrid.Response.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -128,6 +127,23 @@ public sealed class ResultExtensionsTests
     {
         // Arrange
         var result = ResultsFactory.Failed("Operation failed");
+        var options = new NestgridResponseOptions();
+        options.StatusMappings[ResultStatus.Failed] = StatusCodes.Status400BadRequest;
+
+        var httpContext = CreateHttpContext();
+
+        // Act
+        await result.ToIResult(options).ExecuteAsync(httpContext);
+
+        // Assert
+        httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+    }
+
+    [Fact]
+    public async Task ToIResult_WithGenericResultAndPerCallOptions_ShouldUseCustomMapping()
+    {
+        // Arrange
+        var result = ResultsFactory.Failed<UserDto>("Operation failed");
         var options = new NestgridResponseOptions();
         options.StatusMappings[ResultStatus.Failed] = StatusCodes.Status400BadRequest;
 
@@ -471,6 +487,24 @@ public sealed class ResultExtensionsTests
     {
         // Arrange
         var result = ResultsFactory.Failed("Operation failed");
+        var options = new NestgridResponseOptions();
+        options.StatusMappings[ResultStatus.Failed] = StatusCodes.Status400BadRequest;
+
+        var httpContext = CreateHttpContext();
+        var actionContext = CreateActionContext(httpContext);
+
+        // Act
+        await result.ToActionResult(options).ExecuteResultAsync(actionContext);
+
+        // Assert
+        httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+    }
+
+    [Fact]
+    public async Task ToActionResult_WithGenericResultAndPerCallOptions_ShouldUseCustomMapping()
+    {
+        // Arrange
+        var result = ResultsFactory.Failed<UserDto>("Operation failed");
         var options = new NestgridResponseOptions();
         options.StatusMappings[ResultStatus.Failed] = StatusCodes.Status400BadRequest;
 

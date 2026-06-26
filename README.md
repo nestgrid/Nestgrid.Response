@@ -75,6 +75,17 @@ HTTP adapters always treat `ResultStatus.NoContent` as a bodyless response. `Res
 
 See the package documentation for the [core library](src/Nestgrid.Response/README.md), [HTTP mapping](src/Nestgrid.Response.Http/README.md), [ASP.NET Core integration](src/Nestgrid.Response.AspNetCore/README.md), and [MVC integration](src/Nestgrid.Response.Mvc/README.md).
 
+## Samples
+
+| Sample | Demonstrates |
+|---|---|
+| `samples/Nestgrid.Response.Sample` | Core result factories, `Map()`, and `Match()` in a console application. |
+| `samples/Nestgrid.Response.Extensions.Validation.Sample` | Data annotations validation results converted to Nestgrid messages and invalid results. |
+| `samples/Nestgrid.Response.AspNetCore.Sample` | Minimal API endpoints returning `result.ToIResult()`, including `ValueOnly` mode. |
+| `samples/Nestgrid.Response.Mvc.Sample` | MVC controller actions returning `result.ToActionResult()`. |
+
+Run any sample directly from the `samples` folder.
+
 ## Roadmap
 
 - `Nestgrid.Response`: core result model
