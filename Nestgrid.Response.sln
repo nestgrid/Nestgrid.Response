@@ -55,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution-items", ".solutio
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
+		CHANGELOG.md = CHANGELOG.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response", "src\Nestgrid.Response\Nestgrid.Response.csproj", "{2206CEEE-354D-4ADD-A8A3-9757113BCF44}"
@@ -76,6 +77,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 		.github\workflows\mutation.yml = .github\workflows\mutation.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "development", "development", "{9C9100B5-5755-4718-A554-58E2D89866D3}"
@@ -97,6 +99,21 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http", "src\Nestgrid.Response.Http\Nestgrid.Response.Http.csproj", "{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc", "src\Nestgrid.Response.Mvc\Nestgrid.Response.Mvc.csproj", "{2EF077E3-96CD-44F7-8835-F74FD3472ADD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E990D2EE-87B1-4950-9E32-F94A3D1FFA80}"
+	ProjectSection(SolutionItems) = preProject
+		assets\nestgrid-128.png = assets\nestgrid-128.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{27EE8E7F-4A1D-4E95-83D0-E998C1B58160}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Sample", "samples\Nestgrid.Response.Sample\Nestgrid.Response.Sample.csproj", "{7A320B8D-2756-4F4D-BECB-0FA4372A43E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.AspNetCore.Sample", "samples\Nestgrid.Response.AspNetCore.Sample\Nestgrid.Response.AspNetCore.Sample.csproj", "{06262423-E75A-41BB-8544-5550C74FE0C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Extensions.Validation.Sample", "samples\Nestgrid.Response.Extensions.Validation.Sample\Nestgrid.Response.Extensions.Validation.Sample.csproj", "{60AAE6C4-A23D-44E7-8A75-C97A64437AA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc.Sample", "samples\Nestgrid.Response.Mvc.Sample\Nestgrid.Response.Mvc.Sample.csproj", "{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +142,10 @@ Global
 		{B022D9C0-15FC-485D-8D52-E88B36D798C7} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 		{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3} = {754924BC-2928-4E93-B399-71BA4638D122}
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
+		{06262423-E75A-41BB-8544-5550C74FE0C5} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
+		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
+		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -167,5 +188,21 @@ Global
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06262423-E75A-41BB-8544-5550C74FE0C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06262423-E75A-41BB-8544-5550C74FE0C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06262423-E75A-41BB-8544-5550C74FE0C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06262423-E75A-41BB-8544-5550C74FE0C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

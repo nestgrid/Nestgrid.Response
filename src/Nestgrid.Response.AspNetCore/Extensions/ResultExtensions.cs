@@ -1,5 +1,4 @@
 using Nestgrid.Response.AspNetCore.Internal;
-using Nestgrid.Response.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nestgrid.Response.Http.Options;

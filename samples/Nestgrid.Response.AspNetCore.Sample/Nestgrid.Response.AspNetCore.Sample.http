@@ -1,0 +1,26 @@
+@Nestgrid.Response.AspNetCore.Sample_HostAddress = http://localhost:5104
+
+GET {{Nestgrid.Response.AspNetCore.Sample_HostAddress}}/users/1
+Accept: application/json
+
+###
+
+GET {{Nestgrid.Response.AspNetCore.Sample_HostAddress}}/users/1/value-only
+Accept: application/json
+
+###
+
+POST {{Nestgrid.Response.AspNetCore.Sample_HostAddress}}/users
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Katherine Johnson",
+  "email": "katherine@example.test"
+}
+
+###
+
+DELETE {{Nestgrid.Response.AspNetCore.Sample_HostAddress}}/users/2
+
+###

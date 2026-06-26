@@ -1,5 +1,4 @@
 using Nestgrid.Response.AspNetCore.Extensions;
-using Nestgrid.Response.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

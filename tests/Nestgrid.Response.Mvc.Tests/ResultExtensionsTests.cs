@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Nestgrid.Response.Http;
 using Nestgrid.Response.Mvc.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -131,6 +130,24 @@ public sealed class ResultExtensionsTests
     {
         // Arrange
         var result = ResultsFactory.Failed("Operation failed");
+        var options = new NestgridResponseOptions();
+        options.StatusMappings[ResultStatus.Failed] = 400;
+
+        var httpContext = CreateHttpContext();
+        var actionContext = CreateActionContext(httpContext);
+
+        // Act
+        await result.ToActionResult(options).ExecuteResultAsync(actionContext);
+
+        // Assert
+        httpContext.Response.StatusCode.ShouldBe(400);
+    }
+
+    [Fact]
+    public async Task ToActionResult_WithGenericResultAndPerCallOptions_ShouldUseCustomMapping()
+    {
+        // Arrange
+        var result = ResultsFactory.Failed<UserDto>("Operation failed");
         var options = new NestgridResponseOptions();
         options.StatusMappings[ResultStatus.Failed] = 400;
 
