@@ -1,8 +1,8 @@
 # Nestgrid.Response.Extensions.Validation
 
-`Nestgrid.Response.Extensions.Validation` converts `System.ComponentModel.DataAnnotations.ValidationResult` values into Nestgrid response messages and invalid results.
+Data annotations validation extensions for Nestgrid.Response.
 
-The package is an optional convenience layer. It does not add result types, statuses, factories, or validation abstractions.
+`Nestgrid.Response.Extensions.Validation` converts `System.ComponentModel.DataAnnotations.ValidationResult` values into Nestgrid result messages and invalid results.
 
 ## Installation
 
@@ -10,45 +10,60 @@ The package is an optional convenience layer. It does not add result types, stat
 dotnet add package Nestgrid.Response.Extensions.Validation
 ```
 
-## Usage
+## Quick Start
 
 ```csharp
+using System.ComponentModel.DataAnnotations;
 using Nestgrid.Response;
 using Nestgrid.Response.Extensions.Validation;
 
-IEnumerable<ValidationResult> validationResults = validator.Validate(model);
+var validationResults = new List<ValidationResult>();
 
-return validationResults.ToInvalidResult();
+Validator.TryValidateObject(
+    request,
+    new ValidationContext(request),
+    validationResults,
+    validateAllProperties: true);
+
+Result result = validationResults.ToInvalidResult();
 ```
 
-For typed service results:
+## Realistic Example
 
 ```csharp
+using System.ComponentModel.DataAnnotations;
 using Nestgrid.Response;
 using Nestgrid.Response.Extensions.Validation;
 
-IEnumerable<ValidationResult> validationResults = validator.Validate(model);
+public Result<UserDto> Create(CreateUserRequest request)
+{
+    var validationResults = new List<ValidationResult>();
 
-return validationResults.ToInvalidResult<UserDto>();
+    if (!Validator.TryValidateObject(
+        request,
+        new ValidationContext(request),
+        validationResults,
+        validateAllProperties: true))
+    {
+        return validationResults.ToInvalidResult<UserDto>();
+    }
+
+    var user = new UserDto(1, request.Name, request.Email);
+
+    return Results.Created(user);
+}
 ```
 
-To convert validation results to messages:
+## Feature Summary
 
-```csharp
-using Nestgrid.Response.Extensions.Validation;
+- Converts one `ValidationResult` to one `ResultMessage`.
+- Converts many validation results to result messages.
+- Creates non-generic and generic invalid results.
+- Allows caller-selected message severity.
+- Preserves validation message text exactly as supplied.
+- Does not introduce a custom validation abstraction.
 
-var messages = validationResults.ToMessages();
-```
-
-Single validation results are supported too:
-
-```csharp
-ValidationResult validationResult = new("Name is required");
-
-Result result = validationResult.ToInvalidResult();
-```
-
-## Behaviour
+## Behavior
 
 - Validation messages are preserved exactly as supplied.
 - Member names are not prepended to messages.
@@ -62,3 +77,14 @@ Override severity when needed:
 ```csharp
 var result = validationResults.ToInvalidResult(ResultMessageSeverity.Error);
 ```
+
+## Documentation
+
+- [Main repository](https://github.com/nestgrid/Nestgrid.Response)
+- [Core package](https://github.com/nestgrid/Nestgrid.Response/tree/main/src/Nestgrid.Response)
+- [Architecture overview](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/05%20Architecture/Overview.md)
+
+## Samples
+
+- [Validation sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Extensions.Validation.Sample)
+- [Core sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Sample)

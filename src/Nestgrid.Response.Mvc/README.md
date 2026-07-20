@@ -1,8 +1,8 @@
 # Nestgrid.Response.Mvc
 
-`Nestgrid.Response.Mvc` converts Nestgrid results to MVC `IActionResult` responses.
+MVC adapter for converting Nestgrid results into `IActionResult` responses.
 
-The package targets `netstandard2.0` and uses the shared `Nestgrid.Response.Http` package for all HTTP mapping policy.
+`Nestgrid.Response.Mvc` targets `netstandard2.0` and uses the shared HTTP mapping policy in `Nestgrid.Response.Http`. For modern .NET 8 ASP.NET Core applications, prefer `Nestgrid.Response.AspNetCore` unless you specifically need this older MVC-focused adapter.
 
 ## Installation
 
@@ -10,18 +10,68 @@ The package targets `netstandard2.0` and uses the shared `Nestgrid.Response.Http
 dotnet add package Nestgrid.Response.Mvc
 ```
 
-## Register Options
+## Quick Start
 
 ```csharp
+using Nestgrid.Response;
 using Nestgrid.Response.Mvc.Extensions;
-using Nestgrid.Response.Http;
 
 services.AddNestgridResponse();
+
+public IActionResult Get(int id)
+{
+    Result<UserDto> result = users.Get(id);
+
+    return result.ToActionResult();
+}
 ```
 
-Configure response policy:
+## Realistic Example
 
 ```csharp
+using Microsoft.AspNetCore.Mvc;
+using Nestgrid.Response;
+using Nestgrid.Response.Mvc.Extensions;
+
+[ApiController]
+[Route("users")]
+public sealed class UsersController(UserService users) : ControllerBase
+{
+    [HttpGet("{id:int}")]
+    public IActionResult Get(int id)
+    {
+        Result<UserDto> result = users.Get(id);
+
+        return result.ToActionResult();
+    }
+
+    [HttpPost]
+    public IActionResult Create(UserDto user)
+    {
+        Result<UserDto> result = users.Create(user);
+
+        return result.ToActionResult();
+    }
+}
+```
+
+## Feature Summary
+
+- Converts `Result` and `Result<T>` to MVC `IActionResult`.
+- Supports global and per-call `NestgridResponseOptions`.
+- Uses shared HTTP mapping from `Nestgrid.Response.Http`.
+- Supports `FullResult` and `ValueOnly` success payload modes.
+- Suppresses response bodies for `ResultStatus.NoContent`.
+- Keeps MVC execution separate from core result modeling.
+
+## Options
+
+Register default options:
+
+```csharp
+using Nestgrid.Response.Http.Options;
+using Nestgrid.Response.Mvc.Extensions;
+
 services.AddNestgridResponse(options =>
 {
     options.SuccessResponseMode = SuccessResponseMode.ValueOnly;
@@ -29,21 +79,7 @@ services.AddNestgridResponse(options =>
 });
 ```
 
-## Controller Usage
-
-```csharp
-using Nestgrid.Response.Mvc.Extensions;
-using Nestgrid.Response.Http;
-
-public IActionResult Get(int id)
-{
-    Result<UserDto> result = service.Get(id);
-
-    return result.ToActionResult();
-}
-```
-
-Per-call options:
+Pass options for one response:
 
 ```csharp
 var options = new NestgridResponseOptions
@@ -54,9 +90,9 @@ var options = new NestgridResponseOptions
 return result.ToActionResult(options);
 ```
 
-## Behaviour
+## Behavior
 
-MVC behaviour matches the ASP.NET Core adapter:
+MVC behavior matches the ASP.NET Core adapter:
 
 - `FullResult` writes the result envelope.
 - `ValueOnly` writes only the value for successful generic results.
@@ -66,3 +102,16 @@ MVC behaviour matches the ASP.NET Core adapter:
 - `NoContent` never writes a response body.
 
 HTTP mapping is owned by `Nestgrid.Response.Http`; this package only adapts the mapping to MVC execution.
+
+## Documentation
+
+- [Main repository](https://github.com/nestgrid/Nestgrid.Response)
+- [Core package](https://github.com/nestgrid/Nestgrid.Response/tree/main/src/Nestgrid.Response)
+- [HTTP mapping package](https://github.com/nestgrid/Nestgrid.Response/tree/main/src/Nestgrid.Response.Http)
+- [ASP.NET Core package](https://github.com/nestgrid/Nestgrid.Response/tree/main/src/Nestgrid.Response.AspNetCore)
+- [Architecture overview](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/05%20Architecture/Overview.md)
+
+## Samples
+
+- [MVC sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Mvc.Sample)
+- [ASP.NET Core sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.AspNetCore.Sample)
