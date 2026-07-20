@@ -1,5 +1,11 @@
 # Coding Standards
 
+> Part of the **[Coding Standards](README.md)** handbook.
+
+## Purpose
+
+Coding standards keep the public API small, predictable and easy to document.
+
 ## General
 
 - Prefer readability over clever abstractions.
@@ -42,3 +48,19 @@
 - Use consistent terminology and avoid ambiguity.
 - New public features should include documentation updates.
 - Documentation should explain the reasoning behind decisions, not just the implementation.
+
+---
+
+## Navigation
+
+**Book**
+
+- [Coding Standards](README.md)
+
+**Documentation**
+
+- [Documentation index](../../README.md)
+
+**Repository**
+
+- [Nestgrid.Response](../../../README.md)

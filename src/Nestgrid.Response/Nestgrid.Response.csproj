@@ -3,8 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Nestgrid.Response</PackageId>
-        <Description>Immutable, status-driven result types for .NET applications.</Description>
-        <Description> A lightweight Result pattern library for .NET applications with support for typed results, messages, and error handling.</Description>
+        <Description>A lightweight Result pattern library for .NET applications with immutable typed results, statuses and messages.</Description>
         <PackageTags>response;result;results;result-pattern;error-handling</PackageTags>
     </PropertyGroup>
 

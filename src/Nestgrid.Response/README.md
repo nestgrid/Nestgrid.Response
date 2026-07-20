@@ -1,6 +1,8 @@
 # Nestgrid.Response
 
-`Nestgrid.Response` provides immutable, framework-independent results for representing operation outcomes in .NET applications.
+Framework-independent Result pattern primitives for .NET applications.
+
+`Nestgrid.Response` provides immutable `Result` and `Result<T>` types for returning expected operation outcomes without throwing exceptions for routine control flow or coupling application logic to HTTP.
 
 ## Installation
 
@@ -8,34 +10,62 @@
 dotnet add package Nestgrid.Response
 ```
 
-## Creating Results
-
-Use the static `Results` factory to create `Result` or `Result<T>` instances:
+## Quick Start
 
 ```csharp
 using Nestgrid.Response;
 
-Result completed = Results.Ok();
-Result<User> found = Results.Ok(user);
-Result<User> missing = Results.NotFound<User>("User not found");
-Result invalid = Results.Invalid("The request is invalid");
+public Result<UserDto> FindUser(int id)
+{
+    var user = users.Find(id);
+
+    return user is null
+        ? Results.NotFound<UserDto>("User was not found.")
+        : Results.Ok(new UserDto(user.Id, user.Name));
+}
 ```
 
-Success factories accept values and messages where appropriate:
+## Realistic Example
 
 ```csharp
-var result = Results.Ok(
-    user,
-    ResultMessages.Info("Loaded from cache"));
+using Nestgrid.Response;
+using Nestgrid.Response.Extensions;
+
+public Result<UserDto> RenameUser(int id, string name)
+{
+    if (string.IsNullOrWhiteSpace(name))
+    {
+        return Results.Invalid<UserDto>(
+            ResultMessages.Warning(
+                "Name is required.",
+                code: "name_required",
+                property: nameof(name)));
+    }
+
+    var user = users.Find(id);
+
+    if (user is null)
+    {
+        return Results.NotFound<UserDto>("User was not found.");
+    }
+
+    user.Rename(name);
+
+    return Results.Ok(user)
+        .Map(value => new UserDto(value!.Id, value.Name));
+}
 ```
 
-Failure factories have non-generic and generic overloads. A generic failure has a default value:
+## Feature Summary
 
-```csharp
-Result<User> result = Results.Invalid<User>("Name is required");
-
-// result.Value is null for a reference type.
-```
+- Immutable `Result` and `Result<T>` models.
+- Semantic statuses such as `Ok`, `Invalid`, `NotFound`, `Conflict`, `Failed`, and `Error`.
+- `Results` factory methods for successful and non-success outcomes.
+- Structured `ResultMessage` values with severity, code, property and message text.
+- `ResultMessages` factory methods for information, warning and error messages.
+- `IsSuccess()`, `IsFailure()`, `Map()`, and `Match()` extensions.
+- JSON serialization that omits `Result.Status` from payloads by default.
+- Generic no-content results through `Results.NoContent<T>()`.
 
 ## Result Messages
 
@@ -43,129 +73,12 @@ Create messages with `ResultMessages.Info`, `ResultMessages.Warning`, or `Result
 
 ```csharp
 var message = ResultMessages.Error(
-    "Name is required",
+    "Name is required.",
     code: "name_required",
     property: "Name");
 ```
 
-Each `ResultMessage` contains:
-
-- `Message`: human-readable text
-- `Code`: optional machine-readable code
-- `Property`: optional related property
-- `Severity`: `Information`, `Warning`, or `Error`
-
 Messages are exposed as a read-only snapshot through `Result.Messages`.
-
-## Error(Exception)
-
-`Results.Error(Exception)` converts an exception into an error result:
-
-```csharp
-try
-{
-    await service.RunAsync();
-    return Results.Ok();
-}
-catch (Exception exception)
-{
-    logger.LogError(exception, "The operation failed");
-    return Results.Error(exception);
-}
-```
-
-The exception itself is not retained. Its message becomes the result message, and its type name becomes the message code. Applications remain responsible for logging exceptions and deciding what information is safe to expose.
-
-For a typed result, use `Results.Error<T>(exception)`.
-
-## Result & Result<T>
-
-`Result` represents an outcome without a value:
-
-```csharp
-Result result = Results.NoContent();
-
-ResultStatus status = result.Status;
-IReadOnlyList<ResultMessage> messages = result.Messages;
-```
-
-`Result<T>` inherits from `Result` and adds `Value`:
-
-```csharp
-Result<User> result = Results.Ok(user);
-User? value = result.Value;
-```
-
-Results are immutable. Create them through `Results` rather than constructing them directly.
-
-## Functional Extensions
-
-Import the extension namespace:
-
-```csharp
-using Nestgrid.Response.Extensions;
-```
-
-### IsSuccess and IsFailure
-
-Use `IsSuccess()` and `IsFailure()` when a branch only needs to distinguish successful outcomes from non-success outcomes:
-
-```csharp
-if (result.IsSuccess())
-{
-    // Continue the successful flow.
-}
-```
-
-Success statuses:
-
-- `Ok`
-- `Created`
-- `Accepted`
-- `NoContent`
-
-Failure statuses:
-
-- `Invalid`
-- `Unauthorized`
-- `Forbidden`
-- `NotFound`
-- `Conflict`
-- `Cancelled`
-- `Failed`
-- `Error`
-
-This definition is fixed and not configurable. Use `Result.Status` when code needs to distinguish specific outcomes.
-
-### Map
-
-`Map` is status-driven. It transforms the value of a successful `Result<T>` while preserving the original status and messages:
-
-```csharp
-Result<User> user = await service.GetAsync(id);
-
-Result<UserDto> dto = user.Map(x => mapper.Map<UserDto>(x));
-```
-
-The mapper is invoked only when the source result status is `Ok`, `Created`, `Accepted`, or `NoContent`. For all other statuses, the mapper is not invoked. The returned result keeps the original status and messages, and has no mapped value.
-
-### Match
-
-`Match` is status-driven. It uses the same fixed success and failure status groups:
-
-```csharp
-var name = user.Match(
-    success => success?.Name ?? "Unknown",
-    failure => "Unknown");
-```
-
-Non-generic results are also supported:
-
-```csharp
-var text = result.Match(
-    () => "Success",
-    failure => $"Failed: {failure.Status}");
-```
 
 ## Status Values
 
@@ -184,7 +97,53 @@ var text = result.Match(
 | `Failed` | Failed for an expected reason |
 | `Error` | Failed because of an unexpected error |
 
-Statuses are semantic application outcomes, not HTTP status codes. Presentation packages decide how to map them.
+Statuses are semantic application outcomes. Presentation packages decide how to map them to HTTP.
+
+## Functional Extensions
+
+Import the extension namespace:
+
+```csharp
+using Nestgrid.Response.Extensions;
+```
+
+`IsSuccess()` returns `true` for `Ok`, `Created`, `Accepted`, and `NoContent`. `IsFailure()` returns `true` for all other statuses.
+
+`Map()` transforms the value of a successful `Result<T>` while preserving the original status and messages:
+
+```csharp
+Result<UserDto> dto = user.Map(value =>
+    new UserDto(value!.Id, value.Name));
+```
+
+`Match()` branches on the same fixed success classification:
+
+```csharp
+var displayName = dto.Match(
+    success => success?.Name ?? "Unknown",
+    failure => $"Could not load user: {failure.Status}");
+```
+
+Use `Result.Status` directly when code needs to distinguish specific outcomes.
+
+## Error(Exception)
+
+`Results.Error(Exception)` converts an exception into an error result:
+
+```csharp
+try
+{
+    await service.RunAsync();
+    return Results.Ok();
+}
+catch (Exception exception)
+{
+    logger.LogError(exception, "The operation failed.");
+    return Results.Error(exception);
+}
+```
+
+The exception itself is not retained. Its message becomes the result message, and its type name becomes the message code. Applications remain responsible for logging exceptions and deciding what information is safe to expose.
 
 ## NoContent<T>
 
@@ -197,49 +156,18 @@ Task<Result<UserDto>> GetAsync(int id)
 }
 ```
 
-The generic factory creates a `Result<T>` with `ResultStatus.NoContent` and the default value for `T`.
+HTTP adapters treat `ResultStatus.NoContent` as a bodyless response.
 
-HTTP adapters treat `ResultStatus.NoContent` as a true no-content response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body. This also applies in `SuccessResponseMode.FullResult` and `SuccessResponseMode.ValueOnly`.
+## Documentation
 
-## Why Status Is Not Serialized
+- [Main repository](https://github.com/nestgrid/Nestgrid.Response)
+- [Architecture overview](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/05%20Architecture/Overview.md)
+- [Roadmap](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/artefacts/Release/Roadmap.md)
+- [Mutation testing](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/09%20Testing/Mutation%20Testing.md)
 
-`Result.Status` is excluded from JSON serialization by default.
+## Samples
 
-The status exists for application control flow and adapter mapping. Omitting it avoids exposing transport-independent state in response payloads or duplicating an HTTP status code. Serialized results contain the value and messages only.
-
-## Examples
-
-Validation:
-
-```csharp
-return Results.Invalid<User>(
-    ResultMessages.Error(
-        "Name is required",
-        code: "name_required",
-        property: "Name"));
-```
-
-Conflict:
-
-```csharp
-return Results.Conflict<User>("A user with this email already exists");
-```
-
-Created result with context:
-
-```csharp
-return Results.Created(
-    user,
-    ResultMessages.Info("User created"));
-```
-
-Branching on the semantic outcome:
-
-```csharp
-var result = await service.UpdateAsync(command);
-
-if (result.Status == ResultStatus.Conflict)
-{
-    // Handle the expected conflict.
-}
-```
+- [Core sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Sample)
+- [ASP.NET Core sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.AspNetCore.Sample)
+- [MVC sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Mvc.Sample)
+- [Validation sample](https://github.com/nestgrid/Nestgrid.Response/tree/main/samples/Nestgrid.Response.Extensions.Validation.Sample)

@@ -25,7 +25,8 @@ Thumbs.db
 *.sln.DotSettings.user
 
 # Internal architecture documents
-docs/architecture/internal
+docs/artefacts/Architecture
+docs/artefacts/Implementation
 docs/development
 docs/analysis
 

@@ -52,7 +52,10 @@ Run Stryker separately for each production package:
 
 ```bash
 dotnet stryker --config-file stryker/stryker-config-core.json
+dotnet stryker --config-file stryker/stryker-config-http.json
 dotnet stryker --config-file stryker/stryker-config-aspnetcore.json
+dotnet stryker --config-file stryker/stryker-config-mvc.json
+dotnet stryker --config-file stryker/stryker-config-validation.json
 ```
 
 Mutation score is expected to remain at 100%.
@@ -68,7 +71,7 @@ Mutation score is expected to remain at 100%.
 - Use xUnit for tests and Shouldly for assertions.
 - Update relevant documentation when public behavior changes.
 
-See [docs/architecture/coding-standards.md](docs/architecture/coding-standards.md) for the repository standards.
+See [docs/handbooks/08 Coding Standards/Coding Standards.md](docs/handbooks/08%20Coding%20Standards/Coding%20Standards.md) for the repository standards.
 
 ## Pull Requests
 

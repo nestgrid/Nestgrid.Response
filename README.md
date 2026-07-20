@@ -1,16 +1,54 @@
 # Nestgrid.Response
 
-Nestgrid.Response is a small, status-driven result model for .NET applications. It provides immutable results for communicating expected operation outcomes without coupling application code to HTTP or relying on exceptions for routine control flow.
+[![CI](https://github.com/nestgrid/Nestgrid.Response/actions/workflows/ci.yml/badge.svg)](https://github.com/nestgrid/Nestgrid.Response/actions/workflows/ci.yml)
+[![Mutation Testing](https://github.com/nestgrid/Nestgrid.Response/actions/workflows/mutation.yml/badge.svg)](https://github.com/nestgrid/Nestgrid.Response/actions/workflows/mutation.yml)
+[![NuGet](https://img.shields.io/nuget/v/Nestgrid.Response.svg)](https://www.nuget.org/packages/Nestgrid.Response)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Nestgrid.Response is a lightweight Result pattern library for modern .NET applications, designed to make application outcomes explicit, predictable and framework-independent.
+
+It gives application and domain code a clear way to return expected outcomes such as `Ok`, `Invalid`, `NotFound`, `Conflict`, and `Error` without using exceptions for routine control flow or coupling business logic to HTTP.
 
 ## Packages
 
-| Package | Purpose | Status              |
-|---|---|---------------------|
-| `Nestgrid.Response` | Framework-independent `Result` and `Result<T>` types, statuses, messages, and factories. | Available           |
-| `Nestgrid.Response.Http` | Shared HTTP status and payload mapping policy used by response adapters. | Available           |
-| `Nestgrid.Response.AspNetCore` | Converts results to Minimal API `IResult` and MVC `IActionResult` responses. | Available           |
-| `Nestgrid.Response.Mvc` | Converts results to MVC `IActionResult` responses for older ASP.NET Core MVC applications. | Available           |
-| `Nestgrid.Response.Extensions.Validation` | Converts data annotations validation results to messages and invalid results. | Available           |
+| Package | Purpose | Target |
+|---|---|---|
+| [`Nestgrid.Response`](src/Nestgrid.Response/README.md) | Framework-independent `Result` and `Result<T>` types, statuses, messages, factories, and functional extensions. | `netstandard2.0` |
+| [`Nestgrid.Response.Http`](src/Nestgrid.Response.Http/README.md) | Shared HTTP status and payload mapping policy used by response adapters. | `netstandard2.0` |
+| [`Nestgrid.Response.AspNetCore`](src/Nestgrid.Response.AspNetCore/README.md) | Minimal API `IResult` and controller `IActionResult` adapters for ASP.NET Core. | `net8.0` |
+| [`Nestgrid.Response.Mvc`](src/Nestgrid.Response.Mvc/README.md) | MVC `IActionResult` adapter for older ASP.NET Core MVC applications. | `netstandard2.0` |
+| [`Nestgrid.Response.Extensions.Validation`](src/Nestgrid.Response.Extensions.Validation/README.md) | Data annotations validation extensions for invalid results and result messages. | `netstandard2.0` |
+
+## Package Relationships
+
+```text
+Nestgrid.Response
+        |
+        +--> Nestgrid.Response.Extensions.Validation
+        |
+        +--> Nestgrid.Response.Http
+                    |
+                    +--> Nestgrid.Response.AspNetCore
+                    |
+                    +--> Nestgrid.Response.Mvc
+```
+
+The core package has no presentation-framework dependency. HTTP policy lives in one shared package so the ASP.NET Core and MVC adapters behave consistently.
+
+## Why Use Nestgrid.Response?
+
+Nestgrid.Response is useful when you want:
+
+- A small Result pattern model with predictable statuses.
+- Typed and untyped results with immutable messages.
+- Application-layer outcomes that are not HTTP-specific.
+- Consistent HTTP mapping when results reach Minimal APIs or MVC controllers.
+- Lightweight `Map`, `Match`, `IsSuccess`, and `IsFailure` helpers without adopting a broader functional framework.
+- Validation integration that works with existing data annotations.
+
+The library is intentionally modest. It focuses on common result-flow needs and keeps the public API easy to read, test, and document.
+
+It is designed to remain small, framework-agnostic where possible, and easy to adopt incrementally.
 
 ## Quick Start
 
@@ -20,22 +58,31 @@ Install the core package:
 dotnet add package Nestgrid.Response
 ```
 
-Create results through the `Results` factory:
+Return results from application services:
 
 ```csharp
 using Nestgrid.Response;
 
-Result<User> FindUser(int id)
+public Result<UserDto> FindUser(int id)
 {
-    var user = repository.Find(id);
+    var user = users.Find(id);
 
     return user is null
-        ? Results.NotFound<User>("User not found")
-        : Results.Ok(user);
+        ? Results.NotFound<UserDto>("User was not found.")
+        : Results.Ok(new UserDto(user.Id, user.Name));
 }
 ```
 
-For ASP.NET Core, install the adapter and convert results at the application boundary:
+Map values without losing the original outcome:
+
+```csharp
+using Nestgrid.Response.Extensions;
+
+Result<UserDto> result = userResult.Map(user =>
+    new UserDto(user!.Id, user.Name));
+```
+
+Use the ASP.NET Core adapter at the application boundary:
 
 ```bash
 dotnet add package Nestgrid.Response.AspNetCore
@@ -44,59 +91,62 @@ dotnet add package Nestgrid.Response.AspNetCore
 ```csharp
 using Nestgrid.Response.AspNetCore.Extensions;
 
-app.MapGet("/users/{id:int}", (int id) =>
-    FindUser(id).ToIResult());
+app.MapGet("/users/{id:int}", (int id, UserService users) =>
+    users.Find(id).ToIResult());
 ```
 
-Compose result values with the core functional extensions:
+## Supported Frameworks
 
-```csharp
-using Nestgrid.Response.Extensions;
+| Package | Supported frameworks |
+|---|---|
+| `Nestgrid.Response` | .NET Standard 2.0 consumers, including modern .NET applications |
+| `Nestgrid.Response.Http` | .NET Standard 2.0 consumers |
+| `Nestgrid.Response.Extensions.Validation` | .NET Standard 2.0 consumers |
+| `Nestgrid.Response.AspNetCore` | ASP.NET Core on .NET 8 |
+| `Nestgrid.Response.Mvc` | ASP.NET Core MVC applications compatible with `Microsoft.AspNetCore.Mvc.Core` 2.1.x |
 
-Result<UserDto> dto = result.Map(x => mapper.Map<UserDto>(x));
+## Ecosystem
 
-var name = dto.Match(
-    success => success?.Name ?? "Unknown",
-    failure => "Unknown");
-```
+Nestgrid.Response is part of the Nestgrid engineering libraries.
 
-`Map()` and `Match()` are status-driven. They use the fixed `IsSuccess()` classification: `Ok`, `Created`, `Accepted`, and `NoContent` are successful; all other statuses are non-success outcomes. `Map()` preserves status and messages, and does not invoke the mapper for non-success results.
+Other libraries are being developed to provide reusable building blocks for modern .NET applications.
 
-For typed no-content service signatures, use `Results.NoContent<T>()`:
+## Documentation
 
-```csharp
-Task<Result<UserDto>> GetAsync(int id)
-{
-    return Task.FromResult(Results.NoContent<UserDto>());
-}
-```
-
-HTTP adapters always treat `ResultStatus.NoContent` as a bodyless response. `Results.NoContent<UserDto>().ToIResult()` returns `204 No Content` with no response body, regardless of `SuccessResponseMode`.
-
-See the package documentation for the [core library](src/Nestgrid.Response/README.md), [HTTP mapping](src/Nestgrid.Response.Http/README.md), [ASP.NET Core integration](src/Nestgrid.Response.AspNetCore/README.md), and [MVC integration](src/Nestgrid.Response.Mvc/README.md).
+- [Documentation index](docs/README.md)
+- [Philosophy](docs/handbooks/01%20Philosophy/README.md)
+- [Architecture overview](docs/handbooks/05%20Architecture/Overview.md)
+- [Coding standards](docs/handbooks/08%20Coding%20Standards/Coding%20Standards.md)
+- [Mutation testing](docs/handbooks/09%20Testing/Mutation%20Testing.md)
+- [Roadmap](docs/artefacts/Release/Roadmap.md)
+- [Architecture decisions](docs/decisions/README.md)
 
 ## Samples
 
 | Sample | Demonstrates |
 |---|---|
-| `samples/Nestgrid.Response.Sample` | Core result factories, `Map()`, and `Match()` in a console application. |
-| `samples/Nestgrid.Response.Extensions.Validation.Sample` | Data annotations validation results converted to Nestgrid messages and invalid results. |
-| `samples/Nestgrid.Response.AspNetCore.Sample` | Minimal API endpoints returning `result.ToIResult()`, including `ValueOnly` mode. |
-| `samples/Nestgrid.Response.Mvc.Sample` | MVC controller actions returning `result.ToActionResult()`. |
+| [`samples/Nestgrid.Response.Sample`](samples/Nestgrid.Response.Sample/README.md) | Core result factories, `Map()`, and `Match()` in a console application. |
+| [`samples/Nestgrid.Response.Extensions.Validation.Sample`](samples/Nestgrid.Response.Extensions.Validation.Sample/README.md) | Data annotations validation results converted to messages and invalid results. |
+| [`samples/Nestgrid.Response.AspNetCore.Sample`](samples/Nestgrid.Response.AspNetCore.Sample/README.md) | Minimal API endpoints returning `result.ToIResult()`, including value-only responses. |
+| [`samples/Nestgrid.Response.Mvc.Sample`](samples/Nestgrid.Response.Mvc.Sample/README.md) | MVC controller actions returning `result.ToActionResult()`. |
 
-Run any sample directly from the `samples` folder.
+Run a sample from the repository root:
+
+```bash
+dotnet run --project samples/Nestgrid.Response.Sample
+```
 
 ## Roadmap
 
-- `Nestgrid.Response`: core result model
-- `Nestgrid.Response.Http`: shared HTTP mapping policy
-- `Nestgrid.Response.AspNetCore`: Minimal API and controller integration
-- `Nestgrid.Response.Mvc`: MVC controller integration
-- `Nestgrid.Response.Extensions.Validation`: data annotations validation extensions
+Nestgrid.Response is pre-1.0 and is currently focused on documentation quality, API stability, and adapter polish.
+
+Planned areas are tracked in the [roadmap](docs/artefacts/Release/Roadmap.md). Current candidates include OpenAPI documentation helpers, `ProblemDetails` guidance, and broader adapter evaluation. Breaking changes are avoided unless they are necessary before a stable 1.0 release.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test, coverage, and mutation-testing guidance.
+Contributions are welcome when they keep the library small, predictable, and well tested.
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md) for build, test, coverage, and mutation-testing guidance. Public behavior changes should include tests and documentation updates.
 
 ## License
 
