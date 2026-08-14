@@ -88,14 +88,22 @@ Developers can communicate expected application outcomes consistently and explic
 - Reframe as an internal-only Nestgrid capability: rejected because public NuGet use is also an intended outcome.
 - Reduce to a modern ASP.NET Core-only library: rejected because legacy MVC support is explicitly retained.
 - Expand into a broader application framework: rejected because it conflicts with the stated small and predictable product intent.
-- Reuse a broader existing Result or functional library: not selected; no comparative evaluation has yet been recorded.
+- Reuse a broader existing Result or functional library: not selected after a proportionate comparison; the small and direct Nestgrid position remains preferable.
 - Defer or stop: not recommended while the product intent remains valid and the implementation baseline is coherent.
 
 ## Existing Solutions Considered
 
-The repository records exceptions, boolean success flags, HTTP-coupled models and broader functional abstractions as alternatives or rejected approaches. The Product Owner also performed an informal comparison with broader existing Result or functional libraries before choosing to continue with Nestgrid.Response. The deciding product criterion was a small, direct library aligned with Nestgrid's needs rather than the breadth of a general-purpose framework.
+The repository records exceptions, boolean success flags, HTTP-coupled models and broader functional abstractions as alternatives or rejected approaches. A proportionate external comparison was recorded on 2026-08-14 using public package documentation:
 
-The specific comparator names, comparison date and decision notes have not yet been recorded. They are useful traceability evidence but are not a reason to delay the current product decision unless the Project Sponsor requires a formal market comparison.
+| Existing solution | Observed position | Trade-off against Nestgrid.Response |
+| --- | --- | --- |
+| [FluentResults](https://www.nuget.org/packages/FluentResults) | Extensible reason, error and success abstractions with an ASP.NET Core extension ecosystem. | Broader and more extensible, but more abstraction than the intentionally small Nestgrid model requires. |
+| [ErrorOr](https://www.nuget.org/packages/ErrorOr) | Typed value-or-error model with error-oriented functional operations and custom error support. | Strong typed error modelling, but a different error-first model from Nestgrid's fixed semantic status model. |
+| [CSharpFunctionalExtensions](https://www.nuget.org/packages/CSharpFunctionalExtensions) | Functional library covering Result, Maybe, value objects and related extensions. | Wider functional scope than required for a direct application-outcome library. |
+| [Ardalis.Result](https://www.nuget.org/packages/Ardalis.Result) | Result pattern library with validation/error concepts and ASP.NET Core integration. | Relevant overlap, but the existing Nestgrid package baseline favours a smaller, Nestgrid-owned contract. |
+| [OneOf](https://www.nuget.org/packages/OneOf) | General discriminated-union type for representing one of several types. | Useful for unions, but not a direct semantic application-result and HTTP-adapter product. |
+
+The comparison was not a feature-for-feature benchmark. The decisive product criterion was a small, direct library aligned with Nestgrid's needs rather than the breadth of a general-purpose framework.
 
 ## Opportunity Assessment
 
@@ -111,10 +119,10 @@ The product has a clear, bounded intent, an implemented baseline and a credible 
 
 ## Next Action or Reconsideration Trigger
 
-Review and approve the Product Brief. Optionally append the informal comparator names and decision notes for traceability. Reconsider the product if evidence shows that modern and legacy consumers do not obtain sufficient value to justify maintaining both support segments, or if a better existing solution meets the same need with materially lower cost and risk.
+Reconsider the product if evidence shows that modern and legacy consumers do not obtain sufficient value to justify maintaining both support segments, or if a better existing solution meets the same need with materially lower cost and risk.
 
 ## Approval
 
 | Approved By | Date | Decision | Notes |
 | --- | --- | --- | --- |
-| Knight | 2026-08-14 | Approved | Continue as an existing-product change with the current focused scope. |
+| Knight — Project Sponsor | 2026-08-14 | Approved | Continue as an existing-product change with the current focused scope; authorise Architecture review and accept the documented stage risks and open questions. |

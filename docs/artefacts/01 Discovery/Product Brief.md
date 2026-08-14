@@ -31,7 +31,7 @@ Nestgrid.Response helps .NET developers represent expected application outcomes 
 
 ## Opportunity Context
 
-The Opportunity Decision recommends pursuing Nestgrid.Response as an existing-product change. The implementation is coherent, the five-package scope is established, and the product has both internal Nestgrid and public NuGet relevance. Broader existing Result or functional libraries were informally considered; the selected position favours a small, direct library aligned with Nestgrid's needs. Discovery evidence is currently stronger for the intended solution and repository baseline than for measured user demand; this brief therefore preserves the existing intent while making that uncertainty explicit.
+The Opportunity Decision recommends pursuing Nestgrid.Response as an existing-product change. The implementation is coherent, the five-package scope is established, and the product has both internal Nestgrid and public NuGet relevance. A proportionate comparison of broader existing Result and functional libraries supports the selected position: a small, direct library aligned with Nestgrid's needs. Discovery evidence is currently stronger for the intended solution and repository baseline than for measured user demand; this brief therefore preserves the existing intent while making that uncertainty explicit.
 
 ## Problem Statement
 
@@ -173,7 +173,6 @@ Builds a worker, library or application service without a presentation framework
 - Which consumer and adoption signals should determine whether both support segments continue at the next review?
 - What minimum package compatibility matrix should be published for each supported package?
 - Which operational evidence is required for each future public release?
-- Which existing libraries were included in the informal comparison, and what specific trade-offs led to the small-and-direct position?
 
 ## Recommendation
 
@@ -183,4 +182,4 @@ Approve this Product Brief as the baseline for Architecture review, subject to r
 
 | Approved By | Date | Decision | Notes |
 | --- | --- | --- | --- |
-| Knight | 2026-08-14 | Approved | Current product intent and five-package baseline approved for Architecture review. |
+| Knight — Project Sponsor | 2026-08-14 | Approved | Current product intent and five-package baseline approved for Architecture review; accepted the documented stage risks and open questions. |

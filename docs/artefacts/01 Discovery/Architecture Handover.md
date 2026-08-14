@@ -104,4 +104,4 @@ OpenAPI helpers, `ProblemDetails` support and additional adapters are not approv
 
 | Approved By | Date | Decision | Notes |
 | --- | --- | --- | --- |
-| Knight | 2026-08-14 | Approved | Proceed to Architecture review against the approved Product Brief. |
+| Knight — Project Sponsor | 2026-08-14 | Approved | Proceed to Architecture review against the approved Product Brief; accepted the documented risks and open architectural questions. |
