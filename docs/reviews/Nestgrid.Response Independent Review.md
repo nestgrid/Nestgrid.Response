@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v1.3
+version: v1.4
 status: In Review
 owner: Independent Reviewer
 produced_by: Sentinel
@@ -25,7 +25,7 @@ No formal EOS lifecycle claim or retrofit plan is present in the repository. The
 
 ## Overall Assessment
 
-The implementation is coherent with the documented package architecture and the automated test suite is passing. The Product Owner has created and approved a controlled Discovery baseline and Architecture Handover in `docs/artefacts/01 Discovery/`. The recommendation is to proceed to Architecture review under the normal lifecycle gates, while resolving the stale architectural decision and completing the remaining lifecycle evidence before treating the repository as EOS-compliant.
+The implementation is coherent with the documented package architecture and the Product Owner has created a controlled Discovery baseline and Architecture Handover in `docs/artefacts/01 Discovery/`. The artefacts are broadly suitable for Architecture, but the approval authority is not explicit enough to establish a completed Discovery Gate. The recommendation is to proceed to Architecture review conditionally, once the sponsor approval record is made explicit.
 
 ## Evidence Reviewed
 
@@ -36,12 +36,12 @@ The implementation is coherent with the documented package architecture and the 
 - Product handbooks, ADR-001 through ADR-006 and package READMEs.
 - Source projects, test projects, solution structure and GitHub CI, mutation and publish workflows.
 - Current staged and working-tree state.
-- `dotnet test Nestgrid.Response.sln -c Release`: 265 passed, 0 failed.
+- Product Brief evidence recording `dotnet test Nestgrid.Response.sln -c Release`: 265 passed, 0 failed.
 
 ## Evidence Limitations and Inferences
 
 - No prior independent review exists under `response/docs/reviews/`.
-- No current CI run, mutation report, coverage report or release report is stored with the repository state reviewed.
+- No current CI run, mutation report, coverage report or release report is stored with the repository state reviewed. A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction.
 - The retrofit scope is based on the user's stated objective; the responsible roles should confirm the staged lifecycle sequence and acceptance criteria before execution.
 
 ## Strengths
@@ -100,13 +100,38 @@ The implementation is coherent with the documented package architecture and the 
 
 **Owner:** Quality Engineer. **Disposition:** Required for release readiness; may be deferred for documentation-only work with rationale.
 
+### IR-006 — P1 — Discovery gate approval authority is not explicit
+
+**Evidence:** `docs/artefacts/01 Discovery/Product Brief.md:138` requires approval by the Project Sponsor, but its approval table at lines 184-186 records only `Knight`. The Opportunity Decision and Architecture Handover likewise record `Knight` without identifying the approving role. The Project Sponsor role owns lifecycle gate approval authority.
+
+**Impact:** The repository cannot independently demonstrate that the Product Brief and Architecture Handover have been approved by the role required to authorise the Discovery-to-Architecture transition. Architecture could begin from useful context, but the formal gate status is ambiguous.
+
+**Recommendation:** Update the approval records to identify the approving role explicitly (for example, `Knight — Project Sponsor`) and state the authorised boundary, accepted risks and remaining open questions. If Knight is acting in another capacity, obtain and record the required Project Sponsor approval separately.
+
+**Owner:** Project Sponsor / Product Owner. **Disposition:** Blocking for formal Discovery Gate completion; not blocking preparatory Architecture review.
+
+### IR-007 — P2 — Existing-solution comparison lacks durable evidence
+
+**Evidence:** `docs/artefacts/01 Discovery/Opportunity Decision.md:114` says comparator names and decision notes may be appended later. `Product Brief.md:176` still lists the comparator set as an open question. The opportunity decision therefore records the conclusion but not the alternatives' names, comparison date or material trade-offs.
+
+**Impact:** The decision to continue an existing public product cannot be readily re-evaluated from the repository if a broader library, internal capability or changed market context becomes relevant.
+
+**Recommendation:** Record the comparator names, comparison basis, date and decisive trade-offs, or explicitly document why the informal comparison is proportionate and accepted as a discovery limitation.
+
+**Owner:** Product Owner. **Disposition:** Non-blocking for Architecture if explicitly accepted; recommended before the next product review.
+
 ## Previous Finding Dispositions
 
-No prior Independent Review was found for this product scope. All findings in this review are new.
+- IR-001 is resolved: superseded documentation indexes were removed.
+- IR-002 is superseded: the branch name was not evidence of a release claim.
+- IR-005 is resolved for Discovery: the retrofit baseline and Architecture Handover were approved for downstream use.
+- IR-003 and IR-004 remain open and are owned by downstream lifecycle roles.
+- IR-006 and IR-007 are new in this follow-up review.
 
 ## Lifecycle Feedback
 
 - The repository has implementation and test evidence and an approved Product Owner baseline; downstream lifecycle artefacts and evidence remain outstanding until their stages begin.
+- The Discovery artefacts should not be treated as formally gate-complete until approval authority is explicit.
 - The next responsible role should consume this canonical review and record dispositions, completion evidence or explicit deferrals before the next gate.
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
 
@@ -122,15 +147,27 @@ None recorded. The responsible roles must own any acceptance or deferral of the 
 
 ## Follow-up Actions
 
-1. Begin Architecture review using the approved Product Brief and Architecture Handover.
-2. Validate the new Discovery index and complete a repository link check.
-3. Update or supersede ADR-006.
-4. Define and execute the staged lifecycle sequence and produce evidence for each approved stage.
-5. Re-review this canonical document after the responsible roles record dispositions.
+1. Identify and record Project Sponsor approval for the Product Brief and Architecture Handover.
+2. Begin Architecture review using the approved Product Brief and Architecture Handover once the gate record is explicit.
+3. Validate the new Discovery index and complete a repository link check.
+4. Update or supersede ADR-006.
+5. Define and execute the staged lifecycle sequence and produce evidence for each approved stage.
+6. Re-review this canonical document after the responsible roles record dispositions.
+
+## Product Owner Handover
+
+The Product Owner can pick up this review from the following actions:
+
+1. Confirm or obtain Project Sponsor approval, naming the approving role in the Product Brief, Opportunity Decision and Architecture Handover.
+2. Decide whether to record the existing-solution comparison now or explicitly accept the evidence limitation for this stage.
+3. Hand the approved Product Brief, Architecture Handover and this review to the Solution Architect.
+4. Keep IR-006 open until the approval evidence is explicit; record the Product Owner disposition for IR-007 in the relevant Discovery artefact or decision record.
+
+Expected handover output: an explicitly approved Discovery baseline with named authority, visible accepted or deferred risks, and the current Independent Review available to Architecture.
 
 ## Overall Recommendation
 
-**Proceed with conditions.** The repository may proceed to Architecture review using the approved Discovery baseline and handover. Do not begin broad repository-wide implementation or structural migration until Architecture and subsequent lifecycle gates approve their own scope and evidence. IR-003 and IR-004 remain lifecycle work items for the relevant stages; IR-001 and IR-005 are resolved and IR-002 is superseded.
+**Proceed with conditions.** Architecture may begin review and clarification using the Product Brief and Architecture Handover, provided Project Sponsor approval is explicitly recorded before the Discovery Gate is considered complete. Do not begin broad repository-wide implementation or structural migration until Architecture and subsequent lifecycle gates approve their own scope and evidence. IR-003, IR-004 and IR-007 remain lifecycle work items; IR-001 and IR-005 are resolved, IR-002 is superseded, and IR-006 is the current gate condition.
 
 ## Next Review
 
@@ -144,3 +181,5 @@ Re-review the same canonical document after the responsible roles update the rep
 | v1.1 | 2026-08-14 | Reframed as an EOS retrofit baseline; superseded the release-version finding and added retrofit sequencing finding after scope clarification. |
 | v1.2 | 2026-08-14 | Resolved IR-001 after the superseded indexes were removed and recorded the Discovery/Product Owner baseline and handover artefacts. |
 | v1.3 | 2026-08-14 | Recorded approval of the Discovery artefacts, resolved IR-005 for the Discovery stage, and authorised handover to Architecture review. |
+| v1.4 | 2026-08-14 | Reviewed the Product discovery commit before Architecture; added approval-authority and existing-solution traceability findings, and made Architecture handover conditional on explicit Sponsor approval. |
+| v1.5 | 2026-08-14 | Added an explicit Product Owner handover with dispositions and expected output. |
