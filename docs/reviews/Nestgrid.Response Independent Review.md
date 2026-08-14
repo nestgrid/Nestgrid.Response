@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v1.0
+version: v1.3
 status: In Review
 owner: Independent Reviewer
 produced_by: Sentinel
@@ -25,7 +25,7 @@ No formal EOS lifecycle claim or retrofit plan is present in the repository. The
 
 ## Overall Assessment
 
-The implementation is coherent with the documented package architecture and the automated test suite is passing. The working-tree documentation is generally clear, but the repository has not yet been mapped to the EOS lifecycle or provided with a controlled retrofit sequence. The recommendation is to proceed with discovery and retrofit planning under conditions, while resolving the documentation-state inconsistency and stale architectural decision before treating the repository as EOS-compliant.
+The implementation is coherent with the documented package architecture and the automated test suite is passing. The Product Owner has created and approved a controlled Discovery baseline and Architecture Handover in `docs/artefacts/01 Discovery/`. The recommendation is to proceed to Architecture review under the normal lifecycle gates, while resolving the stale architectural decision and completing the remaining lifecycle evidence before treating the repository as EOS-compliant.
 
 ## Evidence Reviewed
 
@@ -54,15 +54,15 @@ The implementation is coherent with the documented package architecture and the 
 
 ## Findings
 
-### IR-001 — P1 — Staged documentation indexes are broken and diverge from the working tree
+### IR-001 — Resolved — Staged documentation indexes were broken and diverged from the working tree
 
 **Evidence:** The index contains `docs/architecture/README.md`, `docs/testing/README.md` and `docs/adr/README.md` as additions, while the working tree deletes those paths (`git status`: `AD`). The staged architecture index links to `overview.md` and `coding-standards.md`, and the staged testing index links to `mutation-testing.md`; the working tree's canonical files are instead under `docs/handbooks/05 Architecture/Overview.md`, `docs/handbooks/08 Coding Standards/Coding Standards.md` and `docs/handbooks/09 Testing/Mutation Testing.md`.
 
-**Impact:** A commit made from the staged state would publish documentation entry points that do not resolve to the current product documents. The index/worktree disagreement also makes the review target non-reproducible.
+**Impact:** A commit made from the staged state would have published documentation entry points that did not resolve to the current product documents. The index/worktree disagreement also made the review target non-reproducible.
 
 **Recommendation:** Reconcile the index and worktree before commit. Either retain the existing handbook/decisions structure and update links to it, or complete a deliberate migration with all target files present. Run a repository link check after the decision.
 
-**Owner:** Software Engineer / documentation owner. **Disposition:** Required before proceeding with the documentation change.
+**Owner:** Software Engineer / documentation owner. **Disposition:** Resolved at current HEAD by removing the superseded `docs/architecture/README.md`, `docs/testing/README.md` and `docs/adr/README.md` indexes. The canonical current indexes are under `docs/handbooks`, `docs/decisions` and `docs/artefacts`; a link check remains recommended.
 
 ### IR-002 — Superseded — Earlier release-version interpretation withdrawn
 
@@ -70,15 +70,15 @@ The implementation is coherent with the documented package architecture and the 
 
 **Disposition:** Superseded in review v1.1. Version alignment should be reassessed during the future Release stage, not treated as a current retrofit blocker.
 
-### IR-005 — P1 — EOS retrofit scope has no controlled baseline or lifecycle sequence
+### IR-005 — Resolved — EOS retrofit baseline and staged handover approved
 
-**Evidence:** The product contains source, tests, handbooks, decisions and a release roadmap, but no product-level Discovery, Architecture, Engineering, Quality, Security, Platform or Release artefacts; no retrofit inventory; no approved EOS handover; and no initiative record defining scope, ownership, evidence or acceptance criteria.
+**Evidence:** The Product Owner created and approved `docs/artefacts/01 Discovery/Opportunity Decision.md`, `Product Brief.md` and `Architecture Handover.md`. The approved Product Brief defines the current product baseline, scope, requirements and operational expectations; the approved Architecture Handover defines the next architectural questions and priorities. Architecture, Engineering, Quality, Security, Platform and Release artefacts remain absent because those stages have not yet been executed.
 
-**Impact:** Repository-wide changes could become an untraceable mixture of documentation migration, architecture reassessment, code changes and quality work. Downstream roles would not have an approved baseline or clear stage boundaries against which to assess completion.
+**Impact:** The principal retrofit sequencing risk is addressed for the next lifecycle stage. Later stages still require their own artefacts, approvals and evidence.
 
-**Recommendation:** Start with a proportional retrofit discovery record and repository inventory. Classify existing material as accepted, to be updated, superseded or missing; identify the authoritative current behaviour and decisions; then produce an Architecture/Engineering handover and staged retrofit plan before making broad structural or code changes.
+**Recommendation:** Use the approved Product Brief and Architecture Handover to begin Architecture review, then define stage-specific acceptance criteria before structural or code changes.
 
-**Owner:** Product Owner with Independent Reviewer assurance; responsible lifecycle roles own execution. **Disposition:** Blocking for uncontrolled repository-wide retrofit execution; permits discovery planning.
+**Owner:** Product Owner with Independent Reviewer assurance; responsible lifecycle roles own execution. **Disposition:** Resolved for Discovery. Architecture and later lifecycle roles now own the next-stage work.
 
 ### IR-003 — P2 — ADR-006 is stale against the implemented package set
 
@@ -106,7 +106,7 @@ No prior Independent Review was found for this product scope. All findings in th
 
 ## Lifecycle Feedback
 
-- The repository has implementation and test evidence, but it lacks the standard lifecycle artefacts needed to make an EOS retrofit auditable.
+- The repository has implementation and test evidence and an approved Product Owner baseline; downstream lifecycle artefacts and evidence remain outstanding until their stages begin.
 - The next responsible role should consume this canonical review and record dispositions, completion evidence or explicit deferrals before the next gate.
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
 
@@ -122,15 +122,15 @@ None recorded. The responsible roles must own any acceptance or deferral of the 
 
 ## Follow-up Actions
 
-1. Reconcile staged and working-tree documentation paths and validate links.
-2. Create the retrofit discovery/inventory and define the staged EOS lifecycle sequence.
+1. Begin Architecture review using the approved Product Brief and Architecture Handover.
+2. Validate the new Discovery index and complete a repository link check.
 3. Update or supersede ADR-006.
-4. Produce the lifecycle artefacts and evidence required for each approved retrofit stage.
-5. Handover this review to the responsible roles for disposition.
+4. Define and execute the staged lifecycle sequence and produce evidence for each approved stage.
+5. Re-review this canonical document after the responsible roles record dispositions.
 
 ## Overall Recommendation
 
-**Proceed with conditions.** The repository may proceed to a controlled EOS retrofit discovery and planning stage. Do not begin broad repository-wide implementation or structural migration until IR-001 and IR-005 are dispositioned and the retrofit baseline, scope, sequence and acceptance criteria are approved. IR-003 and IR-004 remain lifecycle work items for the relevant stages; IR-002 is superseded.
+**Proceed with conditions.** The repository may proceed to Architecture review using the approved Discovery baseline and handover. Do not begin broad repository-wide implementation or structural migration until Architecture and subsequent lifecycle gates approve their own scope and evidence. IR-003 and IR-004 remain lifecycle work items for the relevant stages; IR-001 and IR-005 are resolved and IR-002 is superseded.
 
 ## Next Review
 
@@ -142,3 +142,5 @@ Re-review the same canonical document after the responsible roles update the rep
 |---|---|---|
 | v1.0 | 2026-08-14 | Initial independent review of the current repository and release-oriented branch. |
 | v1.1 | 2026-08-14 | Reframed as an EOS retrofit baseline; superseded the release-version finding and added retrofit sequencing finding after scope clarification. |
+| v1.2 | 2026-08-14 | Resolved IR-001 after the superseded indexes were removed and recorded the Discovery/Product Owner baseline and handover artefacts. |
+| v1.3 | 2026-08-14 | Recorded approval of the Discovery artefacts, resolved IR-005 for the Discovery stage, and authorised handover to Architecture review. |

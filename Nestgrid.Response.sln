@@ -132,6 +132,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{AECA
 		docs\artefacts\Release\Roadmap.md = docs\artefacts\Release\Roadmap.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Discovery", "01 Discovery", "{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\01 Discovery\README.md = docs\artefacts\01 Discovery\README.md
+		docs\artefacts\01 Discovery\Opportunity Decision.md = docs\artefacts\01 Discovery\Opportunity Decision.md
+		docs\artefacts\01 Discovery\Product Brief.md = docs\artefacts\01 Discovery\Product Brief.md
+		docs\artefacts\01 Discovery\Architecture Handover.md = docs\artefacts\01 Discovery\Architecture Handover.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +173,7 @@ Global
 		{4B82DD31-E014-4F61-8124-CFEC8DC110DF} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
 		{1CB9E066-13BF-4AF1-AEF0-58571E55725D} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
 		{AECAE8ED-AE3F-4F38-8930-210676935B7A} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
