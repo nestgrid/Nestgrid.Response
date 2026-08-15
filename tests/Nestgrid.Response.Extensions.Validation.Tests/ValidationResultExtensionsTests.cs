@@ -153,6 +153,63 @@ public sealed class ValidationResultExtensionsTests
     }
 
     [Fact]
+    public void ToMessagesWithProperties_WithMultipleMembers_ShouldCreateMessagesInSourceOrder()
+    {
+        var validationResults = new[]
+        {
+            new ValidationResult("Invalid user", new[] { "Name", "Email" })
+        };
+
+        var messages = validationResults.ToMessagesWithProperties();
+
+        messages.Select(message => (message.Property, message.Code, message.Message))
+            .ShouldBe(new[]
+            {
+                ((string?)"Name", (string?)"validation_failed", "Invalid user"),
+                ((string?)"Email", (string?)"validation_failed", "Invalid user")
+            });
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_ShouldIgnoreBlankMembersAndKeepMemberlessResult()
+    {
+        var validationResults = new[]
+        {
+            new ValidationResult("Invalid user", new[] { " ", "Name", "\t" }),
+            new ValidationResult(null)
+        };
+
+        var messages = validationResults.ToMessagesWithProperties("custom", ResultMessageSeverity.Error);
+
+        messages.Select(message => (message.Property, message.Code, message.Message, message.Severity))
+            .ShouldBe(new[]
+            {
+                ((string?)"Name", (string?)"custom", "Invalid user", ResultMessageSeverity.Error),
+                ((string?)null, (string?)"custom", "The entity is invalid.", ResultMessageSeverity.Error)
+            });
+    }
+
+    [Fact]
+    public void ToInvalidResultWithPropertiesGeneric_WithEmptyInput_ShouldReturnTypedInvalidResultWithoutMessages()
+    {
+        var result = Array.Empty<ValidationResult>().ToInvalidResultWithProperties<UserDto>();
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Value.ShouldBeNull();
+        result.Messages.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<ValidationResult> validationResults = null!;
+
+        var exception = Should.Throw<ArgumentNullException>(() => validationResults.ToMessagesWithProperties());
+
+        exception.ParamName.ShouldBe(nameof(validationResults));
+    }
+
+    [Fact]
     public void ToInvalidResult_WithSingleValidationResult_ShouldReturnInvalidResult()
     {
         // Arrange

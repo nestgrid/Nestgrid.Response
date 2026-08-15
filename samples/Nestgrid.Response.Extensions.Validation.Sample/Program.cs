@@ -24,11 +24,15 @@ var message = firstValidationResult.ToMessage();
 var messages = validationResults.ToMessages();
 var invalidResult = firstValidationResult.ToInvalidResult();
 var typedInvalidResult = validationResults.ToInvalidResult<UserDto>();
+var detailedMessages = validationResults.ToMessagesWithProperties();
+var detailedInvalidResult = validationResults.ToInvalidResultWithProperties<UserDto>();
 
 PrintMessage("ValidationResult.ToMessage", message);
 PrintMessages("ValidationResult.ToMessages", messages);
 PrintResult("ValidationResult.ToInvalidResult", invalidResult);
 PrintResult("ValidationResult.ToInvalidResult<T>", typedInvalidResult);
+PrintMessages("ValidationResult.ToMessagesWithProperties", detailedMessages);
+PrintResult("ValidationResult.ToInvalidResultWithProperties<T>", detailedInvalidResult);
 
 static void PrintMessage(string label, ResultMessage message)
 {
