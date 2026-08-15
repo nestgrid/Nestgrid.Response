@@ -11,6 +11,7 @@ These files preserve useful project history without mixing temporary or release-
 | Area | Contents |
 |---|---|
 | [Discovery](01%20Discovery/README.md) | Product definition, opportunity decision and Architecture handover. |
+| [Architecture](02%20Architecture/README.md) | Architecture Recommendation and, after approval, the Architecture Pack and related decisions. |
 | [Release](Release/README.md) | Roadmap and release-direction material. |
 
 ## Navigation

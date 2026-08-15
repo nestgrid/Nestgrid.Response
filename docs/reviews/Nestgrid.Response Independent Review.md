@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v1.6
+version: v1.7
 status: In Review
 owner: Independent Reviewer
 produced_by: Sentinel
@@ -80,7 +80,7 @@ The implementation is coherent with the documented package architecture and the 
 
 **Owner:** Product Owner with Independent Reviewer assurance; responsible lifecycle roles own execution. **Disposition:** Resolved for Discovery. Architecture and later lifecycle roles now own the next-stage work.
 
-### IR-003 — P2 — ADR-006 is stale against the implemented package set
+### IR-003 — Resolved — ADR-006 was stale against the implemented package set
 
 **Evidence:** `docs/decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md:57-59` says `Nestgrid.Response.Mvc` is “under consideration”, and lines 108-116 describe it as a third package under consideration. The package is implemented in `src/Nestgrid.Response.Mvc`, included in the solution and covered by `tests/Nestgrid.Response.Mvc.Tests`. The architecture handbook also lists it as an implemented package.
 
@@ -88,7 +88,7 @@ The implementation is coherent with the documented package architecture and the 
 
 **Recommendation:** Update ADR-006 through the repository's decision process to record the actual outcome, target framework/dependency and support boundary, or supersede it with a new ADR if the decision has materially changed.
 
-**Owner:** Solution Architect. **Disposition:** Required before declaring documentation and architecture evidence current; not a runtime blocker.
+**Owner:** Solution Architect. **Disposition:** Resolved on 2026-08-14. ADR-006 now records the implemented five-package outcome, active MVC support and current baseline dependency. The Architecture Pack retains publication of the exact compatibility matrix and maintenance policy as Engineering and governance follow-up.
 
 ### IR-004 — P2 — Release quality evidence is incomplete
 
@@ -125,7 +125,7 @@ The implementation is coherent with the documented package architecture and the 
 - IR-001 is resolved: superseded documentation indexes were removed.
 - IR-002 is superseded: the branch name was not evidence of a release claim.
 - IR-005 is resolved for Discovery: the retrofit baseline and Architecture Handover were approved for downstream use.
-- IR-003 and IR-004 remain open and are owned by downstream lifecycle roles.
+- IR-003 is resolved through Architecture; IR-004 remains open and is owned by the Quality Engineer.
 - IR-006 is resolved: approval authority and the Discovery boundary are explicit.
 - IR-007 is resolved: the proportionate existing-solution comparison is recorded.
 
@@ -135,6 +135,7 @@ The implementation is coherent with the documented package architecture and the 
 - The Discovery artefacts have explicit Project Sponsor approval and may be handed to Architecture.
 - The next responsible role should consume this canonical review and record dispositions, completion evidence or explicit deferrals before the next gate.
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
+- The Architecture Recommendation was approved by the Project Sponsor and the Architecture Pack and Engineering Handover were produced for the v0.7.0 retrofit. Engineering readiness remains conditional on implementation evidence and downstream gates.
 
 ## Engineering Operating System Feedback
 
@@ -144,13 +145,13 @@ The implementation is coherent with the documented package architecture and the 
 
 ## Accepted or Deferred Risks
 
-None recorded. The responsible roles must own any acceptance or deferral of the findings above.
+None recorded. IR-004 remains an open Quality-stage evidence obligation rather than an accepted release risk.
 
 ## Follow-up Actions
 
 1. Begin Architecture review using the approved Product Brief and Architecture Handover.
 2. Validate the new Discovery index and complete a repository link check.
-3. Update or supersede ADR-006.
+3. ~~Update or supersede ADR-006.~~ Resolved in Architecture through the updated ADR-006.
 4. Define and execute the staged lifecycle sequence and produce evidence for each approved stage.
 5. Re-review this canonical document after the responsible roles record dispositions.
 
@@ -165,7 +166,7 @@ Expected handover output: an explicitly approved Discovery baseline with named a
 
 ## Overall Recommendation
 
-**Proceed with conditions.** Architecture may begin review and clarification using the approved Product Brief and Architecture Handover. Do not begin broad repository-wide implementation or structural migration until Architecture and subsequent lifecycle gates approve their own scope and evidence. IR-003 and IR-004 remain lifecycle work items; IR-001, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
+**Proceed with conditions.** Architecture has produced an approved Pack and detailed Engineering Handover for the v0.7.0 retrofit. Engineering may proceed within that boundary, while IR-004 remains open for Quality and release evidence. IR-003, IR-005, IR-006 and IR-007 are resolved; IR-001 is resolved, and IR-002 is superseded.
 
 ## Next Review
 
@@ -182,3 +183,4 @@ Re-review the same canonical document after the responsible roles update the rep
 | v1.4 | 2026-08-14 | Reviewed the Product discovery commit before Architecture; added approval-authority and existing-solution traceability findings, and made Architecture handover conditional on explicit Sponsor approval. |
 | v1.5 | 2026-08-14 | Added an explicit Product Owner handover with dispositions and expected output. |
 | v1.6 | 2026-08-14 | Resolved IR-006 and IR-007 after recording explicit Project Sponsor approval and the proportionate existing-solution comparison. |
+| v1.7 | 2026-08-14 | Recorded the approved Architecture Recommendation, Architecture Pack and Engineering Handover; resolved IR-003 after ADR-006 reconciliation and retained IR-004 for Quality-stage evidence. |

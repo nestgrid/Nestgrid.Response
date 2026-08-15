@@ -14,6 +14,7 @@ These records explain why the library uses immutable results, status-driven beha
 4. [ADR-004 ASP.NET Core Separation](ADR-004-AspNetCore-Separation.md)
 5. [ADR-005 Core Object Model](ADR-005-Core-Object-Model.md)
 6. [ADR-006 ASP.NET Core and MVC Package Separation](ADR-006-AspNetCore-And-Mvc-Package-Separation.md)
+7. [TDR-001 Detailed Validation Result Conversion](TDR-001-Validation-Result-Conversion-Detail.md)
 
 ## Navigation
 

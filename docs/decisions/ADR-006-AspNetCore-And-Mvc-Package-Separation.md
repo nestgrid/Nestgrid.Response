@@ -56,7 +56,7 @@ Implementation will use:
 
 ### Nestgrid.Response.Mvc
 
-This package is under consideration.
+This package is implemented and actively supported for the documented legacy ASP.NET Core MVC compatibility range.
 
 Target:
 
@@ -69,10 +69,10 @@ Responsibilities:
 - Convert Result to ActionResult
 - Support .NET Framework and older ASP.NET Core applications
 
-Dependencies:
+Current baseline dependency:
 
 ```text
-Microsoft.AspNetCore.Mvc.Core 2.3.0
+Microsoft.AspNetCore.Mvc.Core 2.1.38
 ```
 
 No support for IResult will be provided by this package.
@@ -107,12 +107,13 @@ This was rejected because compatibility with older applications remains valuable
 
 ## Outcome
 
-Nestgrid.Response consists of two packages, with a third under consideration:
+Nestgrid.Response consists of five packages:
 
 ```text
 Nestgrid.Response
 Nestgrid.Response.AspNetCore
-Nestgrid.Response.Mvc (under consideration)
+Nestgrid.Response.Mvc
+Nestgrid.Response.Extensions.Validation
 ```
 
-with modern and legacy presentation concerns separated into dedicated packages.
+with modern and legacy presentation concerns separated into dedicated packages. MVC remains actively supported. The exact compatibility matrix, maintenance duration and review triggers are governed by the Architecture Pack and must be kept current with project files and package documentation.
