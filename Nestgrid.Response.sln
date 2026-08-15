@@ -171,6 +171,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Platform", "06 Platform"
 		docs\artefacts\06 Platform\Operational Readiness Review.md = docs\artefacts\06 Platform\Operational Readiness Review.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{0183F79D-0ADA-4376-B5F4-F1D8BAA3F907}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\verify-packages.sh = scripts\verify-packages.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
