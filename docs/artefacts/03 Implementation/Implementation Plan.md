@@ -134,8 +134,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-003 | Add focused validation edge-case tests. | Completed |
 | ENG-004 | Update package documentation and validation sample. | Completed |
 | ENG-005 | Expose approved lifecycle artefacts and TDR-001 in the solution. | Completed |
-| ENG-006 | Run build, test, pack, sample and documentation checks. | In progress |
-| ENG-007 | Produce Implementation Report and Engineering Assurance. | Pending |
+| ENG-006 | Run build, test, pack, sample and documentation checks. | Completed |
+| ENG-007 | Produce Implementation Report and Engineering Assurance. | Completed with conditions |
 
 ## Interfaces and Contracts
 
