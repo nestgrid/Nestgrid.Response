@@ -156,6 +156,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Implementation", "03 Imp
 		docs\artefacts\03 Implementation\Implementation Report.md = docs\artefacts\03 Implementation\Implementation Report.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Quality", "04 Quality", "{E4F3C2B1-A098-4765-8D7C-6B5A49382716}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\04 Quality\README.md = docs\artefacts\04 Quality\README.md
+		docs\artefacts\04 Quality\Test Strategy.md = docs\artefacts\04 Quality\Test Strategy.md
+		docs\artefacts\04 Quality\Release Readiness Report.md = docs\artefacts\04 Quality\Release Readiness Report.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,6 +199,7 @@ Global
 		{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{D5B2C4E3-1B1E-4A7E-9D9A-2E548D2A62F7} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{E4F3C2B1-A098-4765-8D7C-6B5A49382716} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

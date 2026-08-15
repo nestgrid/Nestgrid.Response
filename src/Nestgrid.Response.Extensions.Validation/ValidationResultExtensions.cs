@@ -170,9 +170,9 @@ public static class ValidationResultExtensions
         }
 
         var message = validationResult.ErrorMessage ?? DefaultValidationMessage;
-        var memberNames = validationResult.MemberNames?
+        var memberNames = validationResult.MemberNames
             .Where(memberName => !string.IsNullOrWhiteSpace(memberName))
-            .ToArray() ?? Array.Empty<string>();
+            .ToArray();
 
         if (memberNames.Length == 0)
         {
