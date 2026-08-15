@@ -41,6 +41,9 @@ jobs:
             --no-build \
             /p:ContinuousIntegrationBuild=true
 
+      - name: Verify packages and consumer installation
+        run: ./scripts/verify-packages.sh artifacts "$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | head -n 1)"
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:

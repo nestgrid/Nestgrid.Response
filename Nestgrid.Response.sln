@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution-items", ".solutio
 		LICENSE = LICENSE
 		README.md = README.md
 		CHANGELOG.md = CHANGELOG.md
+		scripts\verify-packages.sh = scripts\verify-packages.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response", "src\Nestgrid.Response\Nestgrid.Response.csproj", "{2206CEEE-354D-4ADD-A8A3-9757113BCF44}"
@@ -163,6 +164,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Quality", "04 Quality", 
 		docs\artefacts\04 Quality\Release Readiness Report.md = docs\artefacts\04 Quality\Release Readiness Report.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Platform", "06 Platform", "{F6A1B2C3-D4E5-4678-9012-3456789ABCDE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\06 Platform\README.md = docs\artefacts\06 Platform\README.md
+		docs\artefacts\06 Platform\Deployment Guide.md = docs\artefacts\06 Platform\Deployment Guide.md
+		docs\artefacts\06 Platform\Operational Readiness Review.md = docs\artefacts\06 Platform\Operational Readiness Review.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -200,6 +208,7 @@ Global
 		{D5B2C4E3-1B1E-4A7E-9D9A-2E548D2A62F7} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{E4F3C2B1-A098-4765-8D7C-6B5A49382716} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{F6A1B2C3-D4E5-4678-9012-3456789ABCDE} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

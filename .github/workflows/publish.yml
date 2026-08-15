@@ -49,6 +49,18 @@ jobs:
             --no-restore \
             /p:ContinuousIntegrationBuild=true
 
+      - name: Verify tag and project version
+        run: |
+          project_version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | head -n 1)"
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [ "${project_version}" != "${tag_version}" ]; then
+            echo "Project version ${project_version} does not match tag version ${tag_version}."
+            exit 1
+          fi
+
+      - name: Verify packages and consumer installation
+        run: ./scripts/verify-packages.sh artifacts "${GITHUB_REF_NAME#v}"
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
