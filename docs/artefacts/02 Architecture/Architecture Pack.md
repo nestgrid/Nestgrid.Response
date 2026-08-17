@@ -27,6 +27,7 @@ related_artefacts:
   - Architecture Recommendation.md
   - Engineering Handover.md
   - Architecture Feedback - Security.md
+  - Architecture Feedback - SEC-006 Dependency Remediation.md
   - ../01 Discovery/Product Brief.md
   - ../01 Discovery/Architecture Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
@@ -164,6 +165,7 @@ Consumers are responsible for deciding whether result values or messages may be 
 - Exception objects must not be introduced into serialisable result payloads.
 - Package publication must use the repository’s controlled CI and NuGet credentials; credentials are operational secrets, not product configuration.
 - Dependencies should remain minimal and reviewed when changed.
+- Known vulnerable dependencies in a supported or published graph are release blockers until remediated or explicitly accepted under the SEC-006 feedback and ADR-007.
 - Client-safe output, diagnostic output and consumer-controlled domain output must be treated as distinct categories.
 - Default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent` are normative; custom mappings remain consumer-owned configuration with security implications.
 - Exception conversion follows ADR-008: safe generic output by default; diagnostic details require an explicitly named method and trusted output boundary.
@@ -242,10 +244,12 @@ Engineering should implement the following in priority order:
 5. Update package and consumer documentation, samples and compatibility guidance.
 6. Produce an Implementation Report with Engineering Assurance, explicitly recording any deviation from this Pack.
 
+For SEC-006, Engineering must follow [Architecture Feedback — SEC-006 Dependency Remediation](Architecture%20Feedback%20-%20SEC-006%20Dependency%20Remediation.md) and return the dependency-path, compatibility and package-closure evidence to Security and Quality.
+
 Engineering may fix defects and improve implementation where necessary for conformance, correctness, maintainability or compatibility. It must escalate a change that alters approved product scope, public compatibility policy or a reserved decision.
 
 ## Recommendation
 
 **Architecture complete; proceed to Engineering with conditions.**
 
-The conditions are that Engineering works within this Pack, records implementation deviations, preserves compatibility by default, and hands forward explicit evidence gaps to Quality, Security and Platform. This Pack does not constitute release approval.
+The conditions are that Engineering works within this Pack, records implementation deviations, preserves compatibility by default, resolves SEC-006 or obtains an explicit authorised exception, and hands forward explicit evidence gaps to Quality, Security and Platform. This Pack does not constitute release approval.

@@ -21,6 +21,7 @@ related_repositories:
 related_artefacts:
   - Architecture Recommendation.md
   - Architecture Pack.md
+  - Architecture Feedback - SEC-006 Dependency Remediation.md
   - ../01 Discovery/Product Brief.md
 ```
 
@@ -89,6 +90,17 @@ The generic overload is required because C# does not infer `T` from the assignme
 - Document that validation messages, property names, result values and custom codes are consumer-controlled output.
 - Preserve normative default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent`; custom mapping remains an explicit consumer responsibility.
 - Retain dependency advisory, restore and package-provenance evidence according to ADR-007.
+- Complete the SEC-006 dependency-path and compatibility analysis described in [Architecture Feedback — SEC-006 Dependency Remediation](Architecture%20Feedback%20-%20SEC-006%20Dependency%20Remediation.md).
+
+### SEC-006 Dependency Remediation Acceptance Criteria
+
+- Treat SEC-006 as a P1 release blocker.
+- Produce the required dependency-path matrix for every reported advisory.
+- Distinguish published package closure, supported consumer graphs and repository-only test/sample dependencies.
+- Prefer the lowest compatible patched versions under ADR-007.
+- Escalate any change to the actively supported MVC boundary before implementation.
+- Do not rely on a blanket exception; any exception must be explicit, scoped, time-limited and reviewed by Security.
+- Retain restore, advisory, package-content and consumer-installation evidence.
 
 ## Security Mitigation Acceptance Criteria
 
@@ -129,5 +141,6 @@ Engineering should return an Implementation Report with Engineering Assurance co
 - compatibility assessment;
 - tests and evidence;
 - package and sample validation;
+- SEC-006 dependency-path analysis, remediation or authorised exception evidence;
 - unresolved risks and follow-up actions;
 - explicit readiness recommendation for Quality and Security.
