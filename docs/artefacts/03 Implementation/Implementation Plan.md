@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.3
-status: Complete with conditions
+version: 1.4
+status: In Review
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -16,23 +16,27 @@ related_decisions:
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
   - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
+  - ../02 Architecture/Architecture Feedback - SEC-006 Dependency Remediation.md
 related_work_items:
   - IR-004
+  - SEC-006
+  - Q-007
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
   - ../02 Architecture/Architecture Pack.md
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
+  - SEC-006 Dependency Path Matrix.md
 ```
 
 ## Scope
 
 This plan covers the approved Engineering retrofit of the existing v0.6.0 Nestgrid.Response implementation for v0.7.0. It includes Architecture conformance checks, the additive TDR-001 validation enhancement, the approved Security follow-on for ADR-008, proportionate tests, package and sample documentation, IDE visibility and downstream handover evidence.
 
-The central package-management change described below is a separate Engineering task from the completed security remediation. This plan amendment is submitted for review before any `Directory.Packages.props` or project-file changes are made.
+The central package-management change described below was a separate Engineering task from the completed security remediation. This amendment adds the SEC-006 dependency analysis and remediation planning task. It is submitted for Architecture and Security review before any dependency-version, project-file or source changes are made.
 
-The work does not add OpenAPI, ProblemDetails, additional adapters, persistence, hosting or a general validation framework.
+The work does not add OpenAPI, ProblemDetails, additional adapters, persistence, hosting or a general validation framework. SEC-006 remediation must not silently change the actively supported MVC boundary or introduce a new product capability.
 
 ## Engineering Readiness Assessment
 
@@ -40,7 +44,7 @@ The work does not add OpenAPI, ProblemDetails, additional adapters, persistence,
 
 **Ready with conditions.**
 
-The approved Architecture Pack, Engineering Handover, ADRs, TDR-001 and canonical Independent Review provide sufficient implementation direction. The conditions are to preserve existing public behaviour, keep the validation enhancement additive, confirm compatibility claims from repository evidence, and retain explicit evidence gaps for Quality, Security and Platform.
+The approved Architecture Pack, Engineering Handover, ADR-007, the approved SEC-006 Architecture Feedback and canonical Independent Review provide sufficient direction to prepare a remediation proposal. The conditions are to preserve public behaviour and supported target-framework promises by default, classify package closure accurately, evaluate the lowest compatible patched versions, and obtain Architecture and Security approval before implementation. The plan itself is not approval to change dependencies.
 
 ### Architecture Obligations and Invariants
 
@@ -73,6 +77,7 @@ The product has no persistence, durable state, transactions, concurrency control
 - Current mutation, coverage, CI and release evidence is not retained in the repository; this remains IR-004 and is handed to Quality.
 - Package publication and trusted NuGet execution remain Platform/Release responsibilities.
 - Central package management is a repository dependency-governance change and must preserve the versions selected under ADR-007.
+- The patched dependency baseline and the authority for any MVC support-boundary change are not yet selected; these are explicit Architecture/Security review gates.
 
 ## Inputs
 
@@ -85,6 +90,8 @@ The product has no persistence, durable state, transactions, concurrency control
 - Approved Architecture Security Feedback and Security Assessment, including SEC-001, SEC-004 and SEC-005.
 - Existing source, tests, solution, samples and CI workflows.
 - ADR-007 Minimum-Compatible Dependency Policy, which governs the package-version centralisation task.
+- Approved Architecture Feedback — SEC-006 Dependency Remediation.
+- SEC-006 Dependency Path Matrix, which records the pre-remediation graph classification and evidence gaps.
 
 ## Solution Structure
 
@@ -108,6 +115,8 @@ The implementation uses the existing .NET baseline, nullable reference types, im
 
 The existing package targets and MVC dependency are retained pending the explicit compatibility evidence requested by Architecture.
 
+For SEC-006, the current dependency baseline is evidence only. Engineering will not upgrade, downgrade, override or remove a dependency until the candidate graph has been reviewed against ADR-007, the approved MVC support boundary and Security’s advisory findings.
+
 ## Implementation Principles
 
 - Preserve compatibility before improving convenience.
@@ -118,6 +127,9 @@ The existing package targets and MVC dependency are retained pending the explici
 - Never place exception-derived diagnostics on the normal client-facing result path.
 - Centralise package versions without centralising package ownership: projects retain their own `PackageReference Include` declarations.
 - Preserve the ADR-007 minimum-compatible versions unless separate advisory or compatibility evidence authorises a change.
+- Treat dependency remediation as a compatibility decision, not a recency upgrade.
+- Inspect published package closure separately from repository-only restore graphs.
+- Prefer the smallest compatible change and escalate support-boundary changes before implementation.
 
 ## Source and Test Organisation
 
@@ -139,6 +151,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | Use one message per usable member name, preserving source order. | TDR-001. | Memberless results produce one message. |
 | Use `validation_failed` and `The entity is invalid.` defaults. | TDR-001. | Both are override-safe through the code parameter and existing error text. |
 | Adopt central package version management as a separate repository change. | Prevents version drift across source, tests and samples while preserving ADR-007’s compatibility policy. | ADR-007; this Implementation Plan |
+| Do not implement SEC-006 remediation before review approval. | Dependency changes may alter published closure, supported MVC compatibility or consumer behaviour. | SEC-006 Dependency Path Matrix; Architecture Feedback; Security Assessment |
+| Evaluate remediation in this order: remove test/sample-only exposure, select the lowest compatible patched version, escalate support-boundary change, then consider a scoped exception. | Follows the approved Architecture Feedback and preserves compatibility by default. | Architecture Feedback - SEC-006 Dependency Remediation |
 
 ## Implementation Tasks
 
@@ -155,6 +169,10 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Completed |
 | ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Completed |
 | ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
+| ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
+| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Pending review |
+| ENG-014 | Implement the approved compatible remediation or authorised exception path. | Not started — approval required |
+| ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Not started |
 
 ## Interfaces and Contracts
 
@@ -191,6 +209,8 @@ The separate package-management task will retain project-local ownership declara
 
 with versions maintained in the root `Directory.Packages.props`. The migration must not introduce package upgrades, package downgrades or new dependencies.
 
+SEC-006 remediation is intentionally not yet a contract change. Candidate changes must be assessed for public API, target-framework, package identity, dependency closure and MVC consumer compatibility before selection.
+
 ## Data Changes
 
 There are no schema, migration, persistence or startup migration changes.
@@ -205,6 +225,10 @@ There are no schema, migration, persistence or startup migration changes.
 - Pack all NuGet projects and inspect package outputs.
 - Retain the resulting local verification and identify unavailable CI/mutation evidence for Quality.
 - Compare the pre- and post-migration dependency graph and verify that all five packages, tests and samples restore with the same selected versions.
+- Produce baseline and candidate advisory evidence for every reported SEC-006 package.
+- Pack all five packages from the candidate graph and inspect generated dependency metadata.
+- Install affected package families from a local package source in representative supported consumer projects.
+- Re-run the full regression suite and mutation/coverage checks required by Quality after remediation.
 
 ## Risks
 
@@ -215,12 +239,19 @@ There are no schema, migration, persistence or startup migration changes.
 | Mutation or release evidence is unavailable locally. | Medium | Retain the limitation and hand IR-004 to Quality. |
 | Centralisation accidentally changes a minimum-compatible dependency or transitive graph. | High | Migrate versions mechanically, compare restore assets and package metadata, and require review of the diff before commit. |
 | A project-specific package reference is omitted during migration. | Medium | Keep `PackageReference Include` declarations in each owning project and verify the full solution restore/build. |
+| A direct override hides rather than removes a vulnerable transitive dependency. | High | Require dependency-path and generated package metadata inspection for every candidate. |
+| Remediation changes the supported MVC boundary or consumer behaviour. | High | Escalate the boundary decision to Architecture/Product/Sponsor before implementation. |
+| A residual-risk exception becomes an implicit release waiver. | High | Require explicit scope, owner, expiry, mitigation and Security review; no blanket acceptance. |
 
 ## Open Questions
 
 - Quality must determine the required mutation, coverage and release-evidence threshold for the final candidate.
 - Architecture/Product must maintain the exact MVC support policy and review triggers.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
+- Which patched versions are the lowest compatible choices for each advisory and target framework?
+- Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
+- If not, which authority will decide between a support-boundary change and a time-limited exception?
+- Which CI/advisory/provenance evidence must be retained for the final candidate?
 
 ## Definition of Done
 
@@ -232,3 +263,6 @@ There are no schema, migration, persistence or startup migration changes.
 - Open findings and downstream obligations are explicitly dispositioned.
 - ADR-008 security behaviour and migration guidance are implemented and tested.
 - Central package management is implemented and verified; the dependency graph remains compatible with ADR-007.
+- SEC-006 matrix, remediation proposal and evidence requirements are reviewed by Architecture and Security before any implementation.
+- Approved dependency remediation or authorised exception is implemented and documented.
+- Final package closures, supported consumer installations, advisory results and downstream dispositions are retained.

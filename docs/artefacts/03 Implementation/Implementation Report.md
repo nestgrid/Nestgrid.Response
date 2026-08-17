@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Report
-version: 1.2
-status: Complete with conditions
+version: 1.3
+status: In Review
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -25,6 +25,7 @@ related_artefacts:
   - ../02 Architecture/Architecture Pack.md
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
+  - SEC-006 Dependency Path Matrix.md
 ```
 
 ## Scope
@@ -38,6 +39,8 @@ No package boundary, status semantic, MVC support intent or deferred capability 
 The existing five-package architecture remains the implementation baseline. Existing validation methods retain their behaviour. TDR-001 is implemented through additive extension methods that produce member-aware messages only when the consumer opts in. Member names are filtered for blank values, source order is preserved, and memberless validation results produce one message with a stable default code and fallback message.
 
 Engineering is ready to hand the implementation to Quality, Security and Platform with conditions. IR-004 remains open for downstream mutation, coverage, CI and release evidence; the exact MVC compatibility and maintenance policy remains a governance follow-up.
+
+SEC-006 is now an active Engineering planning item. The baseline dependency-path matrix is recorded separately for Architecture and Security review. No dependency version or source change has been made for SEC-006.
 
 ## Completed Work
 
@@ -173,6 +176,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 
 - Quality to execute and retain mutation, coverage, CI-equivalent and release-readiness evidence, resolving IR-004.
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
+- Engineering to implement only the SEC-006 remediation direction approved by Architecture and Security, then retain dependency-path, package-closure and consumer evidence.
 - Architecture/Product to maintain the exact MVC support policy and review triggers.
 - Security and Platform to perform their downstream reviews.
 - Security to re-review SEC-001, SEC-004 and SEC-005 against the updated implementation and guidance.
@@ -209,4 +213,4 @@ Security should confirm that validation property names and messages are handled 
 
 ## Recommendation
 
-Engineering recommends handover to Quality, Security and Platform review under the conditions recorded above. Engineering implementation is complete for the approved scope and ready for Quality validation; release readiness is not claimed until SEC-001 is re-reviewed, SEC-002 is completed by Platform, and ADR-007 evidence is retained.
+Engineering recommends the SEC-006 plan and matrix for Architecture and Security review before implementation. The previously completed implementation remains conditionally ready for downstream validation, but SEC-006 remains a release blocker and the product is not ready for final Quality handover until its remediation or authorised exception is implemented and evidenced.
