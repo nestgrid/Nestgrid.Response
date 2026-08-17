@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.4
+version: 1.5
 status: In Review
 owner: Software Engineer
 contributors:
@@ -28,13 +28,14 @@ related_artefacts:
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
   - SEC-006 Dependency Path Matrix.md
+  - ../05 Security/Security Feedback - SEC-006 Candidate A Approval.md
 ```
 
 ## Scope
 
 This plan covers the approved Engineering retrofit of the existing v0.6.0 Nestgrid.Response implementation for v0.7.0. It includes Architecture conformance checks, the additive TDR-001 validation enhancement, the approved Security follow-on for ADR-008, proportionate tests, package and sample documentation, IDE visibility and downstream handover evidence.
 
-The central package-management change described below was a separate Engineering task from the completed security remediation. This amendment adds the SEC-006 dependency analysis and remediation planning task. It is submitted for Architecture and Security review before any dependency-version, project-file or source changes are made.
+The central package-management change described below was a separate Engineering task from the completed security remediation. This amendment adds the SEC-006 dependency analysis and remediation planning task. Security has approved Candidate A for implementation with conditions recorded in the Security Feedback artefact; the approval does not close SEC-006 or approve release.
 
 The work does not add OpenAPI, ProblemDetails, additional adapters, persistence, hosting or a general validation framework. SEC-006 remediation must not silently change the actively supported MVC boundary or introduce a new product capability.
 
@@ -73,11 +74,11 @@ The product has no persistence, durable state, transactions, concurrency control
 
 ### Ambiguities and Evidence Gaps
 
-- Exact MVC compatibility and maintenance policy remains an Architecture/Product governance follow-up and must not be inferred beyond current project dependencies.
+- Exact MVC compatibility and maintenance policy remains an Architecture/Product governance follow-up and must not be inferred beyond current project dependencies; Candidate A approval preserves the currently approved `2.1.38` boundary.
 - Current mutation, coverage, CI and release evidence is not retained in the repository; this remains IR-004 and is handed to Quality.
 - Package publication and trusted NuGet execution remain Platform/Release responsibilities.
 - Central package management is a repository dependency-governance change and must preserve the versions selected under ADR-007.
-- The patched dependency baseline and the authority for any MVC support-boundary change are not yet selected; these are explicit Architecture/Security review gates.
+- The patched dependency baseline is selected for Candidate A; the authority for any MVC support-boundary change remains an explicit Architecture/Product decision gate.
 
 ## Inputs
 
@@ -151,7 +152,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | Use one message per usable member name, preserving source order. | TDR-001. | Memberless results produce one message. |
 | Use `validation_failed` and `The entity is invalid.` defaults. | TDR-001. | Both are override-safe through the code parameter and existing error text. |
 | Adopt central package version management as a separate repository change. | Prevents version drift across source, tests and samples while preserving ADR-007’s compatibility policy. | ADR-007; this Implementation Plan |
-| Do not implement SEC-006 remediation before review approval. | Dependency changes may alter published closure, supported MVC compatibility or consumer behaviour. | SEC-006 Dependency Path Matrix; Architecture Feedback; Security Assessment |
+| Implement only the Security-approved SEC-006 Candidate A direction. | Dependency changes may alter published closure, supported MVC compatibility or consumer behaviour. | SEC-006 Dependency Path Matrix; Architecture Feedback; Security Feedback - SEC-006 Candidate A Approval |
 | Evaluate remediation in this order: remove test/sample-only exposure, select the lowest compatible patched version, escalate support-boundary change, then consider a scoped exception. | Follows the approved Architecture Feedback and preserves compatibility by default. | Architecture Feedback - SEC-006 Dependency Remediation |
 | Recommend Candidate A: explicit lowest-compatible transitive pins, subject to compatibility proof. | Addresses the reported advisories while preserving package identity, target frameworks and the approved MVC 2.1.38 parent boundary. | SEC-006 Dependency Path Matrix |
 
@@ -171,8 +172,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Completed |
 | ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
 | ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
-| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Ready for Architecture/Security review |
-| ENG-014 | Implement the approved compatible remediation or authorised exception path. | Not started — approval required |
+| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Security review completed — Candidate A approved with conditions; deviations remain subject to Architecture authority |
+| ENG-014 | Implement the approved compatible remediation or authorised exception path. | Approved to start — Candidate A; conditions recorded in Security Feedback |
 | ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Not started |
 
 ## Interfaces and Contracts
@@ -251,7 +252,7 @@ There are no schema, migration, persistence or startup migration changes.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
 - Which patched versions are the lowest compatible choices for each advisory and target framework?
 - Is Candidate A’s explicit transitive-pin approach acceptable under ADR-007 when supported by package-closure and compatibility evidence?
-- Does the remaining fresh MVC `.nuspec` generation limitation require any additional review evidence before implementation approval?
+- What retained evidence will close the remaining fresh MVC `.nuspec` generation limitation before SEC-006 closure?
 - Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
 - If not, which authority will decide between a support-boundary change and a time-limited exception?
 - Which CI/advisory/provenance evidence must be retained for the final candidate?

@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Assessment
-version: 1.2
-status: Complete with conditions
+version: 1.3
+status: Approved
 owner: Security Engineer
 contributors:
   - Morgan profile
@@ -30,6 +30,8 @@ related_artefacts:
   - ../04 Quality/Release Readiness Report.md
   - ../06 Platform/Operational Readiness Review.md
   - ../../reviews/Nestgrid.Response Independent Review.md
+  - ../03 Implementation/SEC-006 Dependency Path Matrix.md
+  - Security Feedback - SEC-006 Candidate A Approval.md
 ```
 
 ## Scope
@@ -124,7 +126,7 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 | SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Governance resolved; evidence remains open.** ADR-007 records the policy. Security/Platform must retain advisory, restore and package-provenance evidence. |
 | SEC-004 | P2 | Client-safe, diagnostic and consumer-controlled output boundaries were previously insufficiently distinct. | Consumers could expose validation or diagnostic details to untrusted callers. | **Resolved for the current candidate.** Architecture disposition, package guidance, sample guidance and implementation assurance now distinguish the three output categories. |
 | SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | **Resolved for the current candidate.** Consumer responsibility is documented and normative mappings are covered by ASP.NET Core and MVC regression tests. |
-| SEC-006 | P1 | Current supported/package-consumer dependency graphs contain unresolved Critical/High advisories reported by Quality. | Publishing the current graph may expose consumers to known vulnerable dependencies. | Architecture, Engineering and Security must determine compatible remediation or obtain an explicit authorised exception with scope and expiry. Do not upgrade solely for recency, but do not treat a known vulnerable graph as acceptable without a recorded decision. |
+| SEC-006 | P1 | Current supported/package-consumer dependency graphs contain unresolved Critical/High advisories reported by Quality. | Publishing the current graph may expose consumers to known vulnerable dependencies. | **Implementation approved with conditions.** Security approves Candidate A’s exact lowest-compatible patched pins while preserving the MVC `2.1.38` boundary. Final package metadata, consumer, restore and advisory evidence remain required; do not upgrade solely for recency or treat a residual vulnerable path as accepted without an authorised decision. |
 
 ## Accepted Risks
 
@@ -134,6 +136,6 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 
 ## Recommendation
 
-Security re-review is **complete with conditions**.
+Security re-review is **approved with conditions**.
 
-Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Release review may proceed as a conditional evidence review, but the product is **not recommended for final release approval** until SEC-003 evidence and SEC-006 dependency disposition are complete, protected-environment publication evidence is retained, and the Release Report records final dispositions and package provenance.
+Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Security approves Mason to implement SEC-006 Candidate A under the dedicated Security Feedback conditions. Release review may proceed as a conditional evidence review, but the product is **not recommended for final release approval** until SEC-003 evidence and SEC-006 closure evidence are complete, protected-environment publication evidence is retained, and the Release Report records final dispositions and package provenance.

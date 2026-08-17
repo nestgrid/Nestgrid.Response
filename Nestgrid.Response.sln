@@ -176,6 +176,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Security", "05 Security"
 		docs\artefacts\05 Security\Security Assessment.md = docs\artefacts\05 Security\Security Assessment.md
 		docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md = docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md
 		docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md = docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md
+		docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md = docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Platform", "06 Platform", "{F6A1B2C3-D4E5-4678-9012-3456789ABCDE}"

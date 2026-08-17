@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 SEC-006 Dependency Path Matrix
-version: 0.2
+version: 0.3
 status: In Review
 owner: Software Engineer
 contributors:
@@ -23,6 +23,7 @@ related_artefacts:
   - Implementation Plan.md
   - ../02 Architecture/Architecture Feedback - SEC-006 Dependency Remediation.md
   - ../05 Security/Security Assessment.md
+  - ../05 Security/Security Feedback - SEC-006 Candidate A Approval.md
   - ../04 Quality/Release Readiness Report.md
 ```
 
@@ -115,7 +116,7 @@ The following candidates are proposals for review. No candidate has been impleme
 
 ### Candidate A Evidence Gate
 
-Candidate A is not yet an implementation approval. Architecture and Security must confirm:
+Candidate A is approved for implementation by Security, subject to the following evidence and compatibility conditions:
 
 - explicit transitive pins are acceptable under ADR-007 rather than advisory suppression;
 - `System.Text.Encodings.Web 4.7.2` is compatible with the existing `System.Text.Json 4.6.0` API/runtime combination;
@@ -135,4 +136,4 @@ Candidate A is not yet an implementation approval. Architecture and Security mus
 
 ## Current Conclusion
 
-The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. Candidate A is Engineering’s preferred remediation direction because it uses the lowest identified patched versions without changing package identity, target frameworks or the approved MVC parent package. The isolated evidence indicates that it remediates all currently affected resolved graphs without changing the approved MVC support boundary. Architecture and Security must still approve the direction, and the final MVC `.nuspec` inspection must be completed before implementation is considered ready.
+The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. Candidate A is approved for implementation because it uses the lowest identified patched versions without changing package identity, target frameworks or the approved MVC parent package. The isolated evidence indicates that it remediates all currently affected resolved graphs without changing the approved MVC support boundary. The final MVC `.nuspec` inspection, supported consumer checks and final advisory/restore evidence remain mandatory before SEC-006 closure or release consideration.
