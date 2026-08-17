@@ -8,7 +8,7 @@ owner: Platform Engineer
 contributors: Knight
 produced_by: Platform Engineer
 consumed_by: Operations, Project Sponsor, Release Owner, package maintainers
-date: 2026-08-15
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -125,6 +125,8 @@ The release owner should verify:
 - the documented MVC baseline remains `Microsoft.AspNetCore.Mvc.Core` 2.1.38;
 - the packages can be restored from a clean package source;
 - release evidence is linked from the Release Report.
+
+Historical execution evidence confirms that the CI, mutation and publish workflows have completed successfully and that all five v0.6.0 packages have been published to NuGet. Treat this as evidence that the operational path has worked previously; current v0.7.0 release approval still requires the hardened workflow run and current package provenance.
 
 ## Operational Documentation
 

@@ -2,13 +2,13 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Operational Readiness Review
-version: 1.1
+version: 1.2
 status: Complete with conditions
 owner: Platform Engineer
 contributors: Knight
 produced_by: Platform Engineer
 consumed_by: Operations, Project Sponsor, Release Owner
-date: 2026-08-15
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -29,6 +29,12 @@ This review assesses operational readiness for the five-package NuGet library, n
 The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, third-party actions are pinned to immutable release SHAs, and publication is wired through the protected `nuget` GitHub Environment. Trusted Publishing is configured in the workflow, and the workflows verify project/tag version consistency and generated-package consumer installation. Quality has also recorded successful local Release build/test/pack, five-package consumer restore/build, mutation and coverage evidence.
 
 Condition: the supported CI environment must repeat the package and installation checks through the protected publication path before release approval, the SEC-006 MVC package-closure and supported-consumer evidence must be retained, and all release evidence must be retained with the Release Report.
+
+## Execution Evidence
+
+Historical user-supplied evidence shows successful GitHub Actions runs for the CI, mutation and publish workflows, and successful NuGet publication of all five v0.6.0 packages. This confirms that the repository's package build, validation and public distribution path has operated successfully in practice.
+
+The evidence predates the v0.7.0 action-SHA pinning, protected `nuget` environment wiring and dependency remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, package provenance, or SEC-006 closure evidence.
 
 ## Operationalisation Readiness
 
