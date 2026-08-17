@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.1
-status: Approved
+version: 1.2
+status: In Review
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -15,6 +15,7 @@ related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
+  - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
 related_work_items:
   - IR-004
 related_repositories:
@@ -28,6 +29,8 @@ related_artefacts:
 ## Scope
 
 This plan covers the approved Engineering retrofit of the existing v0.6.0 Nestgrid.Response implementation for v0.7.0. It includes Architecture conformance checks, the additive TDR-001 validation enhancement, the approved Security follow-on for ADR-008, proportionate tests, package and sample documentation, IDE visibility and downstream handover evidence.
+
+The central package-management change described below is a separate Engineering task from the completed security remediation. This plan amendment is submitted for review before any `Directory.Packages.props` or project-file changes are made.
 
 The work does not add OpenAPI, ProblemDetails, additional adapters, persistence, hosting or a general validation framework.
 
@@ -69,6 +72,7 @@ The product has no persistence, durable state, transactions, concurrency control
 - Exact MVC compatibility and maintenance policy remains an Architecture/Product governance follow-up and must not be inferred beyond current project dependencies.
 - Current mutation, coverage, CI and release evidence is not retained in the repository; this remains IR-004 and is handed to Quality.
 - Package publication and trusted NuGet execution remain Platform/Release responsibilities.
+- Central package management is a repository dependency-governance change and must preserve the versions selected under ADR-007.
 
 ## Inputs
 
@@ -80,6 +84,7 @@ The product has no persistence, durable state, transactions, concurrency control
 - Canonical Nestgrid.Response Independent Review, including IR-004.
 - Approved Architecture Security Feedback and Security Assessment, including SEC-001, SEC-004 and SEC-005.
 - Existing source, tests, solution, samples and CI workflows.
+- ADR-007 Minimum-Compatible Dependency Policy, which governs the package-version centralisation task.
 
 ## Solution Structure
 
@@ -95,6 +100,7 @@ The existing five-package solution is retained:
 | `tests/*` | Responsibility-mirroring automated tests for each package. | Corresponding source package. |
 | `samples/*` | Runnable consumer paths for core, validation, ASP.NET Core and MVC. | Relevant packages. |
 | `docs/artefacts/03 Implementation` | Engineering plan and handover evidence. | Repository documentation only. |
+| `Directory.Packages.props` | Central declaration of NuGet package versions used by source, tests and samples. | MSBuild package-version management only; no runtime dependency. |
 
 ## Technology Baseline Alignment
 
@@ -110,6 +116,8 @@ The existing package targets and MVC dependency are retained pending the explici
 - Make consumer-visible assumptions and evidence gaps explicit.
 - Keep member-aware validation output opt-in and deterministic.
 - Never place exception-derived diagnostics on the normal client-facing result path.
+- Centralise package versions without centralising package ownership: projects retain their own `PackageReference Include` declarations.
+- Preserve the ADR-007 minimum-compatible versions unless separate advisory or compatibility evidence authorises a change.
 
 ## Source and Test Organisation
 
@@ -130,6 +138,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | Add member-aware conversion as new extension methods. | TDR-001; source extension class. | Existing conversion methods remain unchanged. |
 | Use one message per usable member name, preserving source order. | TDR-001. | Memberless results produce one message. |
 | Use `validation_failed` and `The entity is invalid.` defaults. | TDR-001. | Both are override-safe through the code parameter and existing error text. |
+| Adopt central package version management as a separate repository change. | Prevents version drift across source, tests and samples while preserving ADR-007’s compatibility policy. | ADR-007; this Implementation Plan |
 
 ## Implementation Tasks
 
@@ -144,6 +153,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-007 | Produce Implementation Report and Engineering Assurance. | Completed with conditions |
 | ENG-008 | Implement ADR-008 safe exception conversion and explicit diagnostic methods. | Completed |
 | ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Completed |
+| ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Planned for review |
+| ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Planned |
 
 ## Interfaces and Contracts
 
@@ -172,6 +183,14 @@ Results.ErrorWithDiagnosticDetails(exception)
 Results.ErrorWithDiagnosticDetails<T>(exception)
 ```
 
+The separate package-management task will retain project-local ownership declarations:
+
+```xml
+<PackageReference Include="Shouldly" />
+```
+
+with versions maintained in the root `Directory.Packages.props`. The migration must not introduce package upgrades, package downgrades or new dependencies.
+
 ## Data Changes
 
 There are no schema, migration, persistence or startup migration changes.
@@ -185,6 +204,7 @@ There are no schema, migration, persistence or startup migration changes.
 - Build and run each sample project.
 - Pack all NuGet projects and inspect package outputs.
 - Retain the resulting local verification and identify unavailable CI/mutation evidence for Quality.
+- Compare the pre- and post-migration dependency graph and verify that all five packages, tests and samples restore with the same selected versions.
 
 ## Risks
 
@@ -193,11 +213,14 @@ There are no schema, migration, persistence or startup migration changes.
 | Member-aware output exposes property names or validation detail. | Medium | Keep it opt-in and document consumer output/privacy responsibility. |
 | Public package claims drift from project files. | High | Compare project files, READMEs, Architecture Pack and report evidence. |
 | Mutation or release evidence is unavailable locally. | Medium | Retain the limitation and hand IR-004 to Quality. |
+| Centralisation accidentally changes a minimum-compatible dependency or transitive graph. | High | Migrate versions mechanically, compare restore assets and package metadata, and require review of the diff before commit. |
+| A project-specific package reference is omitted during migration. | Medium | Keep `PackageReference Include` declarations in each owning project and verify the full solution restore/build. |
 
 ## Open Questions
 
 - Quality must determine the required mutation, coverage and release-evidence threshold for the final candidate.
 - Architecture/Product must maintain the exact MVC support policy and review triggers.
+- Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
 
 ## Definition of Done
 
@@ -208,3 +231,4 @@ There are no schema, migration, persistence or startup migration changes.
 - Engineering Assurance is recorded with evidence limitations and deviations.
 - Open findings and downstream obligations are explicitly dispositioned.
 - ADR-008 security behaviour and migration guidance are implemented and tested.
+- Central package management is implemented only after this plan amendment is reviewed and the dependency graph remains compatible with ADR-007.
