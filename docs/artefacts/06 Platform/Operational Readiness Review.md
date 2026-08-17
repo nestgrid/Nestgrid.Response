@@ -13,6 +13,7 @@ supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
 related_work_items:
+  - SEC-002
 related_repositories:
   - Nestgrid.Response
 ```
@@ -23,9 +24,9 @@ This review assesses operational readiness for the five-package NuGet library, n
 
 ## Deployment Readiness
 
-The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, Trusted Publishing is configured in the workflow, and the workflows now verify project/tag version consistency and generated-package consumer installation. Quality has also recorded successful local Release build/test/pack, five-package consumer restore/build, mutation and coverage evidence.
+The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, third-party actions are pinned to immutable release SHAs, and publication is wired through the protected `nuget` GitHub Environment. Trusted Publishing is configured in the workflow, and the workflows verify project/tag version consistency and generated-package consumer installation. Quality has also recorded successful local Release build/test/pack, five-package consumer restore/build, mutation and coverage evidence.
 
-Condition: the supported CI environment must repeat the package and installation checks before release approval, and the release evidence must be retained with the Release Report.
+Condition: the supported CI environment must repeat the package and installation checks through the protected publication path before release approval, and the release evidence must be retained with the Release Report.
 
 ## Operationalisation Readiness
 
@@ -62,7 +63,7 @@ RTO/RPO: no product runtime RTO/RPO is applicable. Package recovery depends on t
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
 | CI has not yet repeated the complete platform validation in its supported environment | Release confidence is lower than the local evidence alone | Repeat build, test, pack and package-feed installation checks in CI and retain the run. |
-| Release validation is not yet repeated in the supported CI environment | Release confidence is lower than the local evidence alone | Retain the CI run and package-validation artefacts with the Release Report. |
+| The protected publication environment has not yet produced a retained workflow run after hardening | The final trusted-publication control is not yet evidenced | Run the tag workflow only after Release approval and retain the protected-environment evidence. |
 | MVC maintenance duration and review triggers are not recorded | Support expectations remain incomplete | Architecture/Product to record the policy before or alongside release approval. |
 | Web samples were startup-checked but not exercised through HTTP calls | Adapter response regressions may escape smoke validation | Add representative endpoint assertions as a follow-up; Quality currently treats this as non-blocking. |
 
@@ -71,7 +72,7 @@ RTO/RPO: no product runtime RTO/RPO is applicable. Package recovery depends on t
 | Action | Owner | Due Date |
 | --- | --- | --- |
 | Repeat Release build, tests, pack and generated-package consumer checks in supported CI. | Platform / Release | Before release decision |
-| Confirm the tag-to-project-version check passes in the publication workflow. | Platform / Release | Before publication |
+| Confirm the pinned actions and `nuget` environment pass in the publication workflow. | Platform / Release | Before publication |
 | Record MVC maintenance duration and review triggers. | Architecture / Product | Before final support policy is claimed |
 | Add HTTP endpoint assertions for web samples if release confidence requires them. | Quality | Follow-up; non-blocking per current Quality report |
 

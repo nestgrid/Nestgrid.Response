@@ -13,6 +13,7 @@ supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
 related_work_items:
+  - SEC-002
 related_repositories:
   - Nestgrid.Response
 ```
@@ -49,7 +50,7 @@ Publication is tag-driven:
 4. Allow the publish workflow to restore, build, test and pack the solution.
 5. Retain the workflow run, generated `.nupkg` and `.snupkg` artefacts, and publication result as release evidence.
 
-The workflow uses NuGet Trusted Publishing. API credentials must not be copied into source, local configuration, logs or documentation.
+The workflow uses NuGet Trusted Publishing through the protected `nuget` GitHub Environment. Third-party workflow actions are pinned to immutable commit SHAs, with their release versions retained in comments for maintenance. API credentials must not be copied into source, local configuration, logs or documentation.
 
 ## Installation or Consumption
 
@@ -133,7 +134,8 @@ The root README, package READMEs, CONTRIBUTING guide, Test Strategy, this guide 
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| Tag, project version and release notes diverge | Wrong or ambiguous package version is published | Add an explicit version-consistency check before publication. |
-| Publish workflow does not validate package installation from generated packages | A package can publish despite consumer-facing packaging defects | Add the package-feed consumer smoke matrix to CI or the release workflow. |
+| The protected publication environment is misconfigured | Trusted publication may be unavailable or insufficiently restricted | Retain a successful `nuget`-environment workflow run and review the GitHub/NuGet policy evidence. |
+| Tag, project version and release notes diverge | Wrong or ambiguous package version is published | The publication workflow performs an explicit version-consistency check. |
+| Publish workflow does not validate package installation from generated packages | A package can publish despite consumer-facing packaging defects | CI and publication run the package-feed consumer smoke matrix. |
 | MVC support promise remains maintenance-ambiguous | Consumers cannot plan upgrades confidently | Architecture/Product to record maintenance duration and review triggers. |
 | Consumer runtime telemetry is absent | Library defects may be harder to diagnose in downstream applications | Keep the library provider-neutral and document consumer-side telemetry expectations. |
