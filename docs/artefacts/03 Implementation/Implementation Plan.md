@@ -45,7 +45,7 @@ The work does not add OpenAPI, ProblemDetails, additional adapters, persistence,
 
 **Ready with conditions.**
 
-The approved Architecture Pack, Engineering Handover, ADR-007, the approved SEC-006 Architecture Feedback and canonical Independent Review provide sufficient direction to prepare a remediation proposal. The conditions are to preserve public behaviour and supported target-framework promises by default, classify package closure accurately, evaluate the lowest compatible patched versions, and obtain Architecture and Security approval before implementation. The plan itself is not approval to change dependencies.
+The approved Architecture Pack, Engineering Handover, ADR-007, the approved SEC-006 Architecture Feedback and canonical Independent Review provided sufficient direction for the remediation. Candidate A implementation is complete under Architecture and Security approval. The remaining conditions are accurate published-closure classification, final MVC package/consumer evidence and downstream handover; the plan does not constitute release approval.
 
 ### Architecture Obligations and Invariants
 
@@ -78,7 +78,7 @@ The product has no persistence, durable state, transactions, concurrency control
 - Current mutation, coverage, CI and release evidence is not retained in the repository; this remains IR-004 and is handed to Quality.
 - Package publication and trusted NuGet execution remain Platform/Release responsibilities.
 - Central package management is a repository dependency-governance change and must preserve the versions selected under ADR-007.
-- The patched dependency baseline is selected for Candidate A; the authority for any MVC support-boundary change remains an explicit Architecture/Product decision gate.
+- The patched dependency baseline is implemented for Candidate A; the authority for any MVC support-boundary change remains an explicit Architecture/Product decision gate.
 
 ## Inputs
 
@@ -116,7 +116,7 @@ The implementation uses the existing .NET baseline, nullable reference types, im
 
 The existing package targets and MVC dependency are retained pending the explicit compatibility evidence requested by Architecture.
 
-For SEC-006, the current dependency baseline is evidence only. Engineering will not upgrade, downgrade, override or remove a dependency until the candidate graph has been reviewed against ADR-007, the approved MVC support boundary and Security’s advisory findings.
+For SEC-006, the pre-remediation dependency baseline is retained as evidence. Candidate A is now implemented under ADR-007, the approved MVC support boundary and the recorded Architecture/Security approvals; remaining work is closure evidence rather than further dependency selection.
 
 ## Implementation Principles
 
@@ -154,7 +154,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | Adopt central package version management as a separate repository change. | Prevents version drift across source, tests and samples while preserving ADR-007’s compatibility policy. | ADR-007; this Implementation Plan |
 | Implement only the Security-approved SEC-006 Candidate A direction. | Dependency changes may alter published closure, supported MVC compatibility or consumer behaviour. | SEC-006 Dependency Path Matrix; Architecture Feedback; Security Feedback - SEC-006 Candidate A Approval |
 | Evaluate remediation in this order: remove test/sample-only exposure, select the lowest compatible patched version, escalate support-boundary change, then consider a scoped exception. | Follows the approved Architecture Feedback and preserves compatibility by default. | Architecture Feedback - SEC-006 Dependency Remediation |
-| Recommend Candidate A: explicit lowest-compatible transitive pins, subject to compatibility proof. | Addresses the reported advisories while preserving package identity, target frameworks and the approved MVC 2.1.38 parent boundary. | SEC-006 Dependency Path Matrix |
+| Implement Candidate A: explicit lowest-compatible transitive pins, subject to final closure evidence. | Addresses the reported advisories while preserving package identity, target frameworks and the approved MVC 2.1.38 parent boundary. | SEC-006 Dependency Path Matrix |
 
 ## Implementation Tasks
 
@@ -211,7 +211,7 @@ The separate package-management task will retain project-local ownership declara
 
 with versions maintained in the root `Directory.Packages.props`. The migration must not introduce package upgrades, package downgrades or new dependencies.
 
-SEC-006 remediation is intentionally not yet a contract change. Candidate changes must be assessed for public API, target-framework, package identity, dependency closure and MVC consumer compatibility before selection.
+SEC-006 remediation is intentionally not a contract change. Candidate A was assessed for public API, target-framework, package identity, dependency closure and MVC consumer compatibility before selection; final MVC closure evidence remains outstanding.
 
 ## Data Changes
 
@@ -250,8 +250,8 @@ There are no schema, migration, persistence or startup migration changes.
 - Quality must determine the required mutation, coverage and release-evidence threshold for the final candidate.
 - Architecture/Product must maintain the exact MVC support policy and review triggers.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
-- Which patched versions are the lowest compatible choices for each advisory and target framework?
-- Is Candidate A’s explicit transitive-pin approach acceptable under ADR-007 when supported by package-closure and compatibility evidence?
+- Which retained evidence will demonstrate that the selected patched versions remain the lowest compatible choices for each advisory and target framework?
+- Does the final package-closure evidence confirm Candidate A’s explicit transitive-pin approach under ADR-007?
 - What retained evidence will close the remaining fresh MVC `.nuspec` generation limitation before SEC-006 closure?
 - Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
 - If not, which authority will decide between a support-boundary change and a time-limited exception?
@@ -267,6 +267,6 @@ There are no schema, migration, persistence or startup migration changes.
 - Open findings and downstream obligations are explicitly dispositioned.
 - ADR-008 security behaviour and migration guidance are implemented and tested.
 - Central package management is implemented and verified; the dependency graph remains compatible with ADR-007.
-- SEC-006 matrix, remediation proposal and evidence requirements are reviewed by Architecture and Security before any implementation.
+- SEC-006 matrix, remediation proposal and evidence requirements were reviewed by Architecture and Security before implementation.
 - Approved dependency remediation or authorised exception is implemented and documented.
 - Final package closures, supported consumer installations, advisory results and downstream dispositions are retained.
