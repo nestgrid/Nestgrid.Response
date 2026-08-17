@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Architecture Feedback - SEC-006 Dependency Remediation
-version: 1.0
-status: Approved for Engineering handover
+version: 1.1
+status: Approved for Candidate A implementation with conditions
 owner: Solution Architect
 contributors:
   - Knight
@@ -93,6 +93,25 @@ SEC-006 is ready to return to Security and Quality when:
 
 Security remains responsible for residual-risk assessment. Quality remains responsible for release-readiness evidence. Architecture will record any required exception or support-boundary decision.
 
+## Architecture Approval
+
+Architecture approves Candidate A — explicit lowest-compatible patched dependency pins — as the implementation direction for SEC-006.
+
+This approval is conditional on:
+
+- Security recording its role-owned concurrence with the remediation direction;
+- Mason implementing only the evaluated Candidate A dependency changes;
+- no change to package identity, target frameworks or the actively supported MVC boundary;
+- final MVC `.nuspec` inspection after implementation;
+- package-consumer, restore and final advisory evidence being retained; and
+- Security completing the final SEC-006 re-review before release consideration.
+
+This is approval to implement the remediation direction. It is not acceptance of residual vulnerability risk, closure of SEC-006 or release approval.
+
+| Approved By | Date | Decision | Conditions |
+| --- | --- | --- | --- |
+| Solution Architect | 2026-08-17 | Candidate A approved for implementation | Security concurrence and final package/evidence gates remain required. |
+
 ## Recommendation
 
-Proceed with Engineering analysis and compatible remediation. Do not release or mark SEC-006 accepted until the evidence and decision requirements above are satisfied.
+Proceed with Candidate A implementation once Security’s role-owned concurrence is recorded. Do not release or mark SEC-006 accepted until the final package, consumer, advisory and Security evidence requirements above are satisfied.
