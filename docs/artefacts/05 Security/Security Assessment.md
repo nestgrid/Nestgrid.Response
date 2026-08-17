@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Assessment
-version: 1.4
-status: Approved
+version: 1.5
+status: In Review
 owner: Security Engineer
 contributors:
   - Morgan profile
@@ -123,14 +123,14 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 
 ## Findings
 
-| ID | Severity | Finding | Impact | Recommendation |
+| ID | Severity | Finding | Impact | Mitigation / Recommendation |
 | --- | --- | --- | --- | --- |
-| SEC-001 | P1 | Exception conversion previously exposed raw exception message and type through a normal result path. | Consumer APIs could disclose internal diagnostics. | **Resolved.** ADR-008 is accepted; normal overloads now return a generic message, diagnostic methods are explicit, guidance is updated and tests cover safe/diagnostic paths. |
-| SEC-002 | P1 | Publication workflow previously referenced mutable action tags and lacked protected-environment wiring. | A compromised action reference could alter the build or publish attacker-controlled packages. | **Resolved in repository configuration.** All reviewed workflow actions use immutable SHAs and publication uses `environment: nuget`; retain a successful protected-environment run and package provenance before release. |
-| SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Governance resolved; evidence remains open.** ADR-007 records the policy. Security/Platform must retain advisory, restore and package-provenance evidence. |
-| SEC-004 | P2 | Client-safe, diagnostic and consumer-controlled output boundaries were previously insufficiently distinct. | Consumers could expose validation or diagnostic details to untrusted callers. | **Resolved for the current candidate.** Architecture disposition, package guidance, sample guidance and implementation assurance now distinguish the three output categories. |
-| SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | **Resolved for the current candidate.** Consumer responsibility is documented and normative mappings are covered by ASP.NET Core and MVC regression tests. |
-| SEC-006 | P1 | The pre-remediation supported/package-consumer graphs contained Critical/High advisories. Candidate A has been implemented and its evaluated graphs report no vulnerable packages, but final MVC package metadata and supported MVC consumer evidence are not yet retained. | Without final published-closure and consumer evidence, Security cannot confirm that the release artefact is free of the reported vulnerable paths. | **Open evidence blocker.** Reconcile the post-remediation Quality result, retain authoritative MVC `.nuspec`/package closure and supported MVC package-consumer evidence, then perform final Security closure review. Do not release or accept residual vulnerability risk by implication. |
+| SEC-001 | P1 | Exception conversion previously exposed raw exception message and type through a normal result path. | Consumer APIs could disclose internal diagnostics. | **Resolved. Mitigation:** ADR-008 makes normal overloads generic, keeps diagnostics explicit, updates guidance and covers both paths with tests. |
+| SEC-002 | P1 | Publication workflow previously referenced mutable action tags and lacked protected-environment wiring. | A compromised action reference could alter the build or publish attacker-controlled packages. | **Resolved in repository configuration. Mitigation:** All reviewed workflow actions use immutable SHAs and publication uses `environment: nuget`; retain a successful protected-environment run and package provenance before release. |
+| SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Governance resolved; evidence remains open. Mitigation:** ADR-007 records the policy; Security/Platform must retain advisory, restore and package-provenance evidence. |
+| SEC-004 | P2 | Client-safe, diagnostic and consumer-controlled output boundaries were previously insufficiently distinct. | Consumers could expose validation or diagnostic details to untrusted callers. | **Resolved for the current candidate. Mitigation:** Architecture disposition, package guidance, sample guidance and implementation assurance distinguish the three output categories. |
+| SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | **Resolved for the current candidate. Mitigation:** Consumer responsibility is documented and normative mappings are covered by ASP.NET Core and MVC regression tests. |
+| SEC-006 | P1 | The pre-remediation supported/package-consumer graphs contained Critical/High advisories. Candidate A has been implemented and its evaluated graphs report no vulnerable packages, but final MVC package metadata and supported MVC consumer evidence are not yet retained. | Without final published-closure and consumer evidence, Security cannot confirm that the release artefact is free of the reported vulnerable paths. | **Open evidence blocker. Mitigation:** Reconcile the post-remediation Quality result, retain authoritative MVC `.nuspec`/package closure and supported MVC package-consumer evidence, then perform final Security closure review. Do not release or accept residual vulnerability risk by implication. |
 
 ## Accepted Risks
 
@@ -146,6 +146,6 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 
 ## Recommendation
 
-Security re-review is **approved with conditions**.
+Security recommends proceeding **with conditions**.
 
-Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Candidate A implementation is complete; its implementation approval is recorded separately and is not a closure decision. Release review may proceed as a conditional evidence/disposition review, but the product is **not recommended for final release approval** until SEC-003 evidence, the post-remediation Quality reconciliation, SEC-006 closure evidence, protected-environment publication evidence and the Release Report’s final dispositions/package provenance are complete.
+Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Candidate A implementation is complete; its implementation approval is recorded separately and is not a closure decision. Release review may proceed as a conditional evidence/disposition review, but the product is **not recommended for final release approval** until SEC-003 evidence, the post-remediation Quality reconciliation, SEC-006 closure evidence, protected-environment publication evidence and the Release Report’s final dispositions/package provenance are complete. This assessment remains at Recommend pending approval of its recorded position.
