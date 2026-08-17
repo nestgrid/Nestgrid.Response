@@ -2,18 +2,19 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.0
+version: 1.1
 status: Approved
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Software Engineer, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-15
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
+  - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
 related_work_items:
   - IR-004
 related_repositories:
@@ -26,7 +27,7 @@ related_artefacts:
 
 ## Scope
 
-This plan covers the approved Engineering retrofit of the existing v0.6.0 Nestgrid.Response implementation for v0.7.0. It includes Architecture conformance checks, the additive TDR-001 validation enhancement, proportionate tests, package and sample documentation, IDE visibility and downstream handover evidence.
+This plan covers the approved Engineering retrofit of the existing v0.6.0 Nestgrid.Response implementation for v0.7.0. It includes Architecture conformance checks, the additive TDR-001 validation enhancement, the approved Security follow-on for ADR-008, proportionate tests, package and sample documentation, IDE visibility and downstream handover evidence.
 
 The work does not add OpenAPI, ProblemDetails, additional adapters, persistence, hosting or a general validation framework.
 
@@ -47,6 +48,9 @@ The approved Architecture Pack, Engineering Handover, ADRs, TDR-001 and canonica
 - Keep validation member properties and generated codes opt-in because they may expose consumer data.
 - Keep MVC actively supported but avoid expanding its support promise beyond evidence in the project and package documentation.
 - Keep deferred OpenAPI, `ProblemDetails` and additional adapters out of scope.
+- Make exception conversion safe by default while preserving explicit trusted diagnostic conversion.
+- Distinguish client-safe, diagnostic and consumer-controlled output in first-party guidance.
+- Preserve normative default status mappings and document the security implications of custom mappings.
 
 ### Affected Execution Paths
 
@@ -74,6 +78,7 @@ The product has no persistence, durable state, transactions, concurrency control
 - Accepted TDR-001.
 - Nestgrid Engineering Handbook, Software Engineer role and Mason profile.
 - Canonical Nestgrid.Response Independent Review, including IR-004.
+- Approved Architecture Security Feedback and Security Assessment, including SEC-001, SEC-004 and SEC-005.
 - Existing source, tests, solution, samples and CI workflows.
 
 ## Solution Structure
@@ -104,6 +109,7 @@ The existing package targets and MVC dependency are retained pending the explici
 - Keep source and tests organised by responsibility.
 - Make consumer-visible assumptions and evidence gaps explicit.
 - Keep member-aware validation output opt-in and deterministic.
+- Never place exception-derived diagnostics on the normal client-facing result path.
 
 ## Source and Test Organisation
 
@@ -136,6 +142,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-005 | Expose approved lifecycle artefacts and TDR-001 in the solution. | Completed |
 | ENG-006 | Run build, test, pack, sample and documentation checks. | Completed |
 | ENG-007 | Produce Implementation Report and Engineering Assurance. | Completed with conditions |
+| ENG-008 | Implement ADR-008 safe exception conversion and explicit diagnostic methods. | In progress |
+| ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Pending |
 
 ## Interfaces and Contracts
 
@@ -155,6 +163,15 @@ IEnumerable<ValidationResult>.ToInvalidResultWithProperties<T>(
     ResultMessageSeverity severity = ResultMessageSeverity.Warning)
 ```
 
+The approved exception contract is:
+
+```csharp
+Results.Error(exception)
+Results.Error<T>(exception)
+Results.ErrorWithDiagnosticDetails(exception)
+Results.ErrorWithDiagnosticDetails<T>(exception)
+```
+
 ## Data Changes
 
 There are no schema, migration, persistence or startup migration changes.
@@ -163,6 +180,8 @@ There are no schema, migration, persistence or startup migration changes.
 
 - Run all solution tests in Release configuration.
 - Add focused unit coverage for all TDR-001 acceptance criteria.
+- Add core tests for safe exception output, explicit diagnostic output and null exceptions.
+- Add regression coverage for normative security-sensitive HTTP mappings in the shared policy and adapters where practical.
 - Build and run each sample project.
 - Pack all NuGet projects and inspect package outputs.
 - Retain the resulting local verification and identify unavailable CI/mutation evidence for Quality.
