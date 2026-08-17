@@ -2,12 +2,12 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Release Quality Recommendation
-version: 1.0
+version: 1.2
 status: Complete with conditions
 owner: Quality Engineer
 produced_by: Quality Engineer
 consumed_by: Security Engineer, Platform Engineer, Release Owner, Project Sponsor
-date: 2026-08-15
+date: 2026-08-17
 related_findings:
   - IR-004
 related_artefacts:
@@ -18,7 +18,7 @@ related_artefacts:
 
 ## Recommendation
 
-**Quality recommends proceeding to Security, Platform and Release review.** Quality evidence for the approved scope is complete and supports release readiness, subject to the downstream gates and the Project Sponsor’s final release decision.
+**Quality recommends proceeding to Security, Platform and Release review, but does not recommend release yet.** Current-candidate functional and package verification is complete; unresolved Critical/High dependency advisories remain a release-blocking condition alongside the downstream security and publication conditions below.
 
 This is a conditional quality position, not an acceptance of the open risks and not a production-release decision.
 
@@ -26,43 +26,51 @@ This is a conditional quality position, not an acceptance of the open risks and 
 
 | Evidence | Result | Assessment |
 | --- | --- | --- |
-| Release solution tests, isolated compilation | 277 passed, 0 failed, 0 skipped | Complete positive regression evidence |
-| Package-owned line coverage | Core 100%, HTTP 100%, ASP.NET Core 97.7%, MVC 100%, Validation 100% | Meets the over-90% Quality target |
-| Validation branch coverage | 92.3% | Positive supporting signal; branch percentage is not the primary gate |
-| Mutation | Core, HTTP, ASP.NET Core, MVC and Validation all reached 100% | Meets configured mutation target; ignored covered-block mutants are reported by Stryker |
-| Package packing | Five `.nupkg` and five `.snupkg` files created successfully; package READMEs present | Complete local package evidence |
-| Package consumer | net8.0 consumer restored all five generated packages from the local feed plus NuGet.org and built successfully | Complete minimum consumer smoke check |
-| CI-equivalent build/test/pack | Isolated Release build, test and pack succeeded; shared MSBuild mode remains blocked by sandbox IPC permissions | Local equivalent complete; CI should repeat in its native environment |
-| Samples | Core and validation console samples ran; ASP.NET Core and MVC web hosts started | Complete smoke evidence; endpoint assertions remain a useful downstream enhancement |
-| MVC support policy | `Microsoft.AspNetCore.Mvc.Core` 2.1.38 retained as the explicit compatibility baseline | No broader MVC version claim made |
+| Quality regression evidence | 289 tests passed, 0 failed, 0 skipped | Current Release run passed |
+| Package-owned coverage | Core 100%, HTTP 100%, ASP.NET Core 97.7%, MVC 100%, Validation 100% line coverage | Exceeds the over-90% target |
+| Mutation | Core, HTTP, ASP.NET Core, MVC and Validation each reached 100% sequentially | Current evidence complete; concurrent results discarded as contaminated |
+| Safe exception contract | Current core and adapter tests cover safe generic and explicit diagnostic paths, including typed and null cases | Quality verification supports ADR-008 behaviour |
+| Central package management | `Directory.Packages.props` preserves direct versions, including MVC 2.1.38 | Restore/build completed; advisory evidence remains downstream |
+| Package verification | Pack plus `scripts/verify-packages.sh` passed | README and net8.0 consumer restore/build verified |
+| Dependency advisory audit | Critical `System.Text.Encodings.Web` 4.6.0/4.5.0, High `Microsoft.AspNetCore.Http` 2.1.1 and High `Newtonsoft.Json` 9.0.1 advisories reported in supported/package-consumer graphs | P1 release blocker pending compatible remediation or authorised exception |
+| Security | SEC-001 implementation is reported complete by Engineering, while Security assessment still lists it as blocking | Reconcile through current tests and Security re-review |
+| Platform | SEC-002 action pinning/protected environment wiring remains outstanding | Release blocker owned by Platform |
+| MVC support policy | `Microsoft.AspNetCore.Mvc.Core` 2.1.38 remains the baseline | No broader MVC version claim made |
 
 ## Findings
 
-### Q-001 — P2 — Release quality evidence is incomplete
+### Q-004 — P1 — Current-candidate evidence is incomplete
 
-The original candidate lacked mutation, package-consumer and CI-equivalent evidence. Those checks are now complete locally; endpoint-level sample assertions remain a useful non-blocking follow-up because the web samples were startup-checked rather than exercised through HTTP calls.
+The previous Quality run predates ADR-008 and the central package-management change. Engineering reports 289 passing tests, but current Quality-owned coverage, mutation, package-consumer, dependency-advisory and CI-equivalent evidence is not retained.
 
-**Disposition:** Resolved for Quality. All five mutation suites reached 100%, package-owned coverage exceeded 90%, packaging succeeded and the consumer smoke build passed.
+**Disposition:** Resolved for Quality. Current regression, coverage, mutation, packaging and consumer verification passed.
 
-### Q-002 — P1 — MVC compatibility boundary is not release-precise
+### Q-005 — P1 — Security and Quality dispositions are not yet reconciled
 
-The product continues to support the current `Microsoft.AspNetCore.Mvc.Core` `2.1.38` baseline. Maintenance duration and review triggers remain Architecture/Product governance follow-up; no broader MVC compatibility claim is made.
+Engineering reports ADR-008 implemented and provides safe-default tests, but the current Security Assessment still describes SEC-001 as unresolved and release-blocking. The discrepancy must be resolved with current observable evidence and Security re-review.
 
-**Disposition:** Resolved for this Quality stage. Retain 2.1.38 and keep maintenance duration/review triggers as an explicit Architecture/Product follow-up.
+**Disposition:** Quality evidence now supports the ADR-008 implementation. Security must update its stale SEC-001 wording and complete its own re-review before release approval.
 
-### Q-003 — P2 — Engineering test count is inconsistent with current execution
+### Q-006 — P1 — Publication and dependency evidence remain release conditions
 
-The Implementation Report states 265 passing tests, while the current isolated Release run reports 277 after Quality test extensions. This is historical/stale evidence rather than a current test failure.
+SEC-002 remains a Platform-owned release blocker for immutable action references and protected-environment wiring. SEC-003 requires current advisory, restore and package-provenance evidence for the minimum-compatible versions.
 
-**Disposition:** Resolved. The current candidate evidence records 277 tests; the earlier Engineering Report count is historical/stale.
+**Disposition:** Remains open as a downstream release condition. Platform owns SEC-002; Security/Platform own current advisory and provenance evidence under ADR-007.
 
-## Downstream actions
+### Q-007 — P1 — Current package graphs contain unresolved Critical/High advisories
 
-1. Security to complete its review of validation-property/message disclosure and package trust boundaries.
-2. Platform to repeat the build, test, pack and installation checks in the supported CI environment.
-3. Release to record the final version, evidence, downstream recommendations and any accepted risks.
-4. Architecture/Product to record MVC maintenance duration and review triggers.
+The current solution audit reported Critical `System.Text.Encodings.Web` 4.6.0 and 4.5.0, High `Microsoft.AspNetCore.Http` 2.1.1, and High `Newtonsoft.Json` 9.0.1. The findings occur in supported package or MVC/sample consumer graphs and therefore cannot be treated as development-only noise. The advisory references reported by the audit are GHSA-ghhp-997w-qr28, GHSA-hxrm-9w7p-39cc and GHSA-5crp-9r3c-p9vr.
+
+**Disposition:** Open release blocker. Architecture, Security and Engineering must determine a compatible dependency remediation that preserves the approved MVC `2.1.38` support baseline, or obtain an explicit authorised risk exception with documented scope and expiry. Quality does not waive ADR-007 or accept the security risk.
+
+## Downstream conditions
+
+1. Security to re-review SEC-001/SEC-004/SEC-005 against the verified ADR-008 behaviour and current documentation.
+2. Platform to complete SEC-002 action pinning and protected-environment wiring, then retain immutable publication evidence.
+3. Security/Platform to retain current advisory, restore and package-provenance evidence under ADR-007.
+4. Architecture/Security/Engineering to resolve Q-007 or record an authorised exception before release.
+5. Release to record the final version, evidence, downstream recommendations and any accepted risks.
 
 ## Quality gate outcome
 
-Quality **recommends proceeding to downstream release gates**. Quality does not own the final production-release approval.
+Quality **recommends proceeding to downstream release gates but does not recommend release yet**. Quality does not own final production-release approval and does not waive Q-007 or the open Security and Platform conditions.

@@ -2,12 +2,12 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Test Strategy
-version: 1.0
+version: 1.2
 status: Complete with conditions
 owner: Quality Engineer
 produced_by: Quality Engineer
 consumed_by: Software Engineer, Security Engineer, Platform Engineer, Release Owner
-date: 2026-08-15
+date: 2026-08-17
 related_artefacts:
   - ../01 Discovery/Product Brief.md
   - ../02 Architecture/Architecture Pack.md
@@ -20,7 +20,7 @@ related_artefacts:
 
 Nestgrid.Response is a public, pre-1.0 .NET library with five packages and compatibility-sensitive result and HTTP contracts. The highest confidence need is regression protection for existing public behaviour, followed by proof that consumers can install and use each supported package in representative target environments.
 
-The implementation is deterministic and has no persistence, migrations, background processing or runtime service dependency. Testing should therefore concentrate on public contracts, package boundaries, framework execution, package consumption and release evidence rather than broad end-to-end infrastructure testing.
+The implementation is deterministic and has no persistence, migrations, background processing or runtime service dependency. The current candidate nevertheless contains a security-sensitive behavioural correction (`ADR-008`) and a dependency-management change (`ADR-007`), so prior Quality evidence must be treated as historical until rerun against this source state.
 
 ## Scope and requirements traceability
 
@@ -32,6 +32,8 @@ The implementation is deterministic and has no persistence, migrations, backgrou
 | FR-007 | MVC result execution and package compatibility | MVC adapter tests and consumer installation against the documented baseline | High |
 | FR-008 | Core package has no presentation dependency and is consumable independently | Project/package inspection and framework-independent sample | High |
 | FR-009 | DataAnnotations conversion, including additive member-aware conversion | Validation unit tests, package sample and mutation evidence | Medium |
+| ADR-008 contract | Safe generic exception output by default; explicit diagnostic output only through named methods; typed and untyped overloads | Core tests, adapter serialisation checks and mutation evidence | High |
+| ADR-007 policy | Central package versions preserve the approved dependency baselines, including MVC `2.1.38` | Restore graph, package verification and current advisory evidence | High |
 | NFR-001–NFR-006 | Predictability, immutability, dependency boundaries, compatibility and documentation alignment | Regression suite, API/package inspection, link check and review | High |
 | OR-001–OR-006 | Pack contents, installation, targets, dependencies, upgrade/support guidance and samples | CI-equivalent pack/install checks and retained package evidence | High |
 
@@ -45,7 +47,9 @@ The implementation is deterministic and has no persistence, migrations, backgrou
 - Immutable result and message behaviour.
 - MVC package loading and execution against the documented `Microsoft.AspNetCore.Mvc.Core` baseline.
 - Additive validation conversion: member expansion, source ordering, blank-member filtering, defaults, severity and null handling.
+- Safe versus diagnostic exception conversion, including null exceptions, message/code absence, typed results and HTTP response boundaries.
 - Package target frameworks, dependencies, README/XML documentation inclusion and installability.
+- Central package-management evaluation and minimum-compatible dependency evidence.
 
 ### Test levels
 
@@ -60,15 +64,17 @@ The implementation is deterministic and has no persistence, migrations, backgrou
 
 Performance, persistence, recovery and service availability testing are not required for this change because the product has no such runtime responsibilities. Security-sensitive output handling is handed to Security; Quality will verify only the observable contract and documentation warning that consumers own disclosure policy.
 
-## Proposed verification extensions
+## Verification performed
 
-No production changes are proposed by Quality. Subject to approval, extend tests or verification in this order:
+No production changes were required by Quality. The current candidate was verified as follows:
 
-1. Add adapter contract scenarios that assert status code, headers and body shape for every normative status, both success response modes and representative custom mappings in modern ASP.NET Core and MVC.
-2. Add package-consumer smoke projects or equivalent isolated checks for each documented target/framework combination, including MVC package loading.
-3. Exercise the ASP.NET Core and MVC samples through representative endpoints, covering success, invalid input and at least one non-success result.
-4. Add validation tests for null code, null validation elements and all supported severity values if mutation analysis identifies surviving mutants in those paths.
-5. Run the five configured Stryker jobs and retain JSON/HTML reports with the candidate evidence.
+1. Full Release regression: 289 passed, 0 failed, 0 skipped.
+2. Package-owned line coverage: Core 100%, HTTP 100%, ASP.NET Core 97.7%, MVC 100%, Validation 100%.
+3. Sequential Stryker runs: all five configured package suites reached 100%; parallel runs were discarded because shared Debug outputs interfered.
+4. Current core and adapter tests cover safe and diagnostic exception paths, typed and untyped results, null exceptions and output-sensitive mappings.
+5. Isolated pack plus `scripts/verify-packages.sh`: all five package/symbol outputs, README presence and net8.0 consumer restore/build verified.
+6. Dependency restore and central-version resolution completed; current advisory/provenance evidence remains a Security/Platform release condition.
+7. Web samples were startup-checked; endpoint-level assertions remain a non-blocking follow-up.
 
 These are verification activities and test-only changes. Any production defect found must return to Engineering for remediation.
 
@@ -92,9 +98,9 @@ These are verification activities and test-only changes. Any production defect f
 ## Evidence limitations
 
 - The first solution-level test command was blocked by the sandbox's MSBuild named-pipe permission restriction. Re-running with isolated compilation succeeded, so the environment limitation is not evidence of a product failure.
-- The current local test run reports 269 passed, 0 failed and 0 skipped. The Engineering Report records 265 passed; this count discrepancy should be reconciled in the final evidence pack.
-- Fresh Cobertura reports exist, but package-level coverage is uneven and is not a substitute for behaviour or mutation evidence.
-- No current candidate mutation report, CI run, package-install consumer run or endpoint-level sample run is retained.
+- The previous Quality run covered a pre-ADR-008 candidate; its 277-test and 100%-mutation results are not current-candidate evidence.
+- Current Quality-owned regression, coverage and mutation evidence is now recorded below; dependency-advisory/provenance and supported-CI evidence remain downstream conditions.
+- Security identifies SEC-002 as a Platform release condition and SEC-003 as a dependency-evidence condition; Quality will track their effect on the release recommendation but does not own their remediation.
 
 ## Minimum package-consumer compatibility matrix
 
@@ -112,26 +118,14 @@ The matrix should also include one packaging check per row: consume the generate
 
 ## Questions for confirmation
 
-- Is the documented 100% line and mutation target a hard release gate for v0.7.0, or may exceptions be approved per package with rationale?
+- Is the documented 100% line and mutation target a hard release gate for the current candidate, or may exceptions be approved per package with rationale?
 - Which exact MVC maintenance duration and review triggers accompany the supported `Microsoft.AspNetCore.Mvc.Core` `2.1.38` baseline?
 
-## Approved execution decisions
+## Current Quality recommendation
 
-- Quality coverage target: over 90% line coverage for each package’s own production source, with branch coverage reported separately.
-- Mutation target: restore 100% where feasible; surviving equivalent mutants must be documented rather than hidden.
-- MVC compatibility baseline: retain `Microsoft.AspNetCore.Mvc.Core` `2.1.38` unless a demonstrated functionality defect requires a change and Architecture approves it.
-
-## Execution outcome
-
-- Full Release regression: 277 passed, 0 failed, 0 skipped.
-- Package-owned line coverage: Core 100%, HTTP 100%, ASP.NET Core 97.7%, MVC 100%, Validation 100%.
-- Validation branch coverage: 92.3%.
-- All five configured mutation suites reached 100% mutation score: Core, HTTP, ASP.NET Core, MVC and Validation.
-- All five 0.7.0 packages and symbol packages were packed successfully.
-- A net8.0 consumer restored the five generated packages from the local package feed plus NuGet.org and built successfully.
-- Core and validation console samples ran successfully; ASP.NET Core and MVC web samples started successfully.
-- MVC verification retained `Microsoft.AspNetCore.Mvc.Core` 2.1.38 as the compatibility baseline.
+- Quality retained the over-90% package-owned line target, achieved 100% mutation across all five configured suites, and retained `Microsoft.AspNetCore.Mvc.Core` `2.1.38` as the MVC baseline.
+- Quality does not recommend release until Q-007's Critical/High dependency advisories are remediated or formally accepted by the authorised owners; this is a release risk disposition, not a test shortfall.
 
 ## Recommendation checkpoint
 
-The strategy execution is complete. Quality recommends handover to Security, Platform and Release with the evidence and limitations recorded in the Release Readiness Report.
+The strategy execution is complete. Quality recommends proceeding to Security, Platform and Release review, subject to the downstream conditions recorded in the Release Readiness Report.
