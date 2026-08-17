@@ -60,6 +60,36 @@ The resolved versions below come from the current solution restore graph on 2026
 - Advisory scan results for the baseline and each candidate graph.
 - Explicit Architecture and Security disposition for any support-boundary change or residual-risk exception.
 
+## Candidate Remediation Comparison
+
+The following candidates are proposals for review. No candidate has been implemented or accepted.
+
+| Candidate | Proposed change | Compatibility position | Security position | Recommendation |
+| --- | --- | --- | --- | --- |
+| A — Explicit lowest-compatible transitive pins | Preserve `System.Text.Json 4.6.0` and add an explicit `System.Text.Encodings.Web 4.7.2` dependency for the Core package family. Preserve `Microsoft.AspNetCore.Mvc.Core 2.1.38` and add explicit `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1` dependencies to the MVC package. Manage the selected versions centrally while keeping ownership declarations in the owning projects. | Lowest-change option. Preserves package identity, target frameworks and the active MVC boundary, subject to API/binary, restore and consumer verification. It changes published dependency metadata and therefore requires package-closure review. | Uses the patched versions recorded by the authoritative advisories. It must be confirmed that no vulnerable versions remain in every affected published or supported graph. | **Preferred for Architecture/Security review**, conditional on evidence. |
+| B — Upgrade the parent packages | Upgrade `System.Text.Json` to a later compatible 4.x baseline and/or move the MVC adapter to a later ASP.NET Core MVC package line. | The JSON change may be compatible but must be checked against the full `netstandard2.0` graph. Moving MVC beyond 2.1.38 changes the approved legacy support baseline and requires a separate Architecture/Product decision. | Could remediate transitively, but a parent upgrade may introduce additional changes and advisories. | Do not select without evidence; MVC parent upgrades are outside Engineering authority under the current Architecture. |
+| C — Authorised exception | Retain the current graph with explicit scope, mitigations, owner, expiry/review date and Security acceptance. | Preserves compatibility but retains known vulnerable dependencies. | Not preferred because patched package versions are available for the reported advisories. | **Fallback only** if Candidate A cannot preserve the approved support boundary and no compatible parent upgrade is authorised. |
+
+### Candidate A Evidence Gate
+
+Candidate A is not yet an implementation approval. Architecture and Security must confirm:
+
+- explicit transitive pins are acceptable under ADR-007 rather than advisory suppression;
+- `System.Text.Encodings.Web 4.7.2` is compatible with the existing `System.Text.Json 4.6.0` API/runtime combination;
+- `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1` remain compatible with `Microsoft.AspNetCore.Mvc.Core 2.1.38`;
+- generated package dependency groups contain the intended patched versions and no reported vulnerable versions;
+- package consumers can restore and execute the Core, HTTP, Validation and MVC package families; and
+- the final advisory scan shows the reported findings resolved or identifies any residual finding for explicit disposition.
+
+## Advisory Source Baseline
+
+- [GHSA-ghhp-997w-qr28 — System.Text.Encodings.Web](https://github.com/advisories/GHSA-ghhp-997w-qr28): versions 4.6.0–4.7.1 are affected; 4.7.2 is patched.
+- [GHSA-hxrm-9w7p-39cc — Microsoft.AspNetCore.Http](https://github.com/advisories/GHSA-hxrm-9w7p-39cc): versions below 2.1.22 are affected; 2.1.22 is patched.
+- [GHSA-5crp-9r3c-p9vr — Newtonsoft.Json](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): versions below 13.0.1 are affected; 13.0.1 is patched.
+- [System.Text.Json 4.7.2 package metadata](https://www.nuget.org/packages/System.Text.Json/4.7.2): supports `netstandard2.0` and declares `System.Text.Encodings.Web` at or above 4.7.1, so Candidate A retains an explicit 4.7.2 pin pending restore proof.
+- [Microsoft.AspNetCore.Http 2.1.22 package metadata](https://www.nuget.org/packages/Microsoft.AspNetCore.Http/2.1.22): supports `netstandard2.0`.
+- [Newtonsoft.Json 13.0.1 package metadata](https://www.nuget.org/packages/Newtonsoft.Json/13.0.1): supports `netstandard2.0`.
+
 ## Current Conclusion
 
-The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. No remediation version is selected in this review package. Engineering must not change package versions until Architecture and Security approve the remediation direction and its compatibility evidence.
+The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. Candidate A is Engineering’s preferred remediation direction because it uses the lowest identified patched versions without changing package identity, target frameworks or the approved MVC parent package. Architecture and Security must approve or reject this direction before Engineering changes package versions.

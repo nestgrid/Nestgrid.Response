@@ -153,6 +153,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | Adopt central package version management as a separate repository change. | Prevents version drift across source, tests and samples while preserving ADR-007’s compatibility policy. | ADR-007; this Implementation Plan |
 | Do not implement SEC-006 remediation before review approval. | Dependency changes may alter published closure, supported MVC compatibility or consumer behaviour. | SEC-006 Dependency Path Matrix; Architecture Feedback; Security Assessment |
 | Evaluate remediation in this order: remove test/sample-only exposure, select the lowest compatible patched version, escalate support-boundary change, then consider a scoped exception. | Follows the approved Architecture Feedback and preserves compatibility by default. | Architecture Feedback - SEC-006 Dependency Remediation |
+| Recommend Candidate A: explicit lowest-compatible transitive pins, subject to compatibility proof. | Addresses the reported advisories while preserving package identity, target frameworks and the approved MVC 2.1.38 parent boundary. | SEC-006 Dependency Path Matrix |
 
 ## Implementation Tasks
 
@@ -170,7 +171,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Completed |
 | ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
 | ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
-| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Pending review |
+| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Pending Architecture/Security approval |
 | ENG-014 | Implement the approved compatible remediation or authorised exception path. | Not started — approval required |
 | ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Not started |
 
@@ -249,6 +250,7 @@ There are no schema, migration, persistence or startup migration changes.
 - Architecture/Product must maintain the exact MVC support policy and review triggers.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
 - Which patched versions are the lowest compatible choices for each advisory and target framework?
+- Is Candidate A’s explicit transitive-pin approach acceptable under ADR-007 when supported by package-closure and compatibility evidence?
 - Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
 - If not, which authority will decide between a support-boundary change and a time-limited exception?
 - Which CI/advisory/provenance evidence must be retained for the final candidate?
