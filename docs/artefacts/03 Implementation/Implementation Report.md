@@ -2,18 +2,20 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Report
-version: 1.0
+version: 1.1
 status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-15
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
+  - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
+  - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
 related_work_items:
   - IR-004
 related_repositories:
@@ -27,9 +29,9 @@ related_artefacts:
 
 ## Scope
 
-Engineering completed the approved v0.7.0 retrofit work for the existing v0.6.0 Nestgrid.Response product. The work added the missing Engineering lifecycle artefacts, implemented TDR-001, strengthened validation tests and documentation, updated the validation sample, and made lifecycle evidence visible in the Visual Studio solution.
+Engineering completed the approved v0.7.0 retrofit work for the existing v0.6.0 Nestgrid.Response product, including the approved Security follow-on. The work added the missing Engineering lifecycle artefacts, implemented TDR-001 and ADR-008, strengthened validation and security tests and documentation, updated samples and release notes, and made lifecycle evidence visible in the Visual Studio solution.
 
-No package boundary, status semantic, HTTP mapping, MVC support intent or deferred capability was changed.
+No package boundary, status semantic, MVC support intent or deferred capability was changed. The approved ADR-008 behavioural correction changes exception-derived output only: the existing exception overloads are safe by default, and the previous diagnostic behaviour is available only through explicitly named methods.
 
 ## Final Shared Understanding
 
@@ -49,6 +51,11 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 - Updated the validation package README and runnable validation sample.
 - Added Architecture, TDR-001 and Engineering artefacts to the solution’s IDE-visible solution items.
 - Retained all changes in focused commits using the required Engineering prefix.
+- Changed `Results.Error(Exception)` and `Results.Error<T>(Exception)` to return `An unexpected error occurred.` without exception-derived codes.
+- Added `ErrorWithDiagnosticDetails(Exception)` and `ErrorWithDiagnosticDetails<T>(Exception)` for trusted diagnostic workflows.
+- Added security-sensitive default mapping regression tests for both ASP.NET Core and MVC adapters.
+- Documented client-safe, diagnostic and consumer-controlled output boundaries and custom mapping security responsibilities.
+- Added v0.7.0 migration guidance to the changelog.
 
 ## Implementation Decisions
 
@@ -58,12 +65,22 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Expand one validation result into one message per usable member. | Provides structured field-level output without adding a validation model. | TDR-001 |
 | Use `validation_failed` as the default code and `The entity is invalid.` for null error text. | Gives predictable opt-in output while preserving explicit custom-code support. | TDR-001 |
 | Keep solution visibility aligned with filesystem lifecycle structure. | Makes approved decisions, handovers and Engineering evidence discoverable in the IDE. | Implementation Plan |
+| Make exception conversion safe by default. | Prevents the normal result-to-HTTP path from disclosing internal diagnostics while preserving an explicit trusted diagnostic path. | ADR-008 |
 
 ## Changed Components
 
 - `src/Nestgrid.Response.Extensions.Validation/ValidationResultExtensions.cs`
 - `tests/Nestgrid.Response.Extensions.Validation.Tests/ValidationResultExtensionsTests.cs`
 - `src/Nestgrid.Response.Extensions.Validation/README.md`
+- `src/Nestgrid.Response/Results.cs`
+- `tests/Nestgrid.Response.Tests/Results/ErrorTests.cs`
+- `tests/Nestgrid.Response.AspNetCore.Tests/Extensions/ResultExtensionsTests.cs`
+- `tests/Nestgrid.Response.Mvc.Tests/ResultExtensionsTests.cs`
+- `src/Nestgrid.Response/README.md`
+- `src/Nestgrid.Response.Http/README.md`
+- `src/Nestgrid.Response.AspNetCore/README.md`
+- `src/Nestgrid.Response.Mvc/README.md`
+- `CHANGELOG.md`
 - `samples/Nestgrid.Response.Extensions.Validation.Sample/Program.cs`
 - `samples/Nestgrid.Response.Extensions.Validation.Sample/README.md`
 - `Nestgrid.Response.sln`
@@ -76,7 +93,9 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | --- | --- | --- |
 | Existing validation conversion | Existing 18 tests retained and passing. | Existing methods remain unchanged. |
 | Member-aware conversion | Four focused tests added. | Covers ordering, filtering, defaults, overrides, empty input and null collection behaviour. |
-| Full solution regression | 265 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
+| Exception conversion | Safe default and explicit diagnostic paths, including null exceptions. | Core suite contains 166 passing tests. |
+| Security-sensitive adapter mappings | `Unauthorized`, `Forbidden`, `Error` and `NoContent` defaults. | ASP.NET Core and MVC adapter suites cover the normative mappings. |
+| Full solution regression | 277 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
 | Package validation | Five package projects packed successfully. | Each package contained its README and XML documentation. |
 | Samples | Core and validation console samples completed; ASP.NET Core and MVC hosts started successfully. | Web hosts are intentionally long-running applications. |
 
@@ -90,12 +109,16 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Add opt-in member-aware validation conversion. | New extension methods and helper in validation package. | Focused tests and validation sample. | Complete |
 | Preserve shared HTTP mapping and adapter semantics. | No HTTP or adapter source changed. | Full regression suite passes. | Complete with downstream regression confirmation |
 | Make package and lifecycle evidence discoverable. | Solution groups include Architecture, TDR-001, review and Engineering artefacts. | `dotnet sln list` and solution inspection. | Complete |
+| Prevent exception diagnostics from crossing the normal client boundary. | Safe exception overloads return a generic message; diagnostic methods are explicitly named. | Core tests, package README and sample guidance. | Complete |
+| Preserve normative security-sensitive mappings. | Shared defaults remain unchanged. | Shared mapping tests and ASP.NET Core/MVC adapter tests. | Complete |
 
 ## Engineering Assurance
 
 ### Invariant Verification
 
 - Existing result status, immutability, message and adapter tests pass unchanged.
+- Safe exception overloads never copy exception messages or type names into result messages.
+- Explicit diagnostic overloads preserve the prior message/type behaviour for trusted workflows.
 - Existing validation methods still emit one message per validation result without inferred codes or properties.
 - New conversion emits one message per non-blank member name in source order.
 - A validation result with no usable member emits exactly one memberless message.
@@ -108,7 +131,7 @@ The new code is deterministic and stateless. It validates null collections and n
 
 ### Data, Security and Operational Obligations
 
-No data store, migration, runtime integration, authentication or secret handling was introduced. Member-aware output is opt-in and the package documentation identifies property names and validation text as consumer-controlled output. All package READMEs remain included in their package outputs.
+No data store, migration, runtime integration, authentication or secret handling was introduced. Member-aware output is opt-in and the package documentation identifies property names and validation text as consumer-controlled output. Exception diagnostics are explicitly separated from normal client-safe output. All package READMEs remain included in their package outputs.
 
 ### Evidence Limitations and Approved Deviations
 
@@ -116,6 +139,7 @@ No data store, migration, runtime integration, authentication or secret handling
 - The solution-level `dotnet pack`/build command could not complete in the local sandbox because MSBuild attempted a restricted socket operation. Each of the five package projects packed successfully in isolated mode with shared compilation disabled.
 - MVC’s exact compatibility range and maintenance duration remain Architecture/Product governance obligations; Engineering did not invent a broader support claim.
 - No deviations from the approved Architecture Pack or TDR-001 were identified.
+- ADR-008 is implemented as approved; its intentional pre-1.0 behavioural correction is documented in the changelog and package README.
 
 ### Assurance Outcome
 
@@ -126,12 +150,14 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 ## Security-Sensitive Areas
 
 - Member-aware validation output may expose property names and validation details; consumers must apply their own response and logging policy.
-- No exception objects, secrets, authentication or authorisation behaviour was added.
+- Diagnostic exception output may expose internal details and must remain inside a trusted output boundary.
+- No exception objects are retained, and no secrets, authentication or authorisation behaviour was added.
 - Package publication remains controlled by the existing trusted-publishing workflow.
 
 ## Known Limitations
 
 - Mutation effectiveness and coverage are not established by retained Engineering evidence.
+- Dependency advisory and restore evidence remain a Security/Platform release obligation under ADR-007.
 - CI-equivalent package publication and target-environment consumer installation remain downstream validation activities.
 - The web samples were startup-checked but not subjected to endpoint-level Quality validation.
 
@@ -141,6 +167,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
 - Architecture/Product to maintain the exact MVC support policy and review triggers.
 - Security and Platform to perform their downstream reviews.
+- Security to re-review SEC-001, SEC-004 and SEC-005 against the updated implementation and guidance.
 
 ## Risks
 
@@ -149,6 +176,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 | Mutation or coverage evidence exposes untested behaviour. | Medium | Quality owns thresholds and follow-up test disposition. |
 | MVC support claims remain broader than verified compatibility. | High | Keep the current baseline claim and require Architecture/Product policy confirmation. |
 | Opt-in validation detail is returned without consumer review. | Medium | Document property/message disclosure responsibility in the package README. |
+| Diagnostic exception methods are used in an untrusted response path. | High | Explicit method naming, XML documentation, package guidance and Security re-review. |
 
 ## Quality Notes
 
@@ -160,4 +188,4 @@ Security should confirm that validation property names and messages are handled 
 
 ## Recommendation
 
-Engineering recommends handover to Quality, Security and Platform review with the conditions recorded above. Engineering implementation is complete for the approved scope; release readiness is not claimed.
+Engineering recommends handover to Security and Platform re-review, with Quality regression evidence updated, under the conditions recorded above. Engineering implementation is complete for the approved scope; release readiness is not claimed until SEC-001 is re-reviewed, SEC-002 is completed by Platform, and ADR-007 evidence is retained.

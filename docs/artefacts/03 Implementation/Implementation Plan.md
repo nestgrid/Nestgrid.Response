@@ -142,8 +142,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-005 | Expose approved lifecycle artefacts and TDR-001 in the solution. | Completed |
 | ENG-006 | Run build, test, pack, sample and documentation checks. | Completed |
 | ENG-007 | Produce Implementation Report and Engineering Assurance. | Completed with conditions |
-| ENG-008 | Implement ADR-008 safe exception conversion and explicit diagnostic methods. | In progress |
-| ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Pending |
+| ENG-008 | Implement ADR-008 safe exception conversion and explicit diagnostic methods. | Completed |
+| ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Completed |
 
 ## Interfaces and Contracts
 
@@ -207,3 +207,4 @@ There are no schema, migration, persistence or startup migration changes.
 - Implementation Plan and Implementation Report follow the standard templates.
 - Engineering Assurance is recorded with evidence limitations and deviations.
 - Open findings and downstream obligations are explicitly dispositioned.
+- ADR-008 security behaviour and migration guidance are implemented and tested.
