@@ -51,14 +51,14 @@ The resolved versions below come from the current solution restore graph on 2026
 | MVC | `Nestgrid.Response.Mvc` | Approved legacy MVC baseline using `Microsoft.AspNetCore.Mvc.Core 2.1.38` | MVC tests and MVC sample | Contains the reported ASP.NET Core HTTP, Newtonsoft.Json and legacy encoding paths; requires compatibility decision. |
 | Modern ASP.NET Core | `Nestgrid.Response.AspNetCore` | `net8.0` adapter using `Microsoft.AspNetCore.App` | ASP.NET Core tests and sample | Framework reference is host-provided; verify whether reported packages are absent from the published package closure and assess host graph separately. |
 
-## Evidence Required Before Remediation Approval
+## Evidence Gate for SEC-006 Closure
 
-- Fresh restore output for all source, test and sample projects, including direct and transitive versions.
+- Fresh restore output for all source, test and sample projects, including direct and transitive versions. **Complete.**
 - Dependency-path evidence identifying the introducing package for each advisory.
-- Generated `.nupkg` and `.nuspec` inspection for all five published packages and each target framework dependency group.
-- Affected consumer-installation checks from a local package source rather than project references alone.
+- Generated `.nupkg` and `.nuspec` inspection for all five published packages and each target framework dependency group. **Complete for Core, HTTP and Validation; ASP.NET Core cross-checked; MVC archive inspection outstanding.**
+- Affected consumer-installation checks from a local package source rather than project references alone. **Complete for Core, HTTP and Validation; MVC package consumer outstanding.**
 - Lowest compatible patched-version candidates, with target-framework, API and MVC support analysis.
-- Advisory scan results for the baseline and each candidate graph.
+- Advisory scan results for the baseline and each candidate graph. **Candidate A final scan complete: no vulnerable packages reported.**
 - Explicit Architecture and Security disposition for any support-boundary change or residual-risk exception.
 
 ## Candidate A Validation Evidence
@@ -106,11 +106,11 @@ The parent package compiled and all MVC tests passed without changing the approv
 
 ## Candidate Remediation Comparison
 
-The following candidates are proposals for review. No candidate has been implemented or accepted.
+The following candidates record the approved implementation choice and the alternatives that remain out of scope.
 
 | Candidate | Proposed change | Compatibility position | Security position | Recommendation |
 | --- | --- | --- | --- | --- |
-| A — Explicit lowest-compatible transitive pins | Preserve `System.Text.Json 4.6.0` and add an explicit `System.Text.Encodings.Web 4.7.2` dependency for the Core package family. Preserve `Microsoft.AspNetCore.Mvc.Core 2.1.38` and add explicit `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1` dependencies to the MVC package. Manage the selected versions centrally while keeping ownership declarations in the owning projects. | Lowest-change option. Preserves package identity, target frameworks and the active MVC boundary, subject to API/binary, restore and consumer verification. It changes published dependency metadata and therefore requires package-closure review. | Uses the patched versions recorded by the authoritative advisories. It must be confirmed that no vulnerable versions remain in every affected published or supported graph. | **Preferred for Architecture/Security review**, conditional on evidence. |
+| A — Explicit lowest-compatible transitive pins | Preserve `System.Text.Json 4.6.0` and add an explicit `System.Text.Encodings.Web 4.7.2` dependency for the Core package family. Preserve `Microsoft.AspNetCore.Mvc.Core 2.1.38` and add explicit `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1` dependencies to the MVC package. Manage the selected versions centrally while keeping ownership declarations in the owning projects. | Lowest-change option. Preserves package identity, target frameworks and the active MVC boundary, subject to API/binary, restore and consumer verification. It changes published dependency metadata and therefore requires package-closure review. | Uses the patched versions recorded by the authoritative advisories. It must be confirmed that no vulnerable versions remain in every affected published or supported graph. | **Implemented and approved for this remediation**, conditional on final evidence. |
 | B — Upgrade the parent packages | Upgrade `System.Text.Json` to a later compatible 4.x baseline and/or move the MVC adapter to a later ASP.NET Core MVC package line. | The JSON change may be compatible but must be checked against the full `netstandard2.0` graph. Moving MVC beyond 2.1.38 changes the approved legacy support baseline and requires a separate Architecture/Product decision. | Could remediate transitively, but a parent upgrade may introduce additional changes and advisories. | Do not select without evidence; MVC parent upgrades are outside Engineering authority under the current Architecture. |
 | C — Authorised exception | Retain the current graph with explicit scope, mitigations, owner, expiry/review date and Security acceptance. | Preserves compatibility but retains known vulnerable dependencies. | Not preferred because patched package versions are available for the reported advisories. | **Fallback only** if Candidate A cannot preserve the approved support boundary and no compatible parent upgrade is authorised. |
 

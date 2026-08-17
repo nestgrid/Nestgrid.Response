@@ -148,7 +148,7 @@ No data store, migration, runtime integration, authentication or secret handling
 ### Evidence Limitations and Approved Deviations
 
 - No current mutation report, coverage report or CI run is retained in the repository; IR-004 remains open for Quality.
-- The solution-level `dotnet pack`/build command could not complete in the local sandbox because MSBuild attempted a restricted socket operation. Each of the five package projects packed successfully in isolated mode with shared compilation disabled.
+- The solution-level pack command remains affected by an environment/MSBuild hang. Core, HTTP and Validation packages were generated and inspected on the implemented branch; ASP.NET Core metadata was cross-checked against the unchanged package; MVC project evaluation and resolved metadata were inspected, but a fresh MVC archive was not emitted.
 - MVC’s exact compatibility range and maintenance duration remain Architecture/Product governance obligations; Engineering did not invent a broader support claim.
 - No deviations from the approved Architecture Pack or TDR-001 were identified.
 - ADR-008 is implemented as approved; its intentional pre-1.0 behavioural correction is documented in the changelog and package README.
@@ -178,8 +178,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 
 - Quality to execute and retain mutation, coverage, CI-equivalent and release-readiness evidence, resolving IR-004.
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
-- Engineering to implement only the SEC-006 remediation direction approved by Architecture and Security, then retain dependency-path, package-closure and consumer evidence.
-- Engineering to complete the remaining MVC `.nuspec` and supported package-consumer evidence before SEC-006 closure.
+- Engineering to complete the remaining MVC `.nuspec` and supported MVC package-consumer evidence before SEC-006 closure. A temporary consumer restored and built successfully against the three generated Core, HTTP and Validation packages.
 - Architecture/Product to maintain the exact MVC support policy and review triggers.
 - Security and Platform to perform their downstream reviews.
 - Security to re-review SEC-001, SEC-004 and SEC-005 against the updated implementation and guidance.
@@ -205,8 +204,10 @@ Engineering verification for this handover is:
 
 - Release solution build succeeded with 0 warnings and 0 errors.
 - 289 automated tests passed with 0 failures and 0 skips.
-- All five `0.7.0` package and symbol outputs were created successfully.
-- All nine direct package versions resolved to the pre-migration values under `Directory.Packages.props`.
+- Core, HTTP and Validation `0.7.0` package and symbol outputs were created successfully; ASP.NET Core metadata was cross-checked and MVC metadata was verified through project evaluation and resolved closure.
+- All twelve centrally managed package versions resolve, including the three approved SEC-006 pins.
+- The final advisory scan reports no vulnerable packages across source, test and sample projects.
+- A temporary consumer restored and built successfully against the three generated package outputs.
 
 Quality remains responsible for its own mutation, coverage, package-consumer and release-evidence conclusions. The Engineering evidence does not replace the Quality gate.
 
