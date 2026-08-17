@@ -173,8 +173,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
 | ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
 | ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Security review completed — Candidate A approved with conditions; deviations remain subject to Architecture authority |
-| ENG-014 | Implement the approved compatible remediation or authorised exception path. | Approved to start — Candidate A; conditions recorded in Security Feedback |
-| ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Not started |
+| ENG-014 | Implement the approved compatible remediation or authorised exception path. | Completed — Candidate A pins implemented |
+| ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | In progress — MVC archive and consumer evidence outstanding |
 
 ## Interfaces and Contracts
 

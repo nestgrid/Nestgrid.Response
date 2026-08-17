@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Report
-version: 1.3
-status: In Review
+version: 1.4
+status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -40,7 +40,7 @@ The existing five-package architecture remains the implementation baseline. Exis
 
 Engineering is ready to hand the implementation to Quality, Security and Platform with conditions. IR-004 remains open for downstream mutation, coverage, CI and release evidence; the exact MVC compatibility and maintenance policy remains a governance follow-up.
 
-SEC-006 is now an active Engineering planning item. The baseline dependency-path matrix is recorded separately for Architecture and Security review. No dependency version or source change has been made for SEC-006.
+SEC-006 Candidate A is now implemented under the recorded Architecture and Security approvals. The [dependency-path matrix](SEC-006%20Dependency%20Path%20Matrix.md) records the baseline, exact pins, resolved graph, package metadata and remaining evidence conditions. No package identity, target framework or MVC support-boundary change was made.
 
 ## Completed Work
 
@@ -60,6 +60,7 @@ SEC-006 is now an active Engineering planning item. The baseline dependency-path
 - Documented client-safe, diagnostic and consumer-controlled output boundaries and custom mapping security responsibilities.
 - Added v0.7.0 migration guidance to the changelog.
 - Added root `Directory.Packages.props` with the existing nine direct package versions.
+- Implemented the approved SEC-006 pins: `System.Text.Encodings.Web 4.7.2`, `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`.
 - Removed project-local package version attributes while retaining package ownership in each project.
 - Verified the resolved direct versions and preserved the MVC `Microsoft.AspNetCore.Mvc.Core` `2.1.38` baseline.
 
@@ -104,9 +105,9 @@ SEC-006 is now an active Engineering planning item. The baseline dependency-path
 | Member-aware conversion | Four focused tests added. | Covers ordering, filtering, defaults, overrides, empty input and null collection behaviour. |
 | Exception conversion | Safe default and explicit diagnostic paths, including null exceptions. | Core suite contains 166 passing tests. |
 | Security-sensitive adapter mappings | `Unauthorized`, `Forbidden`, `Error` and `NoContent` defaults. | ASP.NET Core and MVC adapter suites cover the normative mappings. |
-| Central package management | Nine direct package versions centralised; project references retain package ownership. | Restore and `dotnet list package --include-transitive` resolve the original versions. |
+| Central package management | Twelve direct package versions centralised; project references retain package ownership. | Restore and `dotnet list package --include-transitive` resolve the approved Candidate A versions. |
 | Full solution regression | 289 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
-| Package validation | Five package projects packed successfully. | Each package contained its README and XML documentation. |
+| Package validation | Core, HTTP and Validation Candidate A packages packed successfully; ASP.NET Core metadata remained unchanged and MVC metadata was verified through project evaluation and resolved closure. | Fresh MVC archive inspection remains an evidence condition because the isolated MSBuild pack target hangs. |
 | Samples | Core and validation console samples completed; ASP.NET Core and MVC hosts started successfully. | Web hosts are intentionally long-running applications. |
 
 ## Architecture Traceability
@@ -170,6 +171,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 - Mutation effectiveness and coverage are not established by retained Engineering evidence.
 - Dependency advisory and restore evidence remain a Security/Platform release obligation under ADR-007.
 - CI-equivalent package publication and target-environment consumer installation remain downstream validation activities.
+- Fresh MVC Candidate A `.nupkg`/`.nuspec` generation remains blocked by the isolated MSBuild pack hang; an equivalent authoritative metadata inspection or successful package generation is required before SEC-006 closure.
 - The web samples were startup-checked but not subjected to endpoint-level Quality validation.
 
 ## Outstanding Work
@@ -177,6 +179,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 - Quality to execute and retain mutation, coverage, CI-equivalent and release-readiness evidence, resolving IR-004.
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
 - Engineering to implement only the SEC-006 remediation direction approved by Architecture and Security, then retain dependency-path, package-closure and consumer evidence.
+- Engineering to complete the remaining MVC `.nuspec` and supported package-consumer evidence before SEC-006 closure.
 - Architecture/Product to maintain the exact MVC support policy and review triggers.
 - Security and Platform to perform their downstream reviews.
 - Security to re-review SEC-001, SEC-004 and SEC-005 against the updated implementation and guidance.
@@ -213,4 +216,4 @@ Security should confirm that validation property names and messages are handled 
 
 ## Recommendation
 
-Engineering recommends the SEC-006 plan and matrix for Architecture and Security review before implementation. The previously completed implementation remains conditionally ready for downstream validation, but SEC-006 remains a release blocker and the product is not ready for final Quality handover until its remediation or authorised exception is implemented and evidenced.
+Engineering recommends the implemented Candidate A for final Architecture/Security evidence review and conditional Quality validation. SEC-006 remains a release blocker until the MVC package metadata and supported consumer evidence are retained and Security records final closure.
