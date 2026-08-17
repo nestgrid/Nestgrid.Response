@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Operational Readiness Review
-version: 1.2
+version: 1.3
 status: Complete with conditions
 owner: Platform Engineer
 contributors: Knight
@@ -35,6 +35,14 @@ Condition: the supported CI environment must repeat the package and installation
 Historical user-supplied evidence shows successful GitHub Actions runs for the CI, mutation and publish workflows, and successful NuGet publication of all five v0.6.0 packages. This confirms that the repository's package build, validation and public distribution path has operated successfully in practice.
 
 The evidence predates the v0.7.0 action-SHA pinning, protected `nuget` environment wiring and dependency remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, package provenance, or SEC-006 closure evidence.
+
+The current local v0.7.0 verification run also recorded:
+
+- Release solution build succeeded with 0 warnings and 0 errors.
+- 289 Release tests passed with 0 failures and 0 skips.
+- All five 0.7.0 packages and five symbol packages were created.
+- Package existence and README checks passed for the generated outputs.
+- Clean consumer restore was attempted and was blocked by the local environment's DNS restriction for `api.nuget.org`; CI remains the authoritative execution path for that network-dependent check.
 
 ## Operationalisation Readiness
 

@@ -128,6 +128,8 @@ The release owner should verify:
 
 Historical execution evidence confirms that the CI, mutation and publish workflows have completed successfully and that all five v0.6.0 packages have been published to NuGet. Treat this as evidence that the operational path has worked previously; current v0.7.0 release approval still requires the hardened workflow run and current package provenance.
 
+The current local v0.7.0 run passed the Release build, 289 tests, package creation and package README checks. The clean consumer restore could not reach NuGet.org from the local environment and must be confirmed by the GitHub workflow.
+
 ## Operational Documentation
 
 The root README, package READMEs, CONTRIBUTING guide, Test Strategy, this guide and the Operational Readiness Review are the support baseline. Consumer issues follow the repository contribution and issue process.
