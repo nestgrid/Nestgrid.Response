@@ -5,6 +5,8 @@ namespace Nestgrid.Response;
 /// </summary>
 public static class Results
 {
+    private const string SafeExceptionMessage = "An unexpected error occurred.";
+
     /// <summary>
     /// Creates a result with an <see cref="ResultStatus.Ok"/> status.
     /// </summary>
@@ -435,10 +437,29 @@ public static class Results
     /// <param name="exception">The exception to convert into a result message.</param>
     /// <returns>An error result.</returns>
     /// <remarks>
-    /// The exception is not stored on the result. The exception message is converted into a
-    /// <see cref="ResultMessage"/>, and the exception type name is used as the message code.
+    /// The exception is not stored on the result and its diagnostic details are not copied
+    /// into the result. Log the exception separately when diagnostic information is required.
     /// </remarks>
     public static Result Error(Exception exception)
+    {
+        if (exception is null)
+        {
+            throw new ArgumentNullException(nameof(exception));
+        }
+
+        return Error(SafeExceptionMessage);
+    }
+
+    /// <summary>
+    /// Creates an error result containing diagnostic exception details.
+    /// </summary>
+    /// <param name="exception">The exception to convert into a diagnostic result message.</param>
+    /// <returns>An error result containing diagnostic details.</returns>
+    /// <remarks>
+    /// Use only for trusted internal or diagnostic workflows. Do not return this result directly
+    /// to untrusted clients or serialise it without an explicit output policy.
+    /// </remarks>
+    public static Result ErrorWithDiagnosticDetails(Exception exception)
     {
         if (exception is null)
         {
@@ -478,10 +499,30 @@ public static class Results
     /// <param name="exception">The exception to convert into a result message.</param>
     /// <returns>An error result.</returns>
     /// <remarks>
-    /// The exception is not stored on the result. The exception message is converted into a
-    /// <see cref="ResultMessage"/>, and the exception type name is used as the message code.
+    /// The exception is not stored on the result and its diagnostic details are not copied
+    /// into the result. Log the exception separately when diagnostic information is required.
     /// </remarks>
     public static Result<T> Error<T>(Exception exception)
+    {
+        if (exception is null)
+        {
+            throw new ArgumentNullException(nameof(exception));
+        }
+
+        return Error<T>(SafeExceptionMessage);
+    }
+
+    /// <summary>
+    /// Creates a typed error result containing diagnostic exception details.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="exception">The exception to convert into a diagnostic result message.</param>
+    /// <returns>A typed error result containing diagnostic details.</returns>
+    /// <remarks>
+    /// Use only for trusted internal or diagnostic workflows. Do not return this result directly
+    /// to untrusted clients or serialise it without an explicit output policy.
+    /// </remarks>
+    public static Result<T> ErrorWithDiagnosticDetails<T>(Exception exception)
     {
         if (exception is null)
         {
