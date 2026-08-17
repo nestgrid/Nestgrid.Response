@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2026-08-17
+
+### Changed
+
+- Changed `Results.Error(Exception)` and `Results.Error<T>(Exception)` to return the client-safe message `An unexpected error occurred.` without exception-derived details.
+- Added explicitly named `ErrorWithDiagnosticDetails` overloads for trusted internal diagnostic workflows.
+- Documented the distinction between client-safe, diagnostic and consumer-controlled output.
+- Documented the security implications of custom HTTP status mappings.
+
+### Migration
+
+- Consumers that relied on raw exception messages or type-name codes from `Error(Exception)` must use the explicitly named diagnostic methods only in trusted internal workflows, or provide an intentional safe message through the existing string overloads.
+
 ## [0.6.0] - 2026-07-20
 
 ### Added

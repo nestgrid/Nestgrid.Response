@@ -96,6 +96,8 @@ Application developers usually use `ToIResult()` or `ToActionResult()` from an a
 
 If a mapping is removed from an options instance, the mapper falls back to the default mapping.
 
+Custom mappings are an intentional consumer capability. Treat the default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent` as normative unless there is a reviewed integration reason to change them. Remapping these outcomes can alter authentication, authorisation, caching and client-control semantics.
+
 ## Payload Modes
 
 `FullResult` writes the result envelope.

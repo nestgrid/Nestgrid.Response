@@ -75,6 +75,8 @@ public Result<UserDto> Create(CreateUserRequest request)
 
 Member-aware conversion is opt-in and preserves member names as `ResultMessage.Property` values. Blank member names are ignored; a validation result without a usable member produces one memberless message. The default code is `validation_failed`, the default message for a missing error message is `The entity is invalid.`, and the default severity remains `Warning`.
 
+Validation messages, property names and custom codes are consumer-controlled output. Review them before returning them to untrusted clients or writing them to logs; the package does not decide whether a particular domain validation message is safe to disclose.
+
 ```csharp
 var result = validationResults.ToInvalidResultWithProperties<UserDto>();
 ```

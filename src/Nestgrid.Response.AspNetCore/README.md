@@ -122,6 +122,8 @@ Default mappings:
 | `Failed` | 422 |
 | `Error` | 500 |
 
+Custom mappings are consumer-owned security configuration. Preserve the defaults for `Unauthorized`, `Forbidden`, `Error` and `NoContent` unless the integration has explicitly reviewed the authentication, authorisation, caching and client-control consequences.
+
 ## Mapping Results
 
 Map application results before converting them to HTTP responses:

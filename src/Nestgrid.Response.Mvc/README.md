@@ -103,6 +103,8 @@ MVC behavior matches the ASP.NET Core adapter:
 
 HTTP mapping is owned by `Nestgrid.Response.Http`; this package only adapts the mapping to MVC execution.
 
+Custom mappings are consumer-owned security configuration. Preserve the defaults for `Unauthorized`, `Forbidden`, `Error` and `NoContent` unless the integration has explicitly reviewed the authentication, authorisation, caching and client-control consequences.
+
 ## Documentation
 
 - [Main repository](https://github.com/nestgrid/Nestgrid.Response)

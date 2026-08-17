@@ -122,6 +122,28 @@ public sealed class ResultExtensionsTests
         httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
     }
 
+    [Theory]
+    [InlineData(ResultStatus.Unauthorized, StatusCodes.Status401Unauthorized)]
+    [InlineData(ResultStatus.Forbidden, StatusCodes.Status403Forbidden)]
+    [InlineData(ResultStatus.Error, StatusCodes.Status500InternalServerError)]
+    [InlineData(ResultStatus.NoContent, StatusCodes.Status204NoContent)]
+    public async Task ToIResult_ShouldPreserveSecuritySensitiveDefaultMappings(ResultStatus status, int expectedStatusCode)
+    {
+        var result = status switch
+        {
+            ResultStatus.Unauthorized => ResultsFactory.Unauthorized(),
+            ResultStatus.Forbidden => ResultsFactory.Forbidden(),
+            ResultStatus.Error => ResultsFactory.Error(),
+            ResultStatus.NoContent => ResultsFactory.NoContent(),
+            _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
+        };
+        var httpContext = CreateHttpContext();
+
+        await result.ToIResult().ExecuteAsync(httpContext);
+
+        httpContext.Response.StatusCode.ShouldBe(expectedStatusCode);
+    }
+
     [Fact]
     public async Task ToIResult_WithPerCallOptions_ShouldUseCustomMapping()
     {
