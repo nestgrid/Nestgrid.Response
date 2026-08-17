@@ -95,7 +95,7 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Member-aware conversion | Four focused tests added. | Covers ordering, filtering, defaults, overrides, empty input and null collection behaviour. |
 | Exception conversion | Safe default and explicit diagnostic paths, including null exceptions. | Core suite contains 166 passing tests. |
 | Security-sensitive adapter mappings | `Unauthorized`, `Forbidden`, `Error` and `NoContent` defaults. | ASP.NET Core and MVC adapter suites cover the normative mappings. |
-| Full solution regression | 277 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
+| Full solution regression | 289 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
 | Package validation | Five package projects packed successfully. | Each package contained its README and XML documentation. |
 | Samples | Core and validation console samples completed; ASP.NET Core and MVC hosts started successfully. | Web hosts are intentionally long-running applications. |
 
