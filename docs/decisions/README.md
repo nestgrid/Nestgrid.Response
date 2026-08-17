@@ -15,6 +15,8 @@ These records explain why the library uses immutable results, status-driven beha
 5. [ADR-005 Core Object Model](ADR-005-Core-Object-Model.md)
 6. [ADR-006 ASP.NET Core and MVC Package Separation](ADR-006-AspNetCore-And-Mvc-Package-Separation.md)
 7. [TDR-001 Detailed Validation Result Conversion](TDR-001-Validation-Result-Conversion-Detail.md)
+8. [ADR-007 Minimum-Compatible Dependency Policy](ADR-007-Minimum-Compatible-Dependency-Policy.md)
+9. [ADR-008 Safe Exception Result Conversion](ADR-008-Safe-Exception-Result-Conversion.md)
 
 ## Navigation
 

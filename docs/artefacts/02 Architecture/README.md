@@ -9,6 +9,7 @@ The existing v0.6.0 implementation is the baseline for review. Architecture appr
 1. [Architecture Recommendation](Architecture%20Recommendation.md)
 2. [Architecture Pack](Architecture%20Pack.md)
 3. [Engineering Handover](Engineering%20Handover.md)
+4. [Architecture Feedback - Security](Architecture%20Feedback%20-%20Security.md)
 
 The Architecture Pack and related decision records will be added after this recommendation is approved and Architecture Execute is authorised.
 

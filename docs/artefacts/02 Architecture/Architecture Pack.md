@@ -2,13 +2,13 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Architecture Pack
-version: 1.0
-status: Approved
+version: 1.1
+status: Approved with conditions
 owner: Solution Architect
 contributors: Knight
 produced_by: Solution Architect
 consumed_by: Software Engineer, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-14
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-001-Result-Pattern-Philosophy.md
@@ -17,6 +17,8 @@ related_decisions:
   - ../../decisions/ADR-004-AspNetCore-Separation.md
   - ../../decisions/ADR-005-Core-Object-Model.md
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
+  - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
+  - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
 related_work_items:
 related_repositories:
@@ -24,6 +26,7 @@ related_repositories:
 related_artefacts:
   - Architecture Recommendation.md
   - Engineering Handover.md
+  - Architecture Feedback - Security.md
   - ../01 Discovery/Product Brief.md
   - ../01 Discovery/Architecture Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
@@ -78,6 +81,7 @@ The approved product intent is to provide explicit application outcomes without 
 | Preserve compatibility by default | Public NuGet consumers require predictable upgrades; breaking changes need justification and approval. | This Pack; future release decisions |
 | Centralise HTTP mapping policy | Prevents modern and MVC adapters from acquiring divergent semantics. | ADR-004, ADR-006 |
 | Add opt-in detailed validation conversion | Adds member-aware messages without changing existing `.Validation` output. | TDR-001 |
+| Make exception conversion safe by default | Prevents raw exception details from crossing the normal result-to-HTTP path while retaining explicit diagnostic conversion. | ADR-008 |
 | Defer OpenAPI, `ProblemDetails` and new adapters | Preserves approved scope and avoids unvalidated support cost. | Product Brief |
 
 ## Architecture Overview
@@ -160,6 +164,9 @@ Consumers are responsible for deciding whether result values or messages may be 
 - Exception objects must not be introduced into serialisable result payloads.
 - Package publication must use the repository’s controlled CI and NuGet credentials; credentials are operational secrets, not product configuration.
 - Dependencies should remain minimal and reviewed when changed.
+- Client-safe output, diagnostic output and consumer-controlled domain output must be treated as distinct categories.
+- Default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent` are normative; custom mappings remain consumer-owned configuration with security implications.
+- Exception conversion follows ADR-008: safe generic output by default; diagnostic details require an explicitly named method and trusted output boundary.
 
 ## Operational Considerations
 

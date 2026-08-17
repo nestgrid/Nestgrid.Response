@@ -2,16 +2,18 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Engineering Handover
-version: 1.0
+version: 1.1
 status: Approved
 owner: Solution Architect
 contributors: Knight
 produced_by: Solution Architect
 consumed_by: Software Engineer
-date: 2026-08-14
+date: 2026-08-17
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
+  - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
+  - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
 related_work_items:
 related_repositories:
@@ -79,6 +81,22 @@ The generic overload is required because C# does not infer `T` from the assignme
 - Existing default HTTP mappings remain stable unless a separately approved decision changes them.
 - New APIs should be additive.
 - Any breaking change requires a written rationale, migration guidance, evidence and Project Sponsor approval.
+
+## Security Feedback Constraints
+
+- Implement ADR-008: `Results.Error(Exception)` is safe by default; use `ErrorWithDiagnosticDetails` only for deliberate trusted diagnostic workflows.
+- Treat exception-derived messages and type names as diagnostic content, never automatically client-safe content.
+- Document that validation messages, property names, result values and custom codes are consumer-controlled output.
+- Preserve normative default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent`; custom mapping remains an explicit consumer responsibility.
+- Retain dependency advisory, restore and package-provenance evidence according to ADR-007.
+
+## Security Mitigation Acceptance Criteria
+
+- Non-generic and generic `Error(Exception)` overloads return `An unexpected error occurred.` without an exception-derived code.
+- Non-generic and generic `ErrorWithDiagnosticDetails(Exception)` overloads preserve the previous message/type behaviour.
+- Diagnostic method documentation warns against direct untrusted publication.
+- Core tests cover both safe-default and explicit-diagnostic paths, including null exceptions.
+- Package README, samples and release notes describe the behavioural correction and migration path.
 
 ## Validation Enhancement Acceptance Criteria
 
