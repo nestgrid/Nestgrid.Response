@@ -39,7 +39,16 @@ The policy requires:
 - escalation to Architecture, Security and the Project Sponsor when a vulnerable minimum version conflicts with compatibility;
 - an explicit exception and review date when a vulnerable dependency cannot be upgraded immediately.
 
-Current direct dependency baselines include `System.Text.Json` 4.6.0, `System.ComponentModel.Annotations` 4.1.0 and `Microsoft.AspNetCore.Mvc.Core` 2.1.38. These versions remain subject to current advisory verification; this record does not declare them vulnerability-free without evidence.
+The current approved direct dependency baselines include:
+
+- `System.Text.Json` 4.6.0;
+- `System.ComponentModel.Annotations` 4.1.0;
+- `Microsoft.AspNetCore.Mvc.Core` 2.1.38;
+- `System.Text.Encodings.Web` 4.7.2;
+- `Microsoft.AspNetCore.Http` 2.1.22; and
+- `Newtonsoft.Json` 13.0.1.
+
+The final three pins were approved through the SEC-006 Candidate A remediation to remove known vulnerable resolved graphs while preserving package identity, target frameworks and the active MVC support boundary. All versions remain subject to advisory, restore, package-provenance and consumer verification; this record does not declare a dependency vulnerability-free without current evidence.
 
 ## Rationale
 
@@ -73,5 +82,8 @@ Rejected because it provides no consistent review trigger or retained evidence s
 ## Related Documentation
 
 - [Architecture Feedback - Security](../artefacts/02%20Architecture/Architecture%20Feedback%20-%20Security.md)
+- [Architecture Feedback - SEC-006 Dependency Remediation](../artefacts/02%20Architecture/Architecture%20Feedback%20-%20SEC-006%20Dependency%20Remediation.md)
+- [SEC-006 Dependency Path Matrix](../artefacts/03%20Implementation/SEC-006%20Dependency%20Path%20Matrix.md)
+- [Implementation Report](../artefacts/03%20Implementation/Implementation%20Report.md)
 - [Security Assessment](../artefacts/05%20Security/Security%20Assessment.md)
 - [Deployment Guide](../artefacts/06%20Platform/Deployment%20Guide.md)
