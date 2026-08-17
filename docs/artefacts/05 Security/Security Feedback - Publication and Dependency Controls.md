@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Feedback - Publication and Dependency Controls
-version: 1.1
+version: 1.2
 status: In Review
 owner: Platform Engineer
 contributors:
@@ -15,6 +15,7 @@ related_decisions:
 related_work_items:
   - SEC-002
   - SEC-003
+  - SEC-006
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -29,28 +30,29 @@ The Platform publication workflow builds and publishes all five packages through
 
 ## Feedback Summary
 
-The publication model is sound in principle, and GitHub-side controls are now configured: protected release tags, a protected `nuget` environment tied to NuGet Trusted Publishing, and Dependabot alerts/security updates. The remaining workflow hardening is Platform-owned: pin action references to immutable SHAs and wire publication through the `nuget` environment. The minimum-dependency policy is accepted as an intentional architecture/product constraint; the missing control is current advisory and restore evidence for the selected versions.
+The publication model is sound in principle. GitHub-side controls are configured, and the current workflows use immutable action SHAs and publication through the protected `nuget` environment. The remaining Platform evidence is a successful protected-environment execution with retained package provenance. ADR-007 records the minimum-compatible dependency policy, but Quality reports unresolved Critical/High advisories in supported graphs.
 
 ## Findings
 
 | ID | Severity | Finding | Impact | Recommendation |
 | --- | --- | --- | --- | --- |
-| SEC-002 | P1 | Third-party actions remain referenced by mutable tags and publication is not yet wired through the protected `nuget` environment. | Action compromise or retagging could alter packages or publish through trusted identity. | Platform to pin actions to immutable commit SHAs and wire publication through `environment: nuget`; protected tags, environment and NuGet policy are already configured. |
-| SEC-003 | P2 | No retained current advisory and restore evidence accompanies the minimum-compatible package versions. | Dependency vulnerability status is not auditable at release time. | Solution Architecture to record the minimum-version decision; Security/Platform to run and retain advisory and restore evidence. Do not upgrade merely to reach current versions. |
+| SEC-002 | P1 | Publication workflow hardening was previously incomplete. | Action compromise or retagging could alter packages or publish through trusted identity. | **Resolved in repository configuration.** Current workflows pin third-party actions to immutable SHAs and the publish job uses `environment: nuget`; Platform/Release must retain successful execution and package provenance evidence. |
+| SEC-003 | P2 | Advisory, restore and package-provenance evidence is not fully retained with the candidate. | Dependency posture is not auditable at release time. | **Governance resolved; evidence open.** Apply ADR-007 and retain the evaluated graph, advisory result, restore result and provenance. Do not upgrade merely for recency. |
+| SEC-006 | P1 | Quality reports Critical `System.Text.Encodings.Web` 4.6.0/4.5.0, High `Microsoft.AspNetCore.Http` 2.1.1 and High `Newtonsoft.Json` 9.0.1 advisories in supported/package-consumer graphs. | Known vulnerable dependencies may reach package consumers. | Architecture, Engineering and Security to determine compatible remediation or obtain an authorised exception with scope and expiry. |
 
 ## Blocking Issues
 
-- SEC-002 must be completed by Platform or explicitly accepted before final release approval.
+- SEC-006 must be remediated or explicitly accepted before final release approval. SEC-002 requires retained protected-environment execution evidence.
 
 ## Non-blocking Issues
 
-- SEC-003 is an evidence and governance condition unless the advisory review identifies a vulnerable dependency.
+- SEC-003 remains an evidence condition; the current Q-007/SEC-006 advisory result makes dependency disposition release-blocking.
 
 ## Questions
 
-- Which repository owner will approve the protected release environment and tag policy?
-- What dependency evidence format will be retained with each release while preserving the minimum-compatible version policy?
+- Which protected-environment workflow run and package hashes will be retained as publication evidence?
+- Which compatible dependency remediation or authorised exception will resolve Q-007/SEC-006?
 
 ## Recommendation
 
-Platform should complete the workflow hardening and hand the immutable evidence to Release. Solution Architecture should record the minimum-compatible dependency policy and its review trigger. Security will review the resulting evidence at the next gate.
+Security confirms the workflow hardening in the current repository and requests Platform/Release retain the protected-environment execution evidence. Architecture, Engineering and Security must resolve Q-007/SEC-006 under ADR-007 before final release approval.

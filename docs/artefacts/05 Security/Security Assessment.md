@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Assessment
-version: 1.1
+version: 1.2
 status: Complete with conditions
 owner: Security Engineer
 contributors:
@@ -20,6 +20,7 @@ related_work_items:
   - SEC-003
   - SEC-004
   - SEC-005
+  - SEC-006
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -35,15 +36,15 @@ related_artefacts:
 
 This assessment reviews the approved Nestgrid.Response v0.7.0 Security stage across the five NuGet packages, source code, tests, package metadata, consumer documentation, GitHub Actions workflows and the approved Discovery, Architecture, Engineering, Quality, Platform and Independent Review artefacts.
 
-The assessment stops at Recommend. It does not modify implementation, approve risk on behalf of another role or approve release.
+The assessment is a Security re-review of the current candidate. It does not approve risk on behalf of another role or approve release.
 
 ## Summary
 
 Nestgrid.Response is a small, stateless library. It has no authentication, authorisation, persistence, runtime service identity, runtime secrets or externally hosted trust boundary. Those absences are appropriate to the approved product scope; consumers remain responsible for application access control, exception handling, logging and disclosure policy.
 
-The principal security concern is that the public exception conversion API and its README example make it easy to expose raw exception details through an HTTP response. This is partly a consumer misuse risk, but the library contract and first-party guidance materially enable the unsafe outcome. It requires Architecture and Engineering disposition rather than being assigned solely to consumers.
+The prior exception-disclosure concern has been mitigated through the approved ADR-008 design and Engineering implementation: normal exception conversion now returns a generic message, while diagnostic conversion requires explicitly named methods and trusted-output handling. First-party guidance and tests now document the boundary.
 
-GitHub-side controls have now been configured: protected release tags, a protected `nuget` publishing environment tied to NuGet Trusted Publishing, and Dependabot alerts/security updates. The remaining SEC-002 action is Platform-owned workflow hardening: pin third-party actions to immutable commit SHAs and wire publication through the `nuget` environment. Dependency policy is intentional and documented as minimum-compatible versions, but current advisory evidence and a reproducible dependency baseline are not retained.
+GitHub-side controls have been configured: protected release tags, a protected `nuget` publishing environment tied to NuGet Trusted Publishing, and Dependabot alerts/security updates. The current workflow confirms immutable action SHAs and publication through `environment: nuget`; SEC-002 is therefore complete subject to retained protected-environment execution evidence. The approved minimum-compatible dependency policy is recorded, but current Quality evidence reports unresolved Critical/High advisories in supported package graphs.
 
 ## Threat Model
 
@@ -73,7 +74,7 @@ GitHub-side controls have now been configured: protected release tags, a protect
 
 1. A consumer catches an exception, calls `Results.Error(exception)` and returns the result through an HTTP adapter. The exception message discloses internal details.
 2. A validation result contains sensitive property or message content and is returned using the opt-in member-aware conversion.
-3. A mutable GitHub Action reference is changed or compromised in a workflow with `id-token: write`, allowing altered package publication. Protected tags, the protected `nuget` environment and NuGet Trusted Publishing reduce this risk; immutable action pinning and environment wiring remain outstanding.
+3. A mutable GitHub Action reference is changed or compromised in a workflow with `id-token: write`, allowing altered package publication. Protected tags, the protected `nuget` environment, NuGet Trusted Publishing and immutable action pinning reduce this risk; protected-environment execution evidence remains a release condition.
 4. A consumer maps an access-control status to an inappropriate HTTP status, weakening client or cache handling.
 
 ## Authentication Review
@@ -94,7 +95,7 @@ The opt-in validation conversion is appropriately explicit, but the documentatio
 
 The library validates null arguments and preserves immutable result snapshots. It does not interpret message text as markup, SQL, commands or expressions, so no direct injection sink was identified in the reviewed code.
 
-The main output-handling risk is disclosure rather than injection. `Results.Error(Exception)` copies `Exception.Message` and the exception type name into serialisable output. Validation messages and property names are also emitted as supplied. JSON encoding is delegated to the consuming framework and does not provide a policy decision about whether the content is safe to disclose.
+The main output-handling risk is disclosure rather than injection. The normal `Results.Error(Exception)` path now returns `An unexpected error occurred.` without exception-derived details. Explicit `ErrorWithDiagnosticDetails` methods still emit exception messages and type names and must remain within trusted diagnostic workflows. Validation messages and property names are emitted as supplied. JSON encoding is delegated to the consuming framework and does not provide a policy decision about whether the content is safe to disclose.
 
 ## Secrets and Configuration
 
@@ -104,7 +105,7 @@ NuGet Trusted Publishing identity and repository permissions are release infrast
 
 ## Operational Security
 
-The Platform artefacts provide a coherent package publication, rollback and evidence-retention model. Protected release tags, the protected `nuget` environment, NuGet Trusted Publishing and Dependabot alerts/security updates are now configured. The remaining security conditions are immutable action references, wiring publication through `nuget`, CI reproduction and retention of immutable package provenance.
+The Platform artefacts provide a coherent package publication, rollback and evidence-retention model. Protected release tags, the protected `nuget` environment, NuGet Trusted Publishing, Dependabot alerts/security updates, immutable action SHAs and `environment: nuget` wiring are now recorded. Remaining conditions are a successful protected-environment publication run, CI reproduction, package provenance retention and dependency advisory disposition.
 
 The package is stateless and has no runtime permissions, service identity, installation script or uninstall operation. Consumers should pin or otherwise control package versions through their own dependency-management policy.
 
@@ -112,26 +113,27 @@ The package is stateless and has no runtime permissions, service identity, insta
 
 The approved Architecture direction intentionally favours the lowest compatible dependency versions that do not carry known vulnerabilities, to preserve the pool of compatible consumers. Security accepts that as the governing policy and does not recommend upgrading merely to the newest major version.
 
-However, the repository does not retain a package lock file or current advisory/restore evidence. The direct package baselines include `System.Text.Json` 4.6.0, `System.ComponentModel.Annotations` 4.1.0 and `Microsoft.AspNetCore.Mvc.Core` 2.1.38. Their security posture must be checked against the approved minimum-version policy before publication; no dependency should be upgraded merely to reach a current major version when the existing version remains the lowest compatible version without a known vulnerability.
+ADR-007 now records the policy and review trigger. The direct package baselines include `System.Text.Json` 4.6.0, `System.ComponentModel.Annotations` 4.1.0 and `Microsoft.AspNetCore.Mvc.Core` 2.1.38. Quality’s current candidate audit reports Critical `System.Text.Encodings.Web` 4.6.0/4.5.0, High `Microsoft.AspNetCore.Http` 2.1.1 and High `Newtonsoft.Json` 9.0.1 advisories in supported/package-consumer graphs. The approved minimum-compatible policy does not justify retaining a known vulnerable graph without an explicit Architecture/Security/Sponsor decision and review date.
 
 ## Findings
 
 | ID | Severity | Finding | Impact | Recommendation |
 | --- | --- | --- | --- | --- |
-| SEC-001 | P1 | Exception conversion exposes raw exception message and type through a normal result path. | Consumer APIs may disclose internal paths, connection details, identifiers, vendor details or other sensitive diagnostics. | Architecture and Engineering to define a safe exception-to-result contract, revise first-party guidance and add disclosure regression tests. See [Security Feedback - Exception and Output Disclosure](Security%20Feedback%20-%20Exception%20and%20Output%20Disclosure.md). |
-| SEC-002 | P1 | Publication workflow still references third-party actions by mutable tags and has not yet been wired through the protected `nuget` environment. GitHub-side protection and NuGet policy are configured. | A compromised action reference could alter the build or publish attacker-controlled packages. | Platform to pin actions to immutable SHAs and wire the publish job through `environment: nuget`; retain the protected-tag, environment and NuGet policy evidence. See [Security Feedback - Publication and Dependency Controls](Security%20Feedback%20-%20Publication%20and%20Dependency%20Controls.md). |
-| SEC-003 | P2 | Minimum-compatible dependency policy is not accompanied by retained current advisory and restore evidence. | A vulnerable dependency could be published without a visible exception or upgrade decision. | Solution Architecture to record the policy explicitly; Security/Platform to retain advisory and restore evidence. Do not upgrade merely to reach current versions. |
-| SEC-004 | P2 | Consumer disclosure responsibility is documented, but safe-public versus diagnostic output is not sufficiently distinguished. | Consumers may return validation details, property names or internal messages to untrusted callers or logs. | Architecture/Engineering to disposition the concern; Software Engineering to strengthen package guidance and add representative disclosure-focused tests/examples. |
-| SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | Architecture/Engineering to disposition the concern, document secure mapping expectations and test the default and security-sensitive mappings. |
+| SEC-001 | P1 | Exception conversion previously exposed raw exception message and type through a normal result path. | Consumer APIs could disclose internal diagnostics. | **Resolved.** ADR-008 is accepted; normal overloads now return a generic message, diagnostic methods are explicit, guidance is updated and tests cover safe/diagnostic paths. |
+| SEC-002 | P1 | Publication workflow previously referenced mutable action tags and lacked protected-environment wiring. | A compromised action reference could alter the build or publish attacker-controlled packages. | **Resolved in repository configuration.** All reviewed workflow actions use immutable SHAs and publication uses `environment: nuget`; retain a successful protected-environment run and package provenance before release. |
+| SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Governance resolved; evidence remains open.** ADR-007 records the policy. Security/Platform must retain advisory, restore and package-provenance evidence. |
+| SEC-004 | P2 | Client-safe, diagnostic and consumer-controlled output boundaries were previously insufficiently distinct. | Consumers could expose validation or diagnostic details to untrusted callers. | **Resolved for the current candidate.** Architecture disposition, package guidance, sample guidance and implementation assurance now distinguish the three output categories. |
+| SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | **Resolved for the current candidate.** Consumer responsibility is documented and normative mappings are covered by ASP.NET Core and MVC regression tests. |
+| SEC-006 | P1 | Current supported/package-consumer dependency graphs contain unresolved Critical/High advisories reported by Quality. | Publishing the current graph may expose consumers to known vulnerable dependencies. | Architecture, Engineering and Security must determine compatible remediation or obtain an explicit authorised exception with scope and expiry. Do not upgrade solely for recency, but do not treat a known vulnerable graph as acceptable without a recorded decision. |
 
 ## Accepted Risks
 
 | Risk | Owner | Reason | Review Date |
 | --- | --- | --- | --- |
-| None | — | No role with authority to accept these risks has recorded acceptance. SEC-001 and SEC-002 remain release-blocking conditions; SEC-003 through SEC-005 remain open follow-up risks. Configured GitHub controls reduce SEC-002 exposure but do not complete the Platform action. | Before Release approval |
+| None | — | No role with authority to accept SEC-003 evidence or SEC-006 dependency vulnerability risk has recorded acceptance. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for this candidate; protected-environment execution evidence remains outstanding. | Before Release approval |
 
 ## Recommendation
 
-Security is **complete with conditions**.
+Security re-review is **complete with conditions**.
 
-Platform review may proceed using this assessment and the existing Platform artefacts. Release review may proceed as a conditional evidence review, but the product is **not recommended for final release approval** until SEC-001 and SEC-002 are mitigated or explicitly accepted by the appropriate authority, SEC-003 receives current advisory/restore evidence, Architecture/Engineering disposition SEC-004 and SEC-005, and the Release Report records the final dispositions and immutable publication evidence.
+Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Release review may proceed as a conditional evidence review, but the product is **not recommended for final release approval** until SEC-003 evidence and SEC-006 dependency disposition are complete, protected-environment publication evidence is retained, and the Release Report records final dispositions and package provenance.
