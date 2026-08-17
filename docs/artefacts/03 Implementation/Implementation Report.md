@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Report
-version: 1.1
+version: 1.2
 status: Complete with conditions
 owner: Software Engineer
 contributors:
@@ -16,6 +16,7 @@ related_decisions:
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
   - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
+  - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
 related_work_items:
   - IR-004
 related_repositories:
@@ -29,7 +30,7 @@ related_artefacts:
 
 ## Scope
 
-Engineering completed the approved v0.7.0 retrofit work for the existing v0.6.0 Nestgrid.Response product, including the approved Security follow-on. The work added the missing Engineering lifecycle artefacts, implemented TDR-001 and ADR-008, strengthened validation and security tests and documentation, updated samples and release notes, and made lifecycle evidence visible in the Visual Studio solution.
+Engineering completed the approved v0.7.0 retrofit work for the existing v0.6.0 Nestgrid.Response product, including the approved Security follow-on and the separately approved central package-management task. The work added the missing Engineering lifecycle artefacts, implemented TDR-001 and ADR-008, centralised dependency versions under ADR-007, strengthened validation and security tests and documentation, updated samples and release notes, and made lifecycle evidence visible in the Visual Studio solution.
 
 No package boundary, status semantic, MVC support intent or deferred capability was changed. The approved ADR-008 behavioural correction changes exception-derived output only: the existing exception overloads are safe by default, and the previous diagnostic behaviour is available only through explicitly named methods.
 
@@ -56,6 +57,9 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 - Added security-sensitive default mapping regression tests for both ASP.NET Core and MVC adapters.
 - Documented client-safe, diagnostic and consumer-controlled output boundaries and custom mapping security responsibilities.
 - Added v0.7.0 migration guidance to the changelog.
+- Added root `Directory.Packages.props` with the existing nine direct package versions.
+- Removed project-local package version attributes while retaining package ownership in each project.
+- Verified the resolved direct versions and preserved the MVC `Microsoft.AspNetCore.Mvc.Core` `2.1.38` baseline.
 
 ## Implementation Decisions
 
@@ -66,6 +70,7 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Use `validation_failed` as the default code and `The entity is invalid.` for null error text. | Gives predictable opt-in output while preserving explicit custom-code support. | TDR-001 |
 | Keep solution visibility aligned with filesystem lifecycle structure. | Makes approved decisions, handovers and Engineering evidence discoverable in the IDE. | Implementation Plan |
 | Make exception conversion safe by default. | Prevents the normal result-to-HTTP path from disclosing internal diagnostics while preserving an explicit trusted diagnostic path. | ADR-008 |
+| Centralise package versions without upgrading dependencies. | Prevents version drift while preserving the compatibility policy and selected graph. | ADR-007; Implementation Plan |
 
 ## Changed Components
 
@@ -81,6 +86,8 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 - `src/Nestgrid.Response.AspNetCore/README.md`
 - `src/Nestgrid.Response.Mvc/README.md`
 - `CHANGELOG.md`
+- `Directory.Packages.props`
+- All source, test and sample project files with package references.
 - `samples/Nestgrid.Response.Extensions.Validation.Sample/Program.cs`
 - `samples/Nestgrid.Response.Extensions.Validation.Sample/README.md`
 - `Nestgrid.Response.sln`
@@ -95,6 +102,7 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Member-aware conversion | Four focused tests added. | Covers ordering, filtering, defaults, overrides, empty input and null collection behaviour. |
 | Exception conversion | Safe default and explicit diagnostic paths, including null exceptions. | Core suite contains 166 passing tests. |
 | Security-sensitive adapter mappings | `Unauthorized`, `Forbidden`, `Error` and `NoContent` defaults. | ASP.NET Core and MVC adapter suites cover the normative mappings. |
+| Central package management | Nine direct package versions centralised; project references retain package ownership. | Restore and `dotnet list package --include-transitive` resolve the original versions. |
 | Full solution regression | 289 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
 | Package validation | Five package projects packed successfully. | Each package contained its README and XML documentation. |
 | Samples | Core and validation console samples completed; ASP.NET Core and MVC hosts started successfully. | Web hosts are intentionally long-running applications. |
@@ -111,6 +119,7 @@ Engineering is ready to hand the implementation to Quality, Security and Platfor
 | Make package and lifecycle evidence discoverable. | Solution groups include Architecture, TDR-001, review and Engineering artefacts. | `dotnet sln list` and solution inspection. | Complete |
 | Prevent exception diagnostics from crossing the normal client boundary. | Safe exception overloads return a generic message; diagnostic methods are explicitly named. | Core tests, package README and sample guidance. | Complete |
 | Preserve normative security-sensitive mappings. | Shared defaults remain unchanged. | Shared mapping tests and ASP.NET Core/MVC adapter tests. | Complete |
+| Preserve dependency compatibility during centralisation. | Existing direct versions are declared once centrally; no package version changed. | Restore graph, build, test and package verification. | Complete |
 
 ## Engineering Assurance
 

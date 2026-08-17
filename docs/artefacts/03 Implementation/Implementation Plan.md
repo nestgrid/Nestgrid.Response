@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.2
-status: In Review
+version: 1.3
+status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -125,7 +125,7 @@ The new APIs remain in `ValidationResultExtensions`, the existing responsibility
 
 ## Tooling and IDE Visibility
 
-The solution will expose the root documentation, approved Architecture artefacts, all decisions including TDR-001, the canonical review, and the Engineering README, Implementation Plan and Implementation Report as solution items grouped under their filesystem structure.
+The solution will expose the root documentation, `Directory.Build.props`, `Directory.Packages.props`, approved Architecture artefacts, all decisions including TDR-001, the canonical review, and the Engineering README, Implementation Plan and Implementation Report as solution items grouped under their filesystem structure.
 
 ## Operationalisation Plan
 
@@ -153,8 +153,8 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-007 | Produce Implementation Report and Engineering Assurance. | Completed with conditions |
 | ENG-008 | Implement ADR-008 safe exception conversion and explicit diagnostic methods. | Completed |
 | ENG-009 | Add security-focused tests and update output/mapping guidance and release notes. | Completed |
-| ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Planned for review |
-| ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Planned |
+| ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Completed |
+| ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
 
 ## Interfaces and Contracts
 
@@ -231,4 +231,4 @@ There are no schema, migration, persistence or startup migration changes.
 - Engineering Assurance is recorded with evidence limitations and deviations.
 - Open findings and downstream obligations are explicitly dispositioned.
 - ADR-008 security behaviour and migration guidance are implemented and tested.
-- Central package management is implemented only after this plan amendment is reviewed and the dependency graph remains compatible with ADR-007.
+- Central package management is implemented and verified; the dependency graph remains compatible with ADR-007.
