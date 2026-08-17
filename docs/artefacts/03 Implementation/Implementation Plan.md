@@ -171,7 +171,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-010 | Introduce root `Directory.Packages.props` and remove project-local package version attributes without changing selected versions. | Completed |
 | ENG-011 | Verify restore, build, tests, package output, dependency graph and package metadata after centralisation. | Completed |
 | ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
-| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Pending Architecture/Security approval |
+| ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Ready for Architecture/Security review |
 | ENG-014 | Implement the approved compatible remediation or authorised exception path. | Not started — approval required |
 | ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Not started |
 
@@ -251,6 +251,7 @@ There are no schema, migration, persistence or startup migration changes.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
 - Which patched versions are the lowest compatible choices for each advisory and target framework?
 - Is Candidate A’s explicit transitive-pin approach acceptable under ADR-007 when supported by package-closure and compatibility evidence?
+- Does the remaining fresh MVC `.nuspec` generation limitation require any additional review evidence before implementation approval?
 - Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
 - If not, which authority will decide between a support-boundary change and a time-limited exception?
 - Which CI/advisory/provenance evidence must be retained for the final candidate?

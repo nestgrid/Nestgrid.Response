@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 SEC-006 Dependency Path Matrix
-version: 0.1
+version: 0.2
 status: In Review
 owner: Software Engineer
 contributors:
@@ -60,6 +60,49 @@ The resolved versions below come from the current solution restore graph on 2026
 - Advisory scan results for the baseline and each candidate graph.
 - Explicit Architecture and Security disposition for any support-boundary change or residual-risk exception.
 
+## Candidate A Validation Evidence
+
+Candidate A was evaluated in an isolated worktree from commit `662fb15`; no product-branch files were changed.
+
+| Check | Result | Interpretation |
+| --- | --- | --- |
+| Restore | Passed for the complete solution | Candidate package declarations restore successfully from NuGet. |
+| Release build | Passed, 0 warnings, 0 errors | All source, test and sample projects compile with the proposed parent/dependency combination. |
+| Regression tests | 289 passed, 0 failed, 0 skipped | Core, HTTP, ASP.NET Core, MVC and Validation behaviour remains compatible at test level. |
+| Advisory scan | No vulnerable packages reported across source, test and sample projects | The three reported SEC-006 findings are absent from the evaluated Candidate A graphs. |
+| MVC parent compatibility | Passed at compile and regression-test level | `Microsoft.AspNetCore.Mvc.Core 2.1.38` remains resolved alongside `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`. |
+| MVC encoding path | Passed at resolved-graph level | `System.Text.Encodings.Web` resolves to `4.7.2`; the previous `4.5.0` path is no longer selected. |
+
+## Candidate A Published Dependency Metadata
+
+The table shows the final dependency groups expected in each published package’s `.nuspec`. Core, HTTP and Validation metadata was generated and inspected from the Candidate A pack. ASP.NET Core metadata is unchanged by Candidate A and was cross-checked against the existing generated package metadata. MVC metadata is derived from the evaluated Candidate A project/package references; the isolated MSBuild pack target hung before emitting the MVC archive, so a final MVC `.nuspec` inspection remains a release-evidence task.
+
+| Published package | Target framework | Direct dependency metadata in Candidate A `.nuspec` | Resolved affected closure | Evidence status |
+| --- | --- | --- | --- | --- |
+| `Nestgrid.Response` | `netstandard2.0` | `System.Text.Encodings.Web 4.7.2`; `System.Text.Json 4.6.0` | `System.Text.Encodings.Web 4.7.2`; no reported vulnerable JSON encoding version | Generated and inspected. |
+| `Nestgrid.Response.Http` | `netstandard2.0` | `Nestgrid.Response 0.7.0` | Inherits Core’s `System.Text.Encodings.Web 4.7.2` closure | Generated and inspected; transitive closure verified by restore. |
+| `Nestgrid.Response.AspNetCore` | `net8.0` | `Nestgrid.Response.Http 0.7.0`; framework reference `Microsoft.AspNetCore.App` | Host framework supplies ASP.NET Core dependencies; project graph resolves `System.Text.Encodings.Web 4.7.2` through Core | Project unchanged; existing generated metadata cross-checked; fresh pack archive blocked by MSBuild hang. |
+| `Nestgrid.Response.Mvc` | `netstandard2.0` | `Nestgrid.Response.Http 0.7.0`; `Microsoft.AspNetCore.Mvc.Core 2.1.38`; `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1` | `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1`; `System.Text.Encodings.Web 4.7.2`; no reported `Http 2.1.1`, `Newtonsoft.Json 9.0.1` or encoding `4.5.0` selected | Evaluated metadata and resolved closure verified; fresh MVC `.nuspec` inspection remains outstanding due MSBuild hang. |
+| `Nestgrid.Response.Extensions.Validation` | `netstandard2.0` | `Nestgrid.Response 0.7.0`; `System.ComponentModel.Annotations 4.1.0` | Inherits Core’s `System.Text.Encodings.Web 4.7.2` closure | Generated and inspected; transitive closure verified by restore. |
+
+### MVC Encoding Path
+
+The original MVC graph contained `Microsoft.AspNetCore.Mvc.Core 2.1.38`, which resolved `Microsoft.AspNetCore.Http 2.1.1`, `Newtonsoft.Json 9.0.1` and `System.Text.Encodings.Web 4.5.0`. Candidate A retains the parent MVC package at `2.1.38` but adds explicit compatible dependencies. The evaluated graph now resolves:
+
+```text
+Nestgrid.Response.Mvc
+├── Microsoft.AspNetCore.Mvc.Core 2.1.38
+│   └── Microsoft.AspNetCore.Http 2.1.22
+├── Microsoft.AspNetCore.Http 2.1.22
+├── Newtonsoft.Json 13.0.1
+└── Nestgrid.Response.Http
+    └── Nestgrid.Response
+        └── System.Text.Json 4.6.0
+            └── System.Text.Encodings.Web 4.7.2
+```
+
+The parent package compiled and all MVC tests passed without changing the approved MVC target framework or parent package identity. The remaining `.nuspec` archive inspection is evidence completion, not an identified compatibility failure.
+
 ## Candidate Remediation Comparison
 
 The following candidates are proposals for review. No candidate has been implemented or accepted.
@@ -92,4 +135,4 @@ Candidate A is not yet an implementation approval. Architecture and Security mus
 
 ## Current Conclusion
 
-The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. Candidate A is Engineering’s preferred remediation direction because it uses the lowest identified patched versions without changing package identity, target frameworks or the approved MVC parent package. Architecture and Security must approve or reject this direction before Engineering changes package versions.
+The baseline confirms that SEC-006 affects published or supported package families, especially the MVC package. Central package management did not create the advisories; it preserves the previously selected versions under ADR-007. Candidate A is Engineering’s preferred remediation direction because it uses the lowest identified patched versions without changing package identity, target frameworks or the approved MVC parent package. The isolated evidence indicates that it remediates all currently affected resolved graphs without changing the approved MVC support boundary. Architecture and Security must still approve the direction, and the final MVC `.nuspec` inspection must be completed before implementation is considered ready.
