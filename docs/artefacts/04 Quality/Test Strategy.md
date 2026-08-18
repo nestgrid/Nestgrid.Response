@@ -13,7 +13,7 @@ related_artefacts:
   - ../02 Architecture/Architecture Pack.md
   - ../03 Implementation/Implementation Report.md
   - ../03 Implementation/SEC-006 Closure Evidence.md
-  - ../Release/Roadmap.md
+  - ../07 Release/Roadmap.md
   - ../../reviews/Nestgrid.Response Independent Review.md
 ```
 

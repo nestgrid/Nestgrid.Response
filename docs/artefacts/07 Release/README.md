@@ -5,7 +5,7 @@ Release artefacts record release readiness, operational evidence, known risks an
 ## Contents
 
 - [Release Report](Release%20Report.md)
-- [Release Roadmap](../Release/Roadmap.md)
+- [Release Roadmap](Roadmap.md)
 
 ## Navigation
 

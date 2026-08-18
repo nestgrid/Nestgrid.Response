@@ -177,7 +177,7 @@ HTTP adapters treat `ResultStatus.NoContent` as a bodyless response.
 
 - [Main repository](https://github.com/nestgrid/Nestgrid.Response)
 - [Architecture overview](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/05%20Architecture/Overview.md)
-- [Roadmap](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/artefacts/Release/Roadmap.md)
+- [Roadmap](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/artefacts/07%20Release/Roadmap.md)
 - [Mutation testing](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/09%20Testing/Mutation%20Testing.md)
 
 ## Samples
