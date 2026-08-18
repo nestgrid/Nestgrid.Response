@@ -1,12 +1,26 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v1.7
+version: v2.0
 status: In Review
 owner: Independent Reviewer
+contributors:
+  - Knight
 produced_by: Sentinel
-date: 2026-08-14
+consumed_by:
+  - Release Owner
+  - Project Sponsor
+  - Software Engineer
+  - Quality Engineer
+  - Security Engineer
+  - Platform Engineer
+date: 2026-08-18
 related_decisions:
   - ../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
+related_work_items:
+  - SEC-002
+  - SEC-003
+  - SEC-006
+  - Q-007
 related_repositories:
   - Nestgrid.Response
 ---
@@ -15,17 +29,17 @@ related_repositories:
 
 ## Purpose and Scope
 
-This review assesses the current `/response` repository as a baseline for retrofitting a product developed before the Nestgrid Engineering Operating System (EOS) was established. The intended scope is repository-wide: lifecycle artefacts, decisions, documentation, source, tests, solution structure and supporting automation.
+This review assesses the current `/response` v0.7.0 candidate after Architecture, Engineering, Quality, Security and Platform work, before the Release stage. The scope is repository-wide: lifecycle artefacts, decisions, documentation, source, tests, solution structure, package evidence and publication controls.
 
 The review stops at the Recommend stage. It does not approve a release, accept material risk or execute remediation owned by another lifecycle role.
 
 ## Readiness Claim
 
-No formal EOS lifecycle claim or retrofit plan is present in the repository. The branch is confirmed to be fresh from `origin/main` at the existing `v0.6.0` commit; the earlier interpretation of `features/releases/v0.7.0` as a release claim is withdrawn. This review therefore assesses readiness to begin a controlled EOS retrofit, not readiness to release.
+The current candidate claims conditional readiness for Release review through the Quality, Security and Platform artefacts. No Release Report or final release decision is present. This review therefore assesses readiness to enter Release review, not readiness for final publication.
 
 ## Overall Assessment
 
-The implementation is coherent with the documented package architecture and the Product Owner has created and approved a controlled Discovery baseline and Architecture Handover in `docs/artefacts/01 Discovery/`. The recommendation is to proceed to Architecture review under the normal lifecycle gates, while resolving the stale architectural decision and completing the remaining lifecycle evidence before treating the repository as EOS-compliant.
+The implementation and lifecycle evidence are substantially complete for Release review: Architecture, Engineering, Quality, Security and Platform artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; and Platform records a repeatable publication model. Final release confidence remains conditional because SEC-006/Q-007 closure evidence, protected-environment publication/provenance evidence and the Release Report are outstanding.
 
 ## Evidence Reviewed
 
@@ -36,12 +50,15 @@ The implementation is coherent with the documented package architecture and the 
 - Product handbooks, ADR-001 through ADR-006 and package READMEs.
 - Source projects, test projects, solution structure and GitHub CI, mutation and publish workflows.
 - Current staged and working-tree state.
-- Product Brief evidence recording `dotnet test Nestgrid.Response.sln -c Release`: 265 passed, 0 failed.
+- Current Quality and Platform evidence recording 289 Release tests passed, 0 failed, 0 skipped; package-owned coverage; sequential 100% mutation results; package creation and consumer verification.
+- Current Architecture, Engineering, Quality, Security and Platform artefacts and their handovers.
+- Latest candidate commits through `bdd7198 [Platform] Record Current Candidate Verification Evidence`.
 
 ## Evidence Limitations and Inferences
 
-- No prior independent review exists under `response/docs/reviews/`.
-- No current CI run, mutation report, coverage report or release report is stored with the repository state reviewed. A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction.
+- The canonical review has prior findings through version v1.7; this is the next follow-up review in the same series.
+- No Release Report, retained protected-environment publication run, final package provenance set, fresh MVC `.nuspec` inspection or supported MVC package-consumer execution evidence is present in the repository state reviewed.
+- A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction; this is not treated as a product failure because current Quality evidence records an isolated successful run.
 - The retrofit scope is based on the user's stated objective; the responsible roles should confirm the staged lifecycle sequence and acceptance criteria before execution.
 
 ## Strengths
@@ -90,15 +107,15 @@ The implementation is coherent with the documented package architecture and the 
 
 **Owner:** Solution Architect. **Disposition:** Resolved on 2026-08-14. ADR-006 now records the implemented five-package outcome, active MVC support and current baseline dependency. The Architecture Pack retains publication of the exact compatibility matrix and maintenance policy as Engineering and governance follow-up.
 
-### IR-004 — P2 — Release quality evidence is incomplete
+### IR-004 — Resolved — Quality evidence was incomplete
 
-**Evidence:** The repository documents 100% line and mutation targets in `docs/handbooks/09 Testing/Mutation Testing.md`, and the mutation workflow covers five package configurations, but no current mutation, coverage, CI or release-readiness report is present in the repository. The local test evidence is limited to the 265 passing tests recorded above.
+**Evidence:** The current Quality Test Strategy and Release Readiness Report record 289 passing tests, package-owned coverage, sequential 100% mutation results, package creation, package README checks and generated-package consumer restore/build evidence.
 
-**Impact:** Unit-test execution demonstrates useful confidence but does not establish mutation effectiveness, coverage or release-level evidence for the current branch.
+**Impact:** The Quality-stage evidence gap identified in the previous review is addressed. Release-level dependency, provenance and protected-publication conditions remain separate findings below.
 
-**Recommendation:** Run the configured CI-equivalent mutation and coverage checks for the final candidate, retain or link the results in the appropriate release/quality artefact, and record any exceptions explicitly.
+**Recommendation:** Preserve the current Quality evidence and carry its explicit limitations into the Release Report.
 
-**Owner:** Quality Engineer. **Disposition:** Required for release readiness; may be deferred for documentation-only work with rationale.
+**Owner:** Quality Engineer. **Disposition:** Resolved for the Quality stage on 2026-08-17; downstream release conditions remain open.
 
 ### IR-006 — Resolved — Discovery gate approval authority was not explicit
 
@@ -120,14 +137,47 @@ The implementation is coherent with the documented package architecture and the 
 
 **Owner:** Product Owner. **Disposition:** Resolved. The comparison basis, date, alternatives and decisive trade-offs are recorded; its proportionate scope is accepted for this stage.
 
+### IR-008 — P1 — SEC-006 release-blocking evidence is incomplete
+
+**Evidence:** Security Assessment v1.5, Quality Release Readiness Report and Platform Operational Readiness Review all state that SEC-006/Q-007 remains open. Candidate A's evaluated graphs report no vulnerable packages, but fresh MVC package `.nuspec`/published-closure inspection and supported MVC package-consumer evidence are not retained. Security explicitly states that no exception is implied.
+
+**Impact:** The final published MVC package may differ from the evaluated dependency graph, and the supported MVC consumer boundary is not independently demonstrated. The reported Critical/High dependency risk cannot be considered closed by implementation evidence alone.
+
+**Recommendation:** Retain all of the following from the exact release candidate: (1) the generated `Nestgrid.Response.Mvc` `.nupkg` and `.nuspec`; (2) its dependency groups showing the approved MVC baseline and patched dependencies, including `Microsoft.AspNetCore.Mvc.Core 2.1.38`, `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`; (3) a fresh transitive advisory/restore result proving the reported vulnerable versions are absent; (4) a supported MVC consumer built from the generated package through a local package source, exercising representative controller result/status and payload paths; and (5) package hashes/provenance linking the inspected package to the candidate commit. Reconcile Quality and Security records and obtain final Security closure or an explicit authorised risk decision before release approval.
+
+**Owner:** Engineering / Quality / Security. **Disposition:** Open. Engineering/Mason can generate the local package and consumer evidence; no such evidence is recorded as complete in the current repository. Quality and Security remain awaiting that evidence and final reconciliation.
+
+### IR-009 — P1 — Release Report and final release decision are absent
+
+**Evidence:** The repository contains a release roadmap and Quality, Security and Platform recommendations, but no `docs/artefacts/07 Release/Release Report.md` or equivalent current release decision. The Release Gate requires Quality, Security and Platform recommendations, dispositioned findings and Project Sponsor approval recorded in a Release Report.
+
+**Impact:** There is no canonical record tying the final version, immutable commit, package artefacts, provenance, evidence links, accepted risks and release outcome together. Publication would not be auditable through the EOS Release Gate.
+
+**Recommendation:** Produce the Release Report as the next lifecycle artefact. It must link the current Quality, Security and Platform evidence, record SEC-006/SEC-003/SEC-002 dispositions, identify the exact version and commit, and capture the Project Sponsor's final Proceed or Stop decision.
+
+**Owner:** Release Owner / Project Sponsor. **Disposition:** Open. No Release Report or final release decision has been produced; Release review may begin once the evidence pack is assembled.
+
+### IR-010 — Resolved with recording action — MVC follows the common library maintenance lifecycle
+
+**Evidence:** Product Owner clarification confirms that `.Mvc` is part of the full library and will be maintained with the rest of the library, rather than having a separate maintenance lifecycle.
+
+**Impact:** The separate MVC maintenance ambiguity is resolved. The common library maintenance lifecycle, shared release/version policy and shared review triggers still need to be stated in the durable release/support documentation.
+
+**Recommendation:** Record that MVC follows the full library maintenance, versioning, support and review lifecycle, with no separate MVC end-of-support policy. State the common support owner and review triggers in the Release Report or support guidance.
+
+**Owner:** Product Owner / Solution Architect / Platform Engineer. **Disposition:** Substantively resolved by Product Owner clarification; durable documentation update remains required.
+
 ## Previous Finding Dispositions
 
 - IR-001 is resolved: superseded documentation indexes were removed.
 - IR-002 is superseded: the branch name was not evidence of a release claim.
 - IR-005 is resolved for Discovery: the retrofit baseline and Architecture Handover were approved for downstream use.
-- IR-003 is resolved through Architecture; IR-004 remains open and is owned by the Quality Engineer.
+- IR-003 is resolved through Architecture; IR-004 is resolved for Quality-stage evidence.
 - IR-006 is resolved: approval authority and the Discovery boundary are explicit.
 - IR-007 is resolved: the proportionate existing-solution comparison is recorded.
+- IR-008 remains open: Engineering/Mason may generate the required package and MVC consumer evidence; Quality and Security have not yet recorded closure.
+- IR-009 remains open: Release Owner and Project Sponsor have not yet produced or approved a Release Report.
+- IR-010 is substantively resolved: Product Owner confirmed the common library maintenance lifecycle; durable support-policy wording remains to be recorded.
 
 ## Lifecycle Feedback
 
@@ -136,6 +186,8 @@ The implementation is coherent with the documented package architecture and the 
 - The next responsible role should consume this canonical review and record dispositions, completion evidence or explicit deferrals before the next gate.
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
 - The Architecture Recommendation was approved by the Project Sponsor and the Architecture Pack and Engineering Handover were produced for the v0.7.0 retrofit. Engineering readiness remains conditional on implementation evidence and downstream gates.
+- Quality, Security and Platform recommend proceeding to Release review with explicit conditions; none of those artefacts approves final publication.
+- SEC-006/Q-007, protected publication/provenance evidence and the Release Report are the current release-gate concerns.
 
 ## Engineering Operating System Feedback
 
@@ -145,32 +197,33 @@ The implementation is coherent with the documented package architecture and the 
 
 ## Accepted or Deferred Risks
 
-None recorded. IR-004 remains an open Quality-stage evidence obligation rather than an accepted release risk.
+None recorded. SEC-006/Q-007, SEC-003 evidence and protected-publication evidence remain open rather than accepted.
 
 ## Follow-up Actions
 
-1. Begin Architecture review using the approved Product Brief and Architecture Handover.
-2. Validate the new Discovery index and complete a repository link check.
-3. ~~Update or supersede ADR-006.~~ Resolved in Architecture through the updated ADR-006.
-4. Define and execute the staged lifecycle sequence and produce evidence for each approved stage.
+1. Complete SEC-006/Q-007 MVC package-closure and supported-consumer evidence and obtain Security closure or an authorised risk decision.
+2. Retain the protected-environment publication execution and immutable package provenance evidence.
+3. Record MVC maintenance duration, support ownership and review triggers.
+4. Produce the canonical Release Report and obtain Project Sponsor release approval.
 5. Re-review this canonical document after the responsible roles record dispositions.
 
 ## Product Owner Handover
 
 The Product Owner can pick up this review from the following actions:
 
-1. Hand the approved Product Brief, Architecture Handover and this review to the Solution Architect.
-2. Keep the recorded comparison and approval evidence current if the product position changes.
+1. Review IR-008, IR-009 and IR-010 as the current release-readiness conditions.
+2. Confirm and record the common library maintenance policy, including the shared support owner and review triggers.
+3. Provide the Release Owner and Project Sponsor with this review and the current Quality, Security and Platform recommendations.
 
-Expected handover output: an explicitly approved Discovery baseline with named authority, visible accepted or deferred risks, and the current Independent Review available to Architecture.
+Expected handover output: a Release-stage evidence pack with explicit open-finding dispositions, support-policy decision, provenance links and a canonical Release Report ready for Sponsor decision.
 
 ## Overall Recommendation
 
-**Proceed with conditions.** Architecture has produced an approved Pack and detailed Engineering Handover for the v0.7.0 retrofit. Engineering may proceed within that boundary, while IR-004 remains open for Quality and release evidence. IR-003, IR-005, IR-006 and IR-007 are resolved; IR-001 is resolved, and IR-002 is superseded.
+**Proceed with conditions.** Proceed to Release review and preparation only. Do not approve or publish v0.7.0 until IR-008 and IR-009 are resolved or explicitly accepted by the authorised roles. IR-010 is substantively resolved, subject to recording the common library maintenance policy. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
 
 ## Next Review
 
-Re-review the same canonical document after the responsible roles update the repository and record dispositions. Preserve IR-001 through IR-004 IDs and append material changes to the review history.
+Re-review the same canonical document after the responsible roles update the repository and record dispositions. Preserve IR-001 through IR-010 IDs and append material changes to the review history.
 
 ## Review History
 
@@ -184,3 +237,6 @@ Re-review the same canonical document after the responsible roles update the rep
 | v1.5 | 2026-08-14 | Added an explicit Product Owner handover with dispositions and expected output. |
 | v1.6 | 2026-08-14 | Resolved IR-006 and IR-007 after recording explicit Project Sponsor approval and the proportionate existing-solution comparison. |
 | v1.7 | 2026-08-14 | Recorded the approved Architecture Recommendation, Architecture Pack and Engineering Handover; resolved IR-003 after ADR-006 reconciliation and retained IR-004 for Quality-stage evidence. |
+| v1.8 | 2026-08-18 | Reviewed the current v0.7.0 candidate before Release; resolved IR-004 for Quality evidence and recorded the open SEC-006, Release Report and MVC support-policy conditions. |
+| v1.9 | 2026-08-18 | Recorded the required SEC-006 closure evidence and the Product Owner clarification that MVC follows the common library maintenance lifecycle. |
+| v2.0 | 2026-08-18 | Updated the standard artefact metadata, recorded responsible-role dispositions for IR-008 through IR-010, and preserved the current Release-stage recommendation without adding findings. |
