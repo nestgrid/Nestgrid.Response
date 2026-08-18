@@ -135,6 +135,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{AECA
 	ProjectSection(SolutionItems) = preProject
 		docs\artefacts\Release\README.md = docs\artefacts\Release\README.md
 		docs\artefacts\Release\Roadmap.md = docs\artefacts\Release\Roadmap.md
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 Release", "07 Release", "{7C5E4B11-0D2A-4D13-9B72-65A9F6A75E2D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\07 Release\README.md = docs\artefacts\07 Release\README.md
+		docs\artefacts\07 Release\Release Report.md = docs\artefacts\07 Release\Release Report.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Discovery", "01 Discovery", "{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA}"
@@ -231,6 +237,7 @@ Global
 		{E4F3C2B1-A098-4765-8D7C-6B5A49382716} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{B7F9E0A1-2C34-4D56-8E78-9A0B1C2D3E4F} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 		{F6A1B2C3-D4E5-4678-9012-3456789ABCDE} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{7C5E4B11-0D2A-4D13-9B72-65A9F6A75E2D} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

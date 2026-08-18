@@ -15,7 +15,7 @@ These files preserve useful project history without mixing temporary or release-
 | [Implementation](03%20Implementation/README.md) | Engineering implementation planning and downstream handover evidence. |
 | [Security](05%20Security/README.md) | Security assessment, findings and cross-role security feedback. |
 | [Platform](06%20Platform/README.md) | Publication, consumption, recovery and operational readiness guidance. |
-| [Release](Release/README.md) | Roadmap and release-direction material. |
+| [Release](07%20Release/README.md) | Release readiness, release evidence and Project Sponsor decisions. |
 
 ## Navigation
 
