@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Assessment
-version: 1.5
+version: 1.6
 status: In Review
 owner: Security Engineer
 contributors:
   - Morgan profile
 produced_by: Security Engineer
 consumed_by: Solution Architect, Software Engineer, Platform Engineer, Project Sponsor
-date: 2026-08-17
+date: 2026-08-18
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -51,7 +51,7 @@ Nestgrid.Response is a small, stateless library. It has no authentication, autho
 
 The prior exception-disclosure concern has been mitigated through the approved ADR-008 design and Engineering implementation: normal exception conversion now returns a generic message, while diagnostic conversion requires explicitly named methods and trusted-output handling. First-party guidance and tests now document the boundary.
 
-GitHub-side controls have been configured: protected release tags, a protected `nuget` publishing environment tied to NuGet Trusted Publishing, and Dependabot alerts/security updates. The current workflow confirms immutable action SHAs and publication through `environment: nuget`; SEC-002 is therefore complete subject to retained protected-environment execution evidence. The approved minimum-compatible dependency policy is recorded. Candidate A has since been implemented with the approved exact pins, and Engineering reports no vulnerable packages in the evaluated source, test and sample graphs. Engineering has now retained current MVC package metadata, package hash and supported MVC package-consumer evidence in the SEC-006 Closure Evidence artefact. SEC-006 remains open only for final Security closure and the separate protected-CI/provenance conditions.
+GitHub-side controls have been configured: protected release tags, a protected `nuget` publishing environment tied to NuGet Trusted Publishing, and Dependabot alerts/security updates. The current workflow confirms immutable action SHAs and publication through `environment: nuget`; SEC-002 is therefore complete subject to retained protected-environment execution evidence. The approved minimum-compatible dependency policy is recorded. Candidate A has since been implemented with the approved exact pins, and Engineering reports no vulnerable packages in the evaluated source, test and sample graphs. Engineering has now retained current MVC package metadata, package hash and supported MVC package-consumer evidence in the SEC-006 Closure Evidence artefact. Security considers SEC-006 remediated and closed for the evaluated current candidate; protected-CI publication and provenance remain separate release-stage conditions.
 
 ## Threat Model
 
@@ -112,7 +112,7 @@ NuGet Trusted Publishing identity and repository permissions are release infrast
 
 ## Operational Security
 
-The Platform artefacts provide a coherent package publication, rollback and evidence-retention model. Protected release tags, the protected `nuget` environment, NuGet Trusted Publishing, Dependabot alerts/security updates, immutable action SHAs and `environment: nuget` wiring are now recorded. Remaining conditions are a successful protected-environment publication run, CI reproduction, package provenance retention, post-remediation Quality reconciliation and SEC-006 package-closure evidence.
+The Platform artefacts provide a coherent package publication, rollback and evidence-retention model. Protected release tags, the protected `nuget` environment, NuGet Trusted Publishing, Dependabot alerts/security updates, immutable action SHAs and `environment: nuget` wiring are now recorded. Remaining conditions are a successful protected-environment publication run, supported-CI reproduction and package provenance retention, together with final Release-stage dispositions. The current Engineering, Quality and Security artefacts reconcile the evaluated SEC-006 package closure.
 
 The package is stateless and has no runtime permissions, service identity, installation script or uninstall operation. Consumers should pin or otherwise control package versions through their own dependency-management policy.
 
@@ -128,16 +128,16 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 | --- | --- | --- | --- | --- |
 | SEC-001 | P1 | Exception conversion previously exposed raw exception message and type through a normal result path. | Consumer APIs could disclose internal diagnostics. | **Resolved. Mitigation:** ADR-008 makes normal overloads generic, keeps diagnostics explicit, updates guidance and covers both paths with tests. |
 | SEC-002 | P1 | Publication workflow previously referenced mutable action tags and lacked protected-environment wiring. | A compromised action reference could alter the build or publish attacker-controlled packages. | **Resolved in repository configuration. Mitigation:** All reviewed workflow actions use immutable SHAs and publication uses `environment: nuget`; retain a successful protected-environment run and package provenance before release. |
-| SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Governance resolved; evidence remains open. Mitigation:** ADR-007 records the policy; Security/Platform must retain advisory, restore and package-provenance evidence. |
+| SEC-003 | P2 | Minimum-compatible dependency policy previously lacked recorded governance and evidence. | Dependency posture was not auditable at release time. | **Resolved for the current candidate. Mitigation:** ADR-007 records the policy and the current Matrix/Closure Evidence retain advisory, restore and evaluated package evidence. Platform/Release must retain supported-CI provenance. |
 | SEC-004 | P2 | Client-safe, diagnostic and consumer-controlled output boundaries were previously insufficiently distinct. | Consumers could expose validation or diagnostic details to untrusted callers. | **Resolved for the current candidate. Mitigation:** Architecture disposition, package guidance, sample guidance and implementation assurance distinguish the three output categories. |
 | SEC-005 | P2 | Consumers can assign security-sensitive semantic statuses to arbitrary HTTP status codes. | Misconfiguration could weaken authentication, authorisation, caching or client error handling. | **Resolved for the current candidate. Mitigation:** Consumer responsibility is documented and normative mappings are covered by ASP.NET Core and MVC regression tests. |
-| SEC-006 | P1 | The pre-remediation supported/package-consumer graphs contained Critical/High advisories. Candidate A has been implemented and its evaluated graphs report no vulnerable packages. Engineering has retained current MVC package metadata, package hash and supported MVC consumer evidence; final Security closure is not yet recorded. | Final Security confirmation and protected-CI provenance are still required before the release artefact can be considered free of the reported vulnerable paths. | **Open closure review. Mitigation:** Review [SEC-006 Closure Evidence](../03%20Implementation/SEC-006%20Closure%20Evidence.md), reconcile the Quality result and record final Security closure or an authorised risk decision. Do not release or accept residual vulnerability risk by implication. |
+| SEC-006 | P1 | The pre-remediation supported/package-consumer graphs contained Critical/High advisories. Candidate A has been implemented and its evaluated graphs report no vulnerable packages. Engineering has retained current MVC package metadata, package hash and supported MVC consumer evidence. | No current vulnerable package path was identified in the evaluated candidate graphs. A provenance gap remains until supported CI repeats and retains the package evidence. | **Resolved for the evaluated current candidate.** The Closure Evidence, Matrix, Quality reconciliation and advisory/restore results provide Security closure; Platform/Release must retain protected-CI publication and provenance evidence. No vulnerability risk is accepted. |
 
 ## Accepted Risks
 
 | Risk | Owner | Reason | Review Date |
 | --- | --- | --- | --- |
-| None | — | No role with authority to accept SEC-003 evidence or SEC-006 dependency vulnerability risk has recorded acceptance. | Before Release approval |
+| None | — | No role with authority has accepted a current dependency vulnerability or evidence gap as release risk. | Before Release approval |
 
 ## Residual Risks Requiring Ownership
 
@@ -149,4 +149,4 @@ ADR-007 now records the policy and review trigger. The direct package baselines 
 
 Security recommends proceeding **with conditions**.
 
-Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001, SEC-002, SEC-004 and SEC-005 are resolved for the current candidate, subject to the evidence conditions stated above. Candidate A implementation is complete; its implementation approval is recorded separately and is not a closure decision. Release review may proceed as a conditional evidence/disposition review, but the product is **not recommended for final release approval** until SEC-003 evidence, the post-remediation Quality reconciliation, SEC-006 closure evidence, protected-environment publication evidence and the Release Report’s final dispositions/package provenance are complete. This assessment remains at Recommend pending approval of its recorded position.
+Platform review may proceed using this assessment and the existing Platform artefacts. SEC-001 through SEC-006 are resolved or dispositioned for the current candidate, with SEC-002/SEC-003 retaining the operational requirement for supported-CI execution and provenance. Release review may proceed as a conditional evidence/disposition review, but the product is **not recommended for final release approval** until the protected-environment publication run, supported-CI package provenance and the Release Report’s final dispositions/package provenance are complete. No accepted vulnerability risk is recorded. This assessment remains at Recommend pending approval of its recorded position.

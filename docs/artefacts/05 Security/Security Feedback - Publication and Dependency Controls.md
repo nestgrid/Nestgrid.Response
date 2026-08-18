@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Security Feedback - Publication and Dependency Controls
-version: 1.4
+version: 1.5
 status: In Review
 owner: Platform Engineer
 contributors:
   - Security Engineer
 produced_by: Security Engineer
 consumed_by: Platform Engineer, Solution Architect, Quality Engineer, Project Sponsor
-date: 2026-08-17
+date: 2026-08-18
 supersedes:
 related_decisions:
 related_work_items:
@@ -32,29 +32,28 @@ The Platform publication workflow builds and publishes all five packages through
 
 ## Feedback Summary
 
-The publication model is sound in principle. GitHub-side controls are configured, and the current workflows use immutable action SHAs and publication through the protected `nuget` environment. The remaining Platform evidence is a successful protected-environment execution with retained package provenance. ADR-007 records the minimum-compatible dependency policy. Candidate A has been implemented for SEC-006 and Engineering reports no vulnerable packages in the evaluated graphs; final MVC package-closure, supported MVC consumer evidence and Quality reconciliation remain release conditions.
+The publication model is sound in principle. GitHub-side controls are configured, and the current workflows use immutable action SHAs and publication through the protected `nuget` environment. The remaining Platform evidence is a successful protected-environment execution with retained package provenance. ADR-007 records the minimum-compatible dependency policy. Candidate A has been implemented for SEC-006, and Engineering, Quality and Security evidence now reconcile the evaluated MVC package closure; no vulnerable packages were identified in the evaluated graphs. Supported-CI publication and provenance remain release conditions.
 
 ## Findings
 
 | ID | Severity | Finding | Impact | Recommendation |
 | --- | --- | --- | --- | --- |
 | SEC-002 | P1 | Publication workflow hardening was previously incomplete. | Action compromise or retagging could alter packages or publish through trusted identity. | **Resolved in repository configuration.** Current workflows pin third-party actions to immutable SHAs and the publish job uses `environment: nuget`; Platform/Release must retain successful execution and package provenance evidence. |
-| SEC-003 | P2 | Advisory, restore and package-provenance evidence is not fully retained with the candidate. | Dependency posture is not auditable at release time. | **Governance resolved; evidence open.** Apply ADR-007 and retain the evaluated graph, advisory result, restore result and provenance. Do not upgrade merely for recency. |
-| SEC-006 | P1 | The pre-remediation Quality report identified Critical/High advisories. Candidate A is implemented and the evaluated graphs report no vulnerable packages. Engineering has retained current MVC package metadata, package hash and supported MVC consumer evidence; final Security closure remains outstanding. | A protected-release or provenance discrepancy could leave a known vulnerable path in the release artefact. | Review the retained MVC closure/consumer evidence and complete final Security closure. No exception is implied. |
+| SEC-003 | P2 | Advisory, restore and package-provenance evidence was not fully retained with the candidate. | Dependency posture was not auditable at release time. | **Resolved for the current candidate.** ADR-007 and the Matrix/Closure Evidence retain the evaluated graph, advisory and restore evidence. Platform/Release must retain supported-CI provenance. Do not upgrade merely for recency. |
+| SEC-006 | P1 | The pre-remediation Quality report identified Critical/High advisories. Candidate A is implemented and the evaluated graphs report no vulnerable packages. Engineering has retained current MVC package metadata, package hash and supported MVC consumer evidence. | No current vulnerable package path was identified in the evaluated candidate graphs; a provenance discrepancy could still invalidate the release evidence. | **Resolved for the evaluated current candidate.** Retain protected-CI publication and package provenance before final release approval. No exception is implied. |
 
 ## Blocking Issues
 
-- SEC-006 must be evidenced as closed or explicitly accepted before final release approval. SEC-002 requires retained protected-environment execution evidence.
+- SEC-002 requires retained protected-environment execution evidence and SEC-003/SEC-006 require supported-CI package provenance before final release approval.
 
 ## Non-blocking Issues
 
-- SEC-003 remains an evidence condition; Q-007/SEC-006 reconciliation and final package closure remain release-blocking.
+- Supported-CI provenance and the final Release-stage package/disposition record remain release conditions.
 
 ## Questions
 
 - Which protected-environment workflow run and package hashes will be retained as publication evidence?
-- Does the final Candidate A evidence demonstrate that Q-007/SEC-006 is fully closed across published and supported consumer graphs?
 
 ## Recommendation
 
-Security confirms the workflow hardening in the current repository and requests Platform/Release retain the protected-environment execution evidence. Candidate A implementation is complete; Architecture, Engineering, Quality and Security must confirm final Q-007/SEC-006 closure evidence under ADR-007 before final release approval.
+Security confirms the workflow hardening and closes SEC-006 for the evaluated current candidate. Platform/Release must retain the protected-environment execution, supported-CI package provenance and final Release-stage evidence before final release approval.
