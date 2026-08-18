@@ -20,6 +20,7 @@ dotnet run --project samples/Nestgrid.Response.Extensions.Validation.Sample
 - Converting one validation result to a `ResultMessage`.
 - Converting many validation results to messages.
 - Creating non-generic and typed invalid results.
+- Creating member-aware messages and invalid results with a stable validation code.
 
 ## Limitations
 

@@ -17,13 +17,14 @@ dotnet run --project samples/Nestgrid.Response.Sample
 ## Demonstrates
 
 - Creating successful and non-success `Result<T>` values.
+- Converting an exception to a client-safe error result.
 - Printing statuses, values and messages.
 - Mapping a domain value to a DTO.
 - Matching success and failure flows.
 
 ## Limitations
 
-The sample uses in-memory records and console output so the result behavior stays visible.
+The sample uses in-memory records and console output so the result behavior stays visible. Diagnostic exception details are intentionally not returned by the normal `Results.Error(Exception)` path; applications should log exceptions separately and use `ErrorWithDiagnosticDetails` only inside trusted diagnostic workflows.
 
 ## Navigation
 

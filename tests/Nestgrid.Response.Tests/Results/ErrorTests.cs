@@ -43,7 +43,7 @@ public sealed class ErrorTests
     }
 
     [Fact]
-    public void Error_WithException_ShouldCreateErrorResultWithExceptionMessageAndCode()
+    public void Error_WithException_ShouldCreateSafeGenericErrorResult()
     {
         // Arrange
         var exception = new InvalidOperationException("Unexpected failure");
@@ -54,9 +54,21 @@ public sealed class ErrorTests
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
         result.Messages.Count.ShouldBe(1);
-        result.Messages[0].Message.ShouldBe(exception.Message);
-        result.Messages[0].Code.ShouldBe(nameof(InvalidOperationException));
+        result.Messages[0].Message.ShouldBe("An unexpected error occurred.");
+        result.Messages[0].Code.ShouldBeNull();
         result.Messages[0].Severity.ShouldBe(ResultMessageSeverity.Error);
+    }
+
+    [Fact]
+    public void ErrorWithDiagnosticDetails_WithException_ShouldPreserveExceptionMessageAndCode()
+    {
+        var exception = new InvalidOperationException("Unexpected failure");
+
+        var result = ResultsFactory.ErrorWithDiagnosticDetails(exception);
+
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.Messages.Single().Message.ShouldBe(exception.Message);
+        result.Messages.Single().Code.ShouldBe(nameof(InvalidOperationException));
     }
 
     [Fact]
@@ -111,7 +123,7 @@ public sealed class ErrorTests
     }
 
     [Fact]
-    public void ErrorOfT_WithException_ShouldCreateErrorResultWithExceptionMessageAndCode()
+    public void ErrorOfT_WithException_ShouldCreateSafeGenericErrorResult()
     {
         // Arrange
         var exception = new InvalidOperationException("Unexpected failure");
@@ -123,9 +135,22 @@ public sealed class ErrorTests
         result.Status.ShouldBe(ResultStatus.Error);
         result.Value.ShouldBeNull();
         result.Messages.Count.ShouldBe(1);
-        result.Messages[0].Message.ShouldBe(exception.Message);
-        result.Messages[0].Code.ShouldBe(nameof(InvalidOperationException));
+        result.Messages[0].Message.ShouldBe("An unexpected error occurred.");
+        result.Messages[0].Code.ShouldBeNull();
         result.Messages[0].Severity.ShouldBe(ResultMessageSeverity.Error);
+    }
+
+    [Fact]
+    public void ErrorWithDiagnosticDetailsOfT_WithException_ShouldPreserveExceptionMessageAndCode()
+    {
+        var exception = new InvalidOperationException("Unexpected failure");
+
+        var result = ResultsFactory.ErrorWithDiagnosticDetails<string>(exception);
+
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.Value.ShouldBeNull();
+        result.Messages.Single().Message.ShouldBe(exception.Message);
+        result.Messages.Single().Code.ShouldBe(nameof(InvalidOperationException));
     }
 
     [Fact]
@@ -138,6 +163,26 @@ public sealed class ErrorTests
         var thrown = Should.Throw<ArgumentNullException>(() => ResultsFactory.Error<string>(exception));
 
         // Assert
+        thrown.ParamName.ShouldBe(nameof(exception));
+    }
+
+    [Fact]
+    public void ErrorWithDiagnosticDetails_WhenExceptionIsNull_ShouldThrowArgumentNullException()
+    {
+        Exception exception = null!;
+
+        var thrown = Should.Throw<ArgumentNullException>(() => ResultsFactory.ErrorWithDiagnosticDetails(exception));
+
+        thrown.ParamName.ShouldBe(nameof(exception));
+    }
+
+    [Fact]
+    public void ErrorWithDiagnosticDetailsOfT_WhenExceptionIsNull_ShouldThrowArgumentNullException()
+    {
+        Exception exception = null!;
+
+        var thrown = Should.Throw<ArgumentNullException>(() => ResultsFactory.ErrorWithDiagnosticDetails<string>(exception));
+
         thrown.ParamName.ShouldBe(nameof(exception));
     }
 }

@@ -28,9 +28,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution-items", ".solutio
 		.gitignore = .gitignore
 		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
 		CHANGELOG.md = CHANGELOG.md
+		scripts\verify-packages.sh = scripts\verify-packages.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response", "src\Nestgrid.Response\Nestgrid.Response.csproj", "{2206CEEE-354D-4ADD-A8A3-9757113BCF44}"
@@ -85,12 +87,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "decisions", "decisions", "{
 		docs\decisions\ADR-004-AspNetCore-Separation.md = docs\decisions\ADR-004-AspNetCore-Separation.md
 		docs\decisions\ADR-005-Core-Object-Model.md = docs\decisions\ADR-005-Core-Object-Model.md
 		docs\decisions\ADR-006-AspNetCore-And-Mvc-Package-Separation.md = docs\decisions\ADR-006-AspNetCore-And-Mvc-Package-Separation.md
+		docs\decisions\ADR-007-Minimum-Compatible-Dependency-Policy.md = docs\decisions\ADR-007-Minimum-Compatible-Dependency-Policy.md
+		docs\decisions\ADR-008-Safe-Exception-Result-Conversion.md = docs\decisions\ADR-008-Safe-Exception-Result-Conversion.md
+		docs\decisions\TDR-001-Validation-Result-Conversion-Detail.md = docs\decisions\TDR-001-Validation-Result-Conversion-Detail.md
 		docs\decisions\README.md = docs\decisions\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artefacts", "artefacts", "{65C947DC-B875-407D-9121-81C0CBD116DC}"
 	ProjectSection(SolutionItems) = preProject
 		docs\artefacts\README.md = docs\artefacts\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reviews", "reviews", "{D2F3D1D8-2A52-4D7A-8A4E-77E0B8A0C1B4}"
+	ProjectSection(SolutionItems) = preProject
+		docs\reviews\Nestgrid.Response Independent Review.md = docs\reviews\Nestgrid.Response Independent Review.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "handbooks", "handbooks", "{E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}"
@@ -121,10 +131,66 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09 Testing", "09 Testing", 
 		docs\handbooks\09 Testing\Mutation Testing.md = docs\handbooks\09 Testing\Mutation Testing.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{AECAE8ED-AE3F-4F38-8930-210676935B7A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 Release", "07 Release", "{7C5E4B11-0D2A-4D13-9B72-65A9F6A75E2D}"
 	ProjectSection(SolutionItems) = preProject
-		docs\artefacts\Release\README.md = docs\artefacts\Release\README.md
-		docs\artefacts\Release\Roadmap.md = docs\artefacts\Release\Roadmap.md
+		docs\artefacts\07 Release\README.md = docs\artefacts\07 Release\README.md
+		docs\artefacts\07 Release\Release Report.md = docs\artefacts\07 Release\Release Report.md
+		docs\artefacts\07 Release\Roadmap.md = docs\artefacts\07 Release\Roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Discovery", "01 Discovery", "{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\01 Discovery\README.md = docs\artefacts\01 Discovery\README.md
+		docs\artefacts\01 Discovery\Opportunity Decision.md = docs\artefacts\01 Discovery\Opportunity Decision.md
+		docs\artefacts\01 Discovery\Product Brief.md = docs\artefacts\01 Discovery\Product Brief.md
+		docs\artefacts\01 Discovery\Architecture Handover.md = docs\artefacts\01 Discovery\Architecture Handover.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Architecture", "02 Architecture", "{D5B2C4E3-1B1E-4A7E-9D9A-2E548D2A62F7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\02 Architecture\README.md = docs\artefacts\02 Architecture\README.md
+		docs\artefacts\02 Architecture\Architecture Recommendation.md = docs\artefacts\02 Architecture\Architecture Recommendation.md
+		docs\artefacts\02 Architecture\Architecture Pack.md = docs\artefacts\02 Architecture\Architecture Pack.md
+		docs\artefacts\02 Architecture\Engineering Handover.md = docs\artefacts\02 Architecture\Engineering Handover.md
+		docs\artefacts\02 Architecture\Architecture Feedback - Security.md = docs\artefacts\02 Architecture\Architecture Feedback - Security.md
+		docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md = docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Implementation", "03 Implementation", "{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\03 Implementation\README.md = docs\artefacts\03 Implementation\README.md
+		docs\artefacts\03 Implementation\Implementation Plan.md = docs\artefacts\03 Implementation\Implementation Plan.md
+		docs\artefacts\03 Implementation\Implementation Report.md = docs\artefacts\03 Implementation\Implementation Report.md
+		docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md = docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md
+		docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md = docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Quality", "04 Quality", "{E4F3C2B1-A098-4765-8D7C-6B5A49382716}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\04 Quality\README.md = docs\artefacts\04 Quality\README.md
+		docs\artefacts\04 Quality\Test Strategy.md = docs\artefacts\04 Quality\Test Strategy.md
+		docs\artefacts\04 Quality\Release Readiness Report.md = docs\artefacts\04 Quality\Release Readiness Report.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Security", "05 Security", "{B7F9E0A1-2C34-4D56-8E78-9A0B1C2D3E4F}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\05 Security\README.md = docs\artefacts\05 Security\README.md
+		docs\artefacts\05 Security\Security Assessment.md = docs\artefacts\05 Security\Security Assessment.md
+		docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md = docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md
+		docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md = docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md
+		docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md = docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Platform", "06 Platform", "{F6A1B2C3-D4E5-4678-9012-3456789ABCDE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\artefacts\06 Platform\README.md = docs\artefacts\06 Platform\README.md
+		docs\artefacts\06 Platform\Deployment Guide.md = docs\artefacts\06 Platform\Deployment Guide.md
+		docs\artefacts\06 Platform\Operational Readiness Review.md = docs\artefacts\06 Platform\Operational Readiness Review.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{0183F79D-0ADA-4376-B5F4-F1D8BAA3F907}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\verify-packages.sh = scripts\verify-packages.sh
 	EndProjectSection
 EndProject
 Global
@@ -153,12 +219,19 @@ Global
 		{233BD5EF-3ACA-4767-A418-1193D2F6B1F8} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
 		{3A764065-EFA8-43A3-8934-0AC422F63225} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 		{65C947DC-B875-407D-9121-81C0CBD116DC} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
+		{D2F3D1D8-2A52-4D7A-8A4E-77E0B8A0C1B4} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 		{E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A} = {97BDCA50-841E-4AEE-BB95-410535FC3F4F}
 		{3F5C85A2-F9A0-440C-B18D-CEA847FEA400} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
 		{AEED5854-7145-415E-930F-10900C360DBE} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
 		{4B82DD31-E014-4F61-8124-CFEC8DC110DF} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
 		{1CB9E066-13BF-4AF1-AEF0-58571E55725D} = {E0C0BE7F-AAA3-40DC-BD39-5C7CF938525A}
-		{AECAE8ED-AE3F-4F38-8930-210676935B7A} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{C5A7E5D3-7CCB-4AF3-A7A7-7CECF5B4F8EA} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{D5B2C4E3-1B1E-4A7E-9D9A-2E548D2A62F7} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{E4F3C2B1-A098-4765-8D7C-6B5A49382716} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{B7F9E0A1-2C34-4D56-8E78-9A0B1C2D3E4F} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{F6A1B2C3-D4E5-4678-9012-3456789ABCDE} = {65C947DC-B875-407D-9121-81C0CBD116DC}
+		{7C5E4B11-0D2A-4D13-9B72-65A9F6A75E2D} = {65C947DC-B875-407D-9121-81C0CBD116DC}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2206CEEE-354D-4ADD-A8A3-9757113BCF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

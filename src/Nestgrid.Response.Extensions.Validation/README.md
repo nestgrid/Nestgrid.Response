@@ -62,6 +62,7 @@ public Result<UserDto> Create(CreateUserRequest request)
 - Allows caller-selected message severity.
 - Preserves validation message text exactly as supplied.
 - Does not introduce a custom validation abstraction.
+- Provides opt-in member-aware conversion through `ToMessagesWithProperties()` and `ToInvalidResultWithProperties<T>()`.
 
 ## Behavior
 
@@ -71,6 +72,14 @@ public Result<UserDto> Create(CreateUserRequest request)
 - Message properties are not inferred.
 - Default severity is `Warning`.
 - `ToInvalidResult()` always returns `ResultStatus.Invalid`.
+
+Member-aware conversion is opt-in and preserves member names as `ResultMessage.Property` values. Blank member names are ignored; a validation result without a usable member produces one memberless message. The default code is `validation_failed`, the default message for a missing error message is `The entity is invalid.`, and the default severity remains `Warning`.
+
+Validation messages, property names and custom codes are consumer-controlled output. Review them before returning them to untrusted clients or writing them to logs; the package does not decide whether a particular domain validation message is safe to disclose.
+
+```csharp
+var result = validationResults.ToInvalidResultWithProperties<UserDto>();
+```
 
 Override severity when needed:
 

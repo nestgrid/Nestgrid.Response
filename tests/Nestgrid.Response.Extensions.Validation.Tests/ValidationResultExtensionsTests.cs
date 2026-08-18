@@ -47,6 +47,14 @@ public sealed class ValidationResultExtensionsTests
     }
 
     [Fact]
+    public void ToMessage_WithInformationSeverity_ShouldUseInformation()
+    {
+        var message = new ValidationResult("Informational validation message").ToMessage(ResultMessageSeverity.Information);
+
+        message.Severity.ShouldBe(ResultMessageSeverity.Information);
+    }
+
+    [Fact]
     public void ToMessage_WhenSeverityIsUnsupported_ShouldThrowArgumentOutOfRangeException()
     {
         // Arrange
@@ -150,6 +158,116 @@ public sealed class ValidationResultExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(validationResults));
+    }
+
+    [Fact]
+    public void ToMessages_WhenElementIsNull_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<ValidationResult> validationResults = new ValidationResult[] { null! };
+
+        var exception = Should.Throw<ArgumentNullException>(() => validationResults.ToMessages());
+
+        exception.ParamName.ShouldBe("validationResult");
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WithMultipleMembers_ShouldCreateMessagesInSourceOrder()
+    {
+        var validationResults = new[]
+        {
+            new ValidationResult("Invalid user", new[] { "Name", "Email" })
+        };
+
+        var messages = validationResults.ToMessagesWithProperties();
+
+        messages.Select(message => (message.Property, message.Code, message.Message))
+            .ShouldBe(new[]
+            {
+                ((string?)"Name", (string?)"validation_failed", "Invalid user"),
+                ((string?)"Email", (string?)"validation_failed", "Invalid user")
+            });
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_ShouldIgnoreBlankMembersAndKeepMemberlessResult()
+    {
+        var validationResults = new[]
+        {
+            new ValidationResult("Invalid user", new[] { " ", "Name", "\t" }),
+            new ValidationResult(null)
+        };
+
+        var messages = validationResults.ToMessagesWithProperties("custom", ResultMessageSeverity.Error);
+
+        messages.Select(message => (message.Property, message.Code, message.Message, message.Severity))
+            .ShouldBe(new[]
+            {
+                ((string?)"Name", (string?)"custom", "Invalid user", ResultMessageSeverity.Error),
+                ((string?)null, (string?)"custom", "The entity is invalid.", ResultMessageSeverity.Error)
+            });
+    }
+
+    [Fact]
+    public void ToInvalidResultWithPropertiesGeneric_WithEmptyInput_ShouldReturnTypedInvalidResultWithoutMessages()
+    {
+        var result = Array.Empty<ValidationResult>().ToInvalidResultWithProperties<UserDto>();
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Value.ShouldBeNull();
+        result.Messages.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<ValidationResult> validationResults = null!;
+
+        var exception = Should.Throw<ArgumentNullException>(() => validationResults.ToMessagesWithProperties());
+
+        exception.ParamName.ShouldBe(nameof(validationResults));
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WhenCodeIsNull_ShouldThrowArgumentNullException()
+    {
+        var validationResults = new[] { new ValidationResult("Invalid") };
+
+        var exception = Should.Throw<ArgumentNullException>(() => validationResults.ToMessagesWithProperties(null!));
+
+        exception.ParamName.ShouldBe("code");
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WithInformationSeverity_ShouldUseInformation()
+    {
+        var validationResults = new[] { new ValidationResult("Invalid", new[] { "Name" }) };
+
+        var message = validationResults.ToMessagesWithProperties(severity: ResultMessageSeverity.Information).Single();
+
+        message.Severity.ShouldBe(ResultMessageSeverity.Information);
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WhenElementIsNull_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<ValidationResult> validationResults = new ValidationResult[] { null! };
+
+        var exception = Should.Throw<ArgumentNullException>(() => validationResults.ToMessagesWithProperties());
+
+        exception.ParamName.ShouldBe("validationResult");
+    }
+
+    [Fact]
+    public void ToMessagesWithProperties_WhenSeverityIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    {
+        var validationResults = new[] { new ValidationResult("Invalid") };
+        var severity = (ResultMessageSeverity)999;
+
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() =>
+            validationResults.ToMessagesWithProperties(severity: severity));
+
+        exception.ParamName.ShouldBe(nameof(severity));
+        exception.Message.ShouldContain("Unsupported message severity.");
     }
 
     [Fact]
@@ -277,6 +395,29 @@ public sealed class ValidationResultExtensionsTests
 
         // Assert
         exception.ParamName.ShouldBe(nameof(validationResults));
+    }
+
+    [Fact]
+    public void ToInvalidResultWithProperties_ShouldReturnInvalidResult()
+    {
+        var validationResults = new[] { new ValidationResult("Name is required", new[] { "Name" }) };
+
+        var result = validationResults.ToInvalidResultWithProperties();
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Messages.Single().Property.ShouldBe("Name");
+    }
+
+    [Fact]
+    public void ToInvalidResultWithPropertiesGeneric_ShouldReturnTypedInvalidResult()
+    {
+        var validationResults = new[] { new ValidationResult("Name is required", new[] { "Name" }) };
+
+        var result = validationResults.ToInvalidResultWithProperties<UserDto>();
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Value.ShouldBeNull();
+        result.Messages.Single().Property.ShouldBe("Name");
     }
 
     private sealed record UserDto(int Id, string Name);

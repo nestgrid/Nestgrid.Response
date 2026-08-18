@@ -143,7 +143,22 @@ catch (Exception exception)
 }
 ```
 
-The exception itself is not retained. Its message becomes the result message, and its type name becomes the message code. Applications remain responsible for logging exceptions and deciding what information is safe to expose.
+The exception itself is not retained and diagnostic details are not copied into the normal result:
+
+```csharp
+return Results.Error(exception);
+```
+
+This returns the client-safe message `An unexpected error occurred.` with no exception-derived code. Log the exception separately. This safe default is an intentional behaviour correction in v0.7.0; callers must not depend on the previous raw message or type-name output.
+
+For trusted internal diagnostics only, use the explicitly named methods:
+
+```csharp
+var diagnostic = Results.ErrorWithDiagnosticDetails(exception);
+var typedDiagnostic = Results.ErrorWithDiagnosticDetails<UserDto>(exception);
+```
+
+These methods preserve the exception message and type name. Do not return their results directly to untrusted clients or serialise them without an explicit output policy.
 
 ## NoContent<T>
 
@@ -162,7 +177,7 @@ HTTP adapters treat `ResultStatus.NoContent` as a bodyless response.
 
 - [Main repository](https://github.com/nestgrid/Nestgrid.Response)
 - [Architecture overview](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/05%20Architecture/Overview.md)
-- [Roadmap](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/artefacts/Release/Roadmap.md)
+- [Roadmap](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/artefacts/07%20Release/Roadmap.md)
 - [Mutation testing](https://github.com/nestgrid/Nestgrid.Response/blob/main/docs/handbooks/09%20Testing/Mutation%20Testing.md)
 
 ## Samples

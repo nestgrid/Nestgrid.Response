@@ -118,7 +118,7 @@ Other libraries are being developed to provide reusable building blocks for mode
 - [Architecture overview](docs/handbooks/05%20Architecture/Overview.md)
 - [Coding standards](docs/handbooks/08%20Coding%20Standards/Coding%20Standards.md)
 - [Mutation testing](docs/handbooks/09%20Testing/Mutation%20Testing.md)
-- [Roadmap](docs/artefacts/Release/Roadmap.md)
+- [Roadmap](docs/artefacts/07%20Release/Roadmap.md)
 - [Architecture decisions](docs/decisions/README.md)
 
 ## Samples
@@ -140,7 +140,7 @@ dotnet run --project samples/Nestgrid.Response.Sample
 
 Nestgrid.Response is pre-1.0 and is currently focused on documentation quality, API stability, and adapter polish.
 
-Planned areas are tracked in the [roadmap](docs/artefacts/Release/Roadmap.md). Current candidates include OpenAPI documentation helpers, `ProblemDetails` guidance, and broader adapter evaluation. Breaking changes are avoided unless they are necessary before a stable 1.0 release.
+Planned areas are tracked in the [roadmap](docs/artefacts/07%20Release/Roadmap.md). Current candidates include OpenAPI documentation helpers, `ProblemDetails` guidance, and broader adapter evaluation. Breaking changes are avoided unless they are necessary before a stable 1.0 release.
 
 ## Contributing
 
