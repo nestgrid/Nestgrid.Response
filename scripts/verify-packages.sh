@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail
 
 if [ "$#" -ne 2 ]; then
   echo "Usage: ./scripts/verify-packages.sh <artifacts-directory> <version>"
@@ -10,6 +10,9 @@ fi
 ARTIFACTS_DIRECTORY="$1"
 EXPECTED_VERSION="$2"
 ARTIFACTS_SOURCE="$(cd "${ARTIFACTS_DIRECTORY}" && pwd)"
+
+echo "Verifying packages from artifacts directory: ${ARTIFACTS_SOURCE}"
+echo "Expected package version: ${EXPECTED_VERSION}"
 
 packages=(
   Nestgrid.Response
@@ -43,21 +46,30 @@ consumer_directory="$(mktemp -d)"
 trap 'rm -rf "${consumer_directory}"' EXIT
 export NUGET_PACKAGES="${consumer_directory}/packages"
 
-dotnet new console --framework net8.0 --output "${consumer_directory}" --no-restore >/dev/null
-dotnet new nugetconfig --output "${consumer_directory}" --force >/dev/null
+echo "Creating temporary consumer project: ${consumer_directory}"
+dotnet new console --framework net8.0 --output "${consumer_directory}" --no-restore
+
+echo "Creating temporary NuGet configuration"
+dotnet new nugetconfig --output "${consumer_directory}" --force
+
+echo "Configuring local package source: ${ARTIFACTS_SOURCE}"
 dotnet nuget add source "${ARTIFACTS_SOURCE}" \
   --name nestgrid-response-artifacts \
-  --configfile "${consumer_directory}/NuGet.Config" >/dev/null
+  --configfile "${consumer_directory}/NuGet.Config"
+
+echo "Adding package references to temporary consumer"
 for package in "${packages[@]}"; do
   dotnet add "${consumer_directory}" package "${package}" \
     --version "${EXPECTED_VERSION}" \
-    --no-restore >/dev/null
+    --no-restore
 done
 
+echo "Restoring temporary consumer from configured package sources"
 dotnet restore "${consumer_directory}" \
   --configfile "${consumer_directory}/NuGet.Config" \
   --nologo
 
+echo "Building temporary consumer"
 dotnet build "${consumer_directory}" --configuration Release --no-restore --nologo
 
 echo "Package contents and consumer installation verified for version ${EXPECTED_VERSION}."
