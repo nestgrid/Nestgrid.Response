@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Changed `Results.Error(Exception)` and `Results.Error<T>(Exception)` to return the client-safe message `An unexpected error occurred.` without exception-derived details.
 - Added explicitly named `ErrorWithDiagnosticDetails` overloads for trusted internal diagnostic workflows.
+- Added opt-in member-aware validation conversion in `Nestgrid.Response.Extensions.Validation` through `ToMessagesWithProperties`, `ToInvalidResultWithProperties` and `ToInvalidResultWithProperties<T>`.
+- Preserved the existing validation conversion methods and added structured property, code, fallback-message and severity behaviour for the new opt-in APIs.
+- Centralised package versions in `Directory.Packages.props` while retaining package ownership in each project.
+- Updated the minimum-compatible dependency baseline for the affected graphs: `System.Text.Encodings.Web` `4.7.2`, `Microsoft.AspNetCore.Http` `2.1.22` and `Newtonsoft.Json` `13.0.1`.
 - Documented the distinction between client-safe, diagnostic and consumer-controlled output.
 - Documented the security implications of custom HTTP status mappings.
 
