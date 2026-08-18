@@ -178,7 +178,7 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 
 ## Outstanding Work
 
-- Quality to execute and retain mutation, coverage, CI-equivalent and release-readiness evidence, resolving IR-004.
+- Quality to retain its completed mutation/coverage evidence and reconcile the current SEC-006 closure evidence in the Release Readiness Report.
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
 - Quality to reconcile the current MVC package-consumer evidence in the Release Readiness Report.
 - Security to perform final SEC-006 closure review under ADR-007.
@@ -203,6 +203,8 @@ Quality should focus on member-aware validation contract behaviour, both adapter
 
 Engineering hands Quality the approved Architecture Pack, Engineering Handover, this Implementation Report, the current source and tests, and the existing [Test Strategy](../04%20Quality/Test%20Strategy.md) and [Release Readiness Report](../04%20Quality/Release%20Readiness%20Report.md).
 
+The detailed MVC package, dependency metadata, hash, advisory and supported-consumer evidence is recorded in [SEC-006 Closure Evidence](SEC-006%20Closure%20Evidence.md) for Quality and Security review.
+
 Engineering verification for this handover is:
 
 - Release solution build succeeded with 0 warnings and 0 errors.
@@ -216,7 +218,7 @@ Quality remains responsible for its own mutation, coverage, package-consumer and
 
 ## Security Notes
 
-Security should confirm that validation property names and messages are handled under consumer privacy/output policy and that no new dependency or package boundary creates an unintended trust or disclosure path.
+Security should review [SEC-006 Closure Evidence](SEC-006%20Closure%20Evidence.md), confirm the final Candidate A dependency graph under ADR-007 and record SEC-006 closure or an authorised risk decision. Security should also confirm that validation property names and messages are handled under consumer privacy/output policy and that no new dependency or package boundary creates an unintended trust or disclosure path.
 
 ## Recommendation
 

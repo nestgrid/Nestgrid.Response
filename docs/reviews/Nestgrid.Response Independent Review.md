@@ -39,7 +39,7 @@ The current candidate claims conditional readiness for Release review through th
 
 ## Overall Assessment
 
-The implementation and lifecycle evidence are substantially complete for Release review: Architecture, Engineering, Quality, Security and Platform artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; and Platform records a repeatable publication model. Final release confidence remains conditional because SEC-006/Q-007 closure evidence, protected-environment publication/provenance evidence and the Release Report are outstanding.
+The implementation and lifecycle evidence are substantially complete for Release review: Architecture, Engineering, Quality, Security and Platform artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; and Platform records a repeatable publication model. Final release confidence remains conditional because final Security closure, protected-environment publication/provenance evidence and the Release Report are outstanding.
 
 ## Evidence Reviewed
 
@@ -52,7 +52,7 @@ The implementation and lifecycle evidence are substantially complete for Release
 - Current staged and working-tree state.
 - Current Quality and Platform evidence recording 289 Release tests passed, 0 failed, 0 skipped; package-owned coverage; sequential 100% mutation results; package creation and consumer verification.
 - Current Architecture, Engineering, Quality, Security and Platform artefacts and their handovers.
-- Latest candidate commits through `bdd7198 [Platform] Record Current Candidate Verification Evidence`.
+- Latest candidate commits through `b2025ac [Engineering] Reconcile SEC-006 handover records`.
 
 ## Evidence Limitations and Inferences
 
