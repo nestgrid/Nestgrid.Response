@@ -62,6 +62,8 @@ Consumers should install only the package required by their layer:
 - `Nestgrid.Response.Mvc` with `Microsoft.AspNetCore.Mvc.Core` 2.1.38 for the documented MVC baseline.
 - `Nestgrid.Response.Extensions.Validation` for DataAnnotations conversion.
 
+The MVC package follows the common Nestgrid.Response library maintenance, versioning, support and release-review lifecycle. It has no separate maintenance lifecycle or independent end-of-support policy.
+
 Before publication, validate the generated packages from a package feed rather than relying only on project references. The minimum matrix is recorded in [Test Strategy](../04%20Quality/Test%20Strategy.md).
 
 ## Configuration
@@ -128,7 +130,7 @@ The release owner should verify:
 
 Historical execution evidence confirms that the CI, mutation and publish workflows have completed successfully and that all five v0.6.0 packages have been published to NuGet. Treat this as evidence that the operational path has worked previously; current v0.7.0 release approval still requires the hardened workflow run and current package provenance.
 
-The current local v0.7.0 run passed the Release build, 289 tests, package creation and package README checks. The clean consumer restore could not reach NuGet.org from the local environment and must be confirmed by the GitHub workflow.
+The current local v0.7.0 run passed the Release build and 289 tests. Core, HTTP and Validation package creation and README checks passed; ASP.NET Core metadata was cross-checked; MVC metadata, package hash and supported consumer execution are retained in the Engineering closure evidence. The protected CI workflow remains authoritative for final five-package publication and provenance.
 
 ## Operational Documentation
 
@@ -141,5 +143,5 @@ The root README, package READMEs, CONTRIBUTING guide, Test Strategy, this guide 
 | The protected publication environment is misconfigured | Trusted publication may be unavailable or insufficiently restricted | Retain a successful `nuget`-environment workflow run and review the GitHub/NuGet policy evidence. |
 | Tag, project version and release notes diverge | Wrong or ambiguous package version is published | The publication workflow performs an explicit version-consistency check. |
 | Publish workflow does not validate package installation from generated packages | A package can publish despite consumer-facing packaging defects | CI and publication run the package-feed consumer smoke matrix. |
-| MVC support promise remains maintenance-ambiguous | Consumers cannot plan upgrades confidently | Architecture/Product to record maintenance duration and review triggers. |
+| MVC support promise drifts from the common library lifecycle | Consumers may receive inconsistent upgrade signals | Keep the common MVC maintenance, versioning, support and review policy current in the Architecture and package guidance. |
 | Consumer runtime telemetry is absent | Library defects may be harder to diagnose in downstream applications | Keep the library provider-neutral and document consumer-side telemetry expectations. |

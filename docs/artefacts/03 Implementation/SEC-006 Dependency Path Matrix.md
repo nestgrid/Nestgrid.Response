@@ -48,7 +48,7 @@ The resolved versions below come from the implemented solution restore graph. Pu
 | Core / JSON | `Nestgrid.Response` | `netstandard2.0` package consumed by maintained application targets | Core tests and core/sample project references | Candidate A evaluated closure is remediated; retain final advisory/package evidence. |
 | Shared HTTP | `Nestgrid.Response.Http` | Shared policy package consumed by both adapters | HTTP tests and samples | Candidate A evaluated closure is remediated; retain final advisory/package evidence. |
 | Validation | `Nestgrid.Response.Extensions.Validation` | `netstandard2.0` package consumed by DataAnnotations applications | Validation tests and sample | Candidate A evaluated closure is remediated; retain final advisory/package evidence. |
-| MVC | `Nestgrid.Response.Mvc` | Approved legacy MVC baseline using `Microsoft.AspNetCore.Mvc.Core 2.1.38` | MVC tests and MVC sample | Candidate A evaluated closure is remediated; fresh MVC package metadata and consumer evidence remain open. |
+| MVC | `Nestgrid.Response.Mvc` | Approved legacy MVC baseline using `Microsoft.AspNetCore.Mvc.Core 2.1.38` | MVC tests and MVC sample | Candidate A closure, current package metadata and supported consumer evidence are retained; final Security closure remains open. |
 | Modern ASP.NET Core | `Nestgrid.Response.AspNetCore` | `net8.0` adapter using `Microsoft.AspNetCore.App` | ASP.NET Core tests and sample | Framework reference is host-provided; Candidate A leaves the project unchanged and no reported vulnerable package was found in the evaluated graph. |
 
 ## Evidence Gate for SEC-006 Closure

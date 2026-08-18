@@ -39,14 +39,14 @@ Security approved Candidate A for implementation. The implemented proposal uses 
 | ID | Severity | Finding | Impact | Recommendation |
 | --- | --- | --- | --- | --- |
 | SEC-006 | P1 | The baseline supported/package-consumer graphs contained known vulnerable dependencies. Candidate A implements a compatible remediation path, subject to final closure evidence. | Retaining the baseline would expose consumers to known vulnerable dependency versions; incomplete published-closure evidence leaves residual uncertainty. | Complete the evidence gate below and obtain final Security closure review before release. |
-| SEC-006-A | P2 | Fresh MVC package archive/`.nuspec` inspection remains outstanding because isolated MSBuild pack generation hung. | The exact published MVC dependency metadata has not yet been independently confirmed. | Retain fresh MVC `.nuspec` evidence, or document an equivalent authoritative package-metadata inspection, before SEC-006 closure. |
+| SEC-006-A | P2 | Standard MVC package generation remains affected by the isolated MSBuild pack hang. | The release publication path still requires Platform/Release confirmation, although Engineering has independently retained equivalent current-commit metadata, hash and consumer evidence. | Review the equivalent authoritative package-metadata inspection before SEC-006 closure; retain protected-CI publication evidence separately. |
 
 ## Blocking Issues
 
 - The following exact Candidate A pins must be used unless the work returns to Architecture and Security for review: `System.Text.Encodings.Web 4.7.2`, `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`.
 - `Microsoft.AspNetCore.Mvc.Core 2.1.38`, package identities, target frameworks and the approved MVC support boundary must be preserved.
 - Candidate B or any MVC parent/support-boundary change is outside this approval and requires the appropriate Architecture/Product authority before implementation.
-- Before SEC-006 closure, retain fresh restore and advisory evidence, inspect generated metadata for all five published packages including MVC, verify supported consumer restore/install/execute paths, and record final dependency graphs and regression results.
+- Before SEC-006 closure, review the retained fresh restore/advisory evidence, inspect the generated or equivalent authoritative metadata for all five published packages including MVC, verify supported consumer restore/install/execute paths, and record final dependency graphs and regression results.
 - If a vulnerable path remains, compatibility changes, or the final metadata differs materially from the reviewed Candidate A, stop and return the deviation to Architecture and Security. No implicit exception is granted.
 
 ## Non-blocking Issues

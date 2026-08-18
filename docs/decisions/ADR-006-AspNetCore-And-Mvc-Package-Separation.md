@@ -116,4 +116,4 @@ Nestgrid.Response.Mvc
 Nestgrid.Response.Extensions.Validation
 ```
 
-with modern and legacy presentation concerns separated into dedicated packages. MVC remains actively supported. The exact compatibility matrix, maintenance duration and review triggers are governed by the Architecture Pack and must be kept current with project files and package documentation.
+with modern and legacy presentation concerns separated into dedicated packages. MVC remains actively supported as part of the full Nestgrid.Response library. It follows the common library maintenance, versioning, support and review lifecycle, with no separate maintenance lifecycle or independent end-of-support policy. The documented compatibility baseline is `Microsoft.AspNetCore.Mvc.Core` `2.1.38`.

@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v2.0
+version: v2.1
 status: In Review
 owner: Independent Reviewer
 contributors:
@@ -57,7 +57,7 @@ The implementation and lifecycle evidence are substantially complete for Release
 ## Evidence Limitations and Inferences
 
 - The canonical review has prior findings through version v1.7; this is the next follow-up review in the same series.
-- No Release Report, retained protected-environment publication run, final package provenance set, fresh MVC `.nuspec` inspection or supported MVC package-consumer execution evidence is present in the repository state reviewed.
+- No Release Report or retained protected-environment publication run is present in the repository state reviewed. Engineering has now retained current MVC `.nuspec`/dependency metadata, package hash and supported MVC package-consumer execution evidence; final Security closure and protected-CI provenance remain open.
 - A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction; this is not treated as a product failure because current Quality evidence records an isolated successful run.
 - The retrofit scope is based on the user's stated objective; the responsible roles should confirm the staged lifecycle sequence and acceptance criteria before execution.
 
@@ -139,13 +139,13 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 ### IR-008 — P1 — SEC-006 release-blocking evidence is incomplete
 
-**Evidence:** Security Assessment v1.5, Quality Release Readiness Report and Platform Operational Readiness Review all state that SEC-006/Q-007 remains open. Candidate A's evaluated graphs report no vulnerable packages, but fresh MVC package `.nuspec`/published-closure inspection and supported MVC package-consumer evidence are not retained. Security explicitly states that no exception is implied.
+**Evidence:** Security Assessment, Quality Release Readiness Report and Platform Operational Readiness Review all state that SEC-006/Q-007 remains open. Candidate A's evaluated graphs report no vulnerable packages, and Engineering has retained current MVC package metadata, package hash and supported MVC package-consumer evidence. Security explicitly states that no exception is implied.
 
 **Impact:** The final published MVC package may differ from the evaluated dependency graph, and the supported MVC consumer boundary is not independently demonstrated. The reported Critical/High dependency risk cannot be considered closed by implementation evidence alone.
 
-**Recommendation:** Retain all of the following from the exact release candidate: (1) the generated `Nestgrid.Response.Mvc` `.nupkg` and `.nuspec`; (2) its dependency groups showing the approved MVC baseline and patched dependencies, including `Microsoft.AspNetCore.Mvc.Core 2.1.38`, `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`; (3) a fresh transitive advisory/restore result proving the reported vulnerable versions are absent; (4) a supported MVC consumer built from the generated package through a local package source, exercising representative controller result/status and payload paths; and (5) package hashes/provenance linking the inspected package to the candidate commit. Reconcile Quality and Security records and obtain final Security closure or an explicit authorised risk decision before release approval.
+**Recommendation:** Review the retained [SEC-006 Closure Evidence](../artefacts/03%20Implementation/SEC-006%20Closure%20Evidence.md), including the MVC dependency group, package hash, advisory result and supported consumer execution. Reconcile Quality and Security records and obtain final Security closure or an explicit authorised risk decision before release approval.
 
-**Owner:** Engineering / Quality / Security. **Disposition:** Open. Engineering/Mason can generate the local package and consumer evidence; no such evidence is recorded as complete in the current repository. Quality and Security remain awaiting that evidence and final reconciliation.
+**Owner:** Engineering / Quality / Security. **Disposition:** Engineering evidence complete in `SEC-006 Closure Evidence`; Quality reconciliation and final Security closure remain open.
 
 ### IR-009 — P1 — Release Report and final release decision are absent
 
@@ -165,7 +165,7 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 **Recommendation:** Record that MVC follows the full library maintenance, versioning, support and review lifecycle, with no separate MVC end-of-support policy. State the common support owner and review triggers in the Release Report or support guidance.
 
-**Owner:** Product Owner / Solution Architect / Platform Engineer. **Disposition:** Substantively resolved by Product Owner clarification; durable documentation update remains required.
+**Owner:** Product Owner / Solution Architect / Platform Engineer. **Disposition:** Resolved. The common library maintenance, versioning, support and review lifecycle is now recorded in ADR-006, the Architecture Pack, package guidance and Platform documentation.
 
 ## Previous Finding Dispositions
 
@@ -175,9 +175,9 @@ The implementation and lifecycle evidence are substantially complete for Release
 - IR-003 is resolved through Architecture; IR-004 is resolved for Quality-stage evidence.
 - IR-006 is resolved: approval authority and the Discovery boundary are explicit.
 - IR-007 is resolved: the proportionate existing-solution comparison is recorded.
-- IR-008 remains open: Engineering/Mason may generate the required package and MVC consumer evidence; Quality and Security have not yet recorded closure.
+- IR-008 remains open for final Quality/Security disposition: Engineering has retained the MVC metadata, package hash and supported consumer evidence.
 - IR-009 remains open: Release Owner and Project Sponsor have not yet produced or approved a Release Report.
-- IR-010 is substantively resolved: Product Owner confirmed the common library maintenance lifecycle; durable support-policy wording remains to be recorded.
+- IR-010 is resolved: the common library maintenance lifecycle and review policy are recorded in the durable Architecture, package and Platform documentation.
 
 ## Lifecycle Feedback
 
@@ -201,9 +201,9 @@ None recorded. SEC-006/Q-007, SEC-003 evidence and protected-publication evidenc
 
 ## Follow-up Actions
 
-1. Complete SEC-006/Q-007 MVC package-closure and supported-consumer evidence and obtain Security closure or an authorised risk decision.
+1. Review the completed SEC-006/Q-007 MVC package-closure and supported-consumer evidence and obtain Security closure or an authorised risk decision.
 2. Retain the protected-environment publication execution and immutable package provenance evidence.
-3. Record MVC maintenance duration, support ownership and review triggers.
+3. Keep the common MVC maintenance, support ownership and review triggers current.
 4. Produce the canonical Release Report and obtain Project Sponsor release approval.
 5. Re-review this canonical document after the responsible roles record dispositions.
 
@@ -219,7 +219,7 @@ Expected handover output: a Release-stage evidence pack with explicit open-findi
 
 ## Overall Recommendation
 
-**Proceed with conditions.** Proceed to Release review and preparation only. Do not approve or publish v0.7.0 until IR-008 and IR-009 are resolved or explicitly accepted by the authorised roles. IR-010 is substantively resolved, subject to recording the common library maintenance policy. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
+**Proceed with conditions.** Proceed to Release review and preparation only. Do not approve or publish v0.7.0 until IR-008 receives final Quality/Security disposition and IR-009 is resolved or explicitly accepted by the authorised roles. IR-010 is resolved. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
 
 ## Next Review
 
@@ -240,3 +240,4 @@ Re-review the same canonical document after the responsible roles update the rep
 | v1.8 | 2026-08-18 | Reviewed the current v0.7.0 candidate before Release; resolved IR-004 for Quality evidence and recorded the open SEC-006, Release Report and MVC support-policy conditions. |
 | v1.9 | 2026-08-18 | Recorded the required SEC-006 closure evidence and the Product Owner clarification that MVC follows the common library maintenance lifecycle. |
 | v2.0 | 2026-08-18 | Updated the standard artefact metadata, recorded responsible-role dispositions for IR-008 through IR-010, and preserved the current Release-stage recommendation without adding findings. |
+| v2.1 | 2026-08-18 | Recorded Engineering’s MVC package metadata, hash and supported-consumer evidence, updated the IR-008 disposition to await Quality/Security closure, and closed the durable MVC lifecycle recording action. |

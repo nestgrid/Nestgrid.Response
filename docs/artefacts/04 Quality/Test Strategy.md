@@ -2,16 +2,17 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Test Strategy
-version: 1.2
+version: 1.3
 status: Complete with conditions
 owner: Quality Engineer
 produced_by: Quality Engineer
 consumed_by: Software Engineer, Security Engineer, Platform Engineer, Release Owner
-date: 2026-08-17
+date: 2026-08-18
 related_artefacts:
   - ../01 Discovery/Product Brief.md
   - ../02 Architecture/Architecture Pack.md
   - ../03 Implementation/Implementation Report.md
+  - ../03 Implementation/SEC-006 Closure Evidence.md
   - ../Release/Roadmap.md
   - ../../reviews/Nestgrid.Response Independent Review.md
 ```
@@ -72,7 +73,7 @@ No production changes were required by Quality. The current candidate was verifi
 2. Package-owned line coverage: Core 100%, HTTP 100%, ASP.NET Core 97.7%, MVC 100%, Validation 100%.
 3. Sequential Stryker runs: all five configured package suites reached 100%; parallel runs were discarded because shared Debug outputs interfered.
 4. Current core and adapter tests cover safe and diagnostic exception paths, typed and untyped results, null exceptions and output-sensitive mappings.
-5. Isolated pack plus `scripts/verify-packages.sh`: all five package/symbol outputs, README presence and net8.0 consumer restore/build verified.
+5. Core, HTTP and Validation standard pack plus `scripts/verify-packages.sh` evidence is retained. ASP.NET Core metadata is cross-checked, and the MVC package metadata, hash and supported consumer restore/build/execute evidence are retained in the Engineering SEC-006 Closure Evidence artefact.
 6. Dependency restore and central-version resolution completed; current advisory/provenance evidence remains a Security/Platform release condition.
 7. Web samples were startup-checked; endpoint-level assertions remain a non-blocking follow-up.
 
@@ -99,7 +100,7 @@ These are verification activities and test-only changes. Any production defect f
 
 - The first solution-level test command was blocked by the sandbox's MSBuild named-pipe permission restriction. Re-running with isolated compilation succeeded, so the environment limitation is not evidence of a product failure.
 - The previous Quality run covered a pre-ADR-008 candidate; its 277-test and 100%-mutation results are not current-candidate evidence.
-- Current Quality-owned regression, coverage and mutation evidence is now recorded below; dependency-advisory/provenance and supported-CI evidence remain downstream conditions.
+- Current Quality-owned regression, coverage and mutation evidence is now recorded below; final Security closure, protected publication and supported-CI provenance remain downstream conditions.
 - Security identifies SEC-002 as a Platform release condition and SEC-003 as a dependency-evidence condition; Quality will track their effect on the release recommendation but does not own their remediation.
 
 ## Minimum package-consumer compatibility matrix
@@ -119,7 +120,7 @@ The matrix should also include one packaging check per row: consume the generate
 ## Questions for confirmation
 
 - Is the documented 100% line and mutation target a hard release gate for the current candidate, or may exceptions be approved per package with rationale?
-- Which exact MVC maintenance duration and review triggers accompany the supported `Microsoft.AspNetCore.Mvc.Core` `2.1.38` baseline?
+- MVC follows the common library maintenance, versioning, support and review lifecycle; it has no separate maintenance lifecycle or independent end-of-support policy. The baseline remains `Microsoft.AspNetCore.Mvc.Core` `2.1.38`.
 
 ## Current Quality recommendation
 

@@ -46,7 +46,7 @@ The work does not add OpenAPI, ProblemDetails, additional adapters, persistence,
 
 **Ready with conditions.**
 
-The approved Architecture Pack, Engineering Handover, ADR-007, the approved SEC-006 Architecture Feedback and canonical Independent Review provided sufficient direction for the remediation. Candidate A implementation is complete under Architecture and Security approval. The remaining conditions are accurate published-closure classification, final MVC package/consumer evidence and downstream handover; the plan does not constitute release approval.
+The approved Architecture Pack, Engineering Handover, ADR-007, the approved SEC-006 Architecture Feedback and canonical Independent Review provided sufficient direction for the remediation. Candidate A implementation and Engineering closure evidence are complete under Architecture and Security approval. The remaining conditions are final Quality/Security reconciliation, protected-CI provenance and downstream handover; the plan does not constitute release approval.
 
 ### Architecture Obligations and Invariants
 
@@ -75,8 +75,8 @@ The product has no persistence, durable state, transactions, concurrency control
 
 ### Ambiguities and Evidence Gaps
 
-- Exact MVC compatibility and maintenance policy remains an Architecture/Product governance follow-up and must not be inferred beyond current project dependencies; Candidate A approval preserves the currently approved `2.1.38` boundary.
-- Current mutation, coverage, CI and release evidence is not retained in the repository; this remains IR-004 and is handed to Quality.
+- The exact MVC baseline is `Microsoft.AspNetCore.Mvc.Core 2.1.38`; MVC follows the common library maintenance, versioning, support and review lifecycle recorded in ADR-006 and package guidance.
+- Current mutation and coverage evidence is retained by Quality; protected CI and release evidence remain downstream Platform/Release conditions.
 - Package publication and trusted NuGet execution remain Platform/Release responsibilities.
 - Central package management is a repository dependency-governance change and must preserve the versions selected under ADR-007.
 - The patched dependency baseline is implemented for Candidate A; the authority for any MVC support-boundary change remains an explicit Architecture/Product decision gate.
@@ -115,7 +115,7 @@ The existing five-package solution is retained:
 
 The implementation uses the existing .NET baseline, nullable reference types, implicit usings, XML documentation, xUnit, Shouldly and deterministic package build settings. No new runtime dependency or framework deviation is introduced.
 
-The existing package targets and MVC dependency are retained pending the explicit compatibility evidence requested by Architecture.
+The existing package targets and MVC dependency are retained. The current MVC metadata and supported consumer evidence are recorded in SEC-006 Closure Evidence.
 
 For SEC-006, the pre-remediation dependency baseline is retained as evidence. Candidate A is now implemented under ADR-007, the approved MVC support boundary and the recorded Architecture/Security approvals; remaining work is closure evidence rather than further dependency selection.
 
@@ -249,11 +249,11 @@ There are no schema, migration, persistence or startup migration changes.
 ## Open Questions
 
 - Quality must determine the required mutation, coverage and release-evidence threshold for the final candidate.
-- Architecture/Product must maintain the exact MVC support policy and review triggers.
+- Architecture/Product must keep the common MVC support policy and review triggers current.
 - Review whether any package requires an intentional project-specific version override; any exception must be documented against ADR-007.
 - Which retained evidence will demonstrate that the selected patched versions remain the lowest compatible choices for each advisory and target framework?
 - Does the final package-closure evidence confirm Candidate A’s explicit transitive-pin approach under ADR-007?
-- What retained evidence will close the remaining fresh MVC `.nuspec` generation limitation before SEC-006 closure?
+- The standard MVC pack target remains environmentally limited; the retained equivalent metadata, package hash and supported consumer evidence are the authoritative Engineering handover for Security review.
 - Does MVC `2.1.38` have a compatible remediation path that preserves the approved active support promise?
 - If not, which authority will decide between a support-boundary change and a time-limited exception?
 - Which CI/advisory/provenance evidence must be retained for the final candidate?

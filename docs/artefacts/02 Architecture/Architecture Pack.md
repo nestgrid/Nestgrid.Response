@@ -202,7 +202,7 @@ Consumers should be able to pin the previous known-good package version and rede
 
 ### Support and Ownership
 
-Nestgrid owns the package architecture and support policy. MVC remains actively supported, with its compatibility range and review triggers to be published and revisited through Product and Architecture review. Consumer issues should be handled through the repository’s documented contribution and issue process.
+Nestgrid owns the package architecture and support policy. MVC remains actively supported as part of the full Nestgrid.Response library. It follows the common library maintenance, versioning, support and review lifecycle, with no separate end-of-support policy. The `2.1.38` baseline, dependency advisories, target-framework changes, public contract changes and release evidence are reviewed through the same library governance as the other packages. Consumer issues should be handled through the repository’s documented contribution and issue process.
 
 ## Trade-offs
 
@@ -218,7 +218,7 @@ Nestgrid owns the package architecture and support policy. MVC remains actively 
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| MVC support range remains unclear | Consumers may receive an ambiguous support promise. | Publish the exact compatibility matrix and maintenance policy before release readiness. |
+| MVC support evidence drifts from the documented baseline | Consumers may receive an inaccurate support promise. | Keep the `2.1.38` baseline and common library maintenance policy current with project files, package documentation and release evidence. |
 | ADR-006 or package documentation drifts again | Architecture traceability is weakened. | Keep decision, project, README and Pack changes in the same review and run link/documentation checks. |
 | Mapping changes break consumers silently | HTTP clients may observe changed status or payload behaviour. | Treat mappings as compatibility-sensitive, test both adapters and document changes. |
 | Validation detail leaks sensitive fields | API responses or logs may expose internal property names or messages. | Document consumer responsibility and make detailed conversion opt-in. |
@@ -226,7 +226,7 @@ Nestgrid owns the package architecture and support policy. MVC remains actively 
 
 ## Open Questions and Follow-up Decisions
 
-- Confirm and publish the exact supported MVC compatibility range and maintenance duration.
+- Keep the documented MVC `2.1.38` baseline and common library review triggers current with project files, package documentation and release evidence.
 - Confirm the package compatibility matrix through package validation in Engineering and Quality.
 - Define the release-specific support review date and adoption signals for MVC.
 - Reassess deferred OpenAPI, `ProblemDetails` and adapter candidates only through a new Product decision.

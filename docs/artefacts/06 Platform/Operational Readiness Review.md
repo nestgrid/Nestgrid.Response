@@ -28,20 +28,20 @@ This review assesses operational readiness for the five-package NuGet library, n
 
 The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, third-party actions are pinned to immutable release SHAs, and publication is wired through the protected `nuget` GitHub Environment. Trusted Publishing is configured in the workflow, and the workflows verify project/tag version consistency and generated-package consumer installation. Quality has also recorded successful local Release build/test/pack, five-package consumer restore/build, mutation and coverage evidence.
 
-Condition: the supported CI environment must repeat the package and installation checks through the protected publication path before release approval, the SEC-006 MVC package-closure and supported-consumer evidence must be retained, and all release evidence must be retained with the Release Report.
+Condition: the supported CI environment must repeat the package and installation checks through the protected publication path before release approval, Security must complete SEC-006 closure against the retained MVC package-closure and supported-consumer evidence, and all release evidence must be retained with the Release Report.
 
 ## Execution Evidence
 
 Historical user-supplied evidence shows successful GitHub Actions runs for the CI, mutation and publish workflows, and successful NuGet publication of all five v0.6.0 packages. This confirms that the repository's package build, validation and public distribution path has operated successfully in practice.
 
-The evidence predates the v0.7.0 action-SHA pinning, protected `nuget` environment wiring and dependency remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, package provenance, or SEC-006 closure evidence.
+The evidence predates the v0.7.0 action-SHA pinning, protected `nuget` environment wiring and dependency remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, package provenance or final Security closure. Current MVC package metadata, hash and supported consumer evidence are retained in the Engineering closure artefact.
 
 The current local v0.7.0 verification run also recorded:
 
 - Release solution build succeeded with 0 warnings and 0 errors.
 - 289 Release tests passed with 0 failures and 0 skips.
-- All five 0.7.0 packages and five symbol packages were created.
-- Package existence and README checks passed for the generated outputs.
+- Core, HTTP and Validation 0.7.0 packages and symbol packages were created; ASP.NET Core metadata was cross-checked; the MVC current-commit evidence package was assembled from the inspected metadata and current Release assembly.
+- Package existence and README checks passed for the generated/evidence outputs.
 - Clean consumer restore was attempted and was blocked by the local environment's DNS restriction for `api.nuget.org`; CI remains the authoritative execution path for that network-dependent check.
 
 ## Operationalisation Readiness
@@ -66,7 +66,7 @@ The product is deterministic, stateless and has no persistence, background proce
 
 Nestgrid owns package architecture and support policy. Consumer issues use the repository contribution and issue process. Root and package READMEs, samples, release notes, this guide and the test evidence provide the initial support baseline.
 
-Outstanding governance action: Architecture/Product should record MVC maintenance duration and review triggers.
+MVC follows the common Nestgrid.Response library maintenance, versioning, support and review lifecycle. It has no separate maintenance lifecycle or independent end-of-support policy. The `2.1.38` baseline, dependency advisories, target-framework changes, public contract changes and release evidence use the common library review triggers.
 
 ## Backup and Recovery
 
@@ -80,8 +80,8 @@ RTO/RPO: no product runtime RTO/RPO is applicable. Package recovery depends on t
 | --- | --- | --- |
 | CI has not yet repeated the complete platform validation in its supported environment | Release confidence is lower than the local evidence alone | Repeat build, test, pack and package-feed installation checks in CI and retain the run. |
 | The protected publication environment has not yet produced a retained workflow run after hardening | The final trusted-publication control is not yet evidenced | Run the tag workflow only after Release approval and retain the protected-environment evidence. |
-| Candidate A dependency closure has not yet been fully evidenced for the MVC package | A release package could differ from the evaluated dependency graph | Retain fresh MVC package metadata and supported MVC package-consumer evidence, then reconcile Q-007/SEC-006. |
-| MVC maintenance duration and review triggers are not recorded | Support expectations remain incomplete | Architecture/Product to record the policy before or alongside release approval. |
+| Candidate A dependency closure requires final Security/provenance confirmation for the MVC package | A protected release package could differ from the evaluated dependency graph | Engineering has retained current MVC metadata, package hash and supported consumer evidence; Security/Platform must complete closure and protected-CI provenance. |
+| MVC support expectations drift from the common library lifecycle | Consumers may receive inconsistent maintenance or review signals | The common maintenance, versioning, support and review lifecycle is now recorded in ADR-006, the Architecture Pack and package guidance. |
 | Web samples were startup-checked but not exercised through HTTP calls | Adapter response regressions may escape smoke validation | Add representative endpoint assertions as a follow-up; Quality currently treats this as non-blocking. |
 
 ## Outstanding Actions
@@ -91,7 +91,7 @@ RTO/RPO: no product runtime RTO/RPO is applicable. Package recovery depends on t
 | Repeat Release build, tests, pack and generated-package consumer checks in supported CI. | Platform / Release | Before release decision |
 | Confirm the pinned actions and `nuget` environment pass in the publication workflow. | Platform / Release | Before publication |
 | Retain final MVC dependency metadata and supported consumer evidence for SEC-006/Q-007. | Engineering / Quality / Security | Before release decision |
-| Record MVC maintenance duration and review triggers. | Architecture / Product | Before final support policy is claimed |
+| Keep the common MVC support and review policy current. | Architecture / Product | Ongoing through normal library review |
 | Add HTTP endpoint assertions for web samples if release confidence requires them. | Quality | Follow-up; non-blocking per current Quality report |
 
 ## Recommendation

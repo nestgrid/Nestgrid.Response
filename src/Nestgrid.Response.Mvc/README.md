@@ -4,6 +4,10 @@ MVC adapter for converting Nestgrid results into `IActionResult` responses.
 
 `Nestgrid.Response.Mvc` targets `netstandard2.0` and uses the shared HTTP mapping policy in `Nestgrid.Response.Http`. For modern .NET 8 ASP.NET Core applications, prefer `Nestgrid.Response.AspNetCore` unless you specifically need this older MVC-focused adapter.
 
+## Support Lifecycle
+
+`Nestgrid.Response.Mvc` is maintained as part of the full Nestgrid.Response library. It shares the library's versioning, support, security, compatibility and release-review lifecycle; it has no separate maintenance lifecycle or independent end-of-support policy. The documented compatibility baseline is `Microsoft.AspNetCore.Mvc.Core` `2.1.38`.
+
 ## Installation
 
 ```bash
