@@ -3,7 +3,7 @@
 ```yaml
 title: Nestgrid.Response v0.7.0 Release Report
 version: 1.0
-status: Approved for tagged publication; post-publication evidence pending
+status: Published to NuGet; GitHub Release intentionally deferred until 1.0.0
 owner: Project Sponsor
 contributors:
   - Solution Architect
@@ -44,7 +44,7 @@ Nestgrid.Response v0.7.0 is the controlled release of the existing v0.6.0 five-p
 
 The candidate preserves the approved package identities, target frameworks, result model, HTTP adapter boundaries and actively supported MVC support boundary. It includes the approved additive validation conversion, the ADR-008 safe exception-conversion correction, central package-version management and the SEC-006 Candidate A dependency remediation.
 
-The current evidence supports merging the approved candidate and pushing the `v0.7.0` tag. The tag-triggered protected GitHub Actions workflow performs the final restore, build, test, pack, verification and NuGet publication in one controlled run. Protected-CI execution and immutable publication provenance are therefore post-tag evidence. They must be retained and verified after the workflow succeeds before the Release Report is marked complete.
+The approved candidate was merged and the `v0.7.0` tag was pushed. The tag-triggered protected GitHub Actions workflow completed the final restore, build, test, pack, verification and NuGet publication in one controlled run. All five packages and their symbol packages were published successfully. This report records the resulting protected-CI and publication evidence.
 
 ## Scope
 
@@ -72,15 +72,28 @@ The current evidence supports merging the approved candidate and pushing the `v0
 | Item | Current value | Position |
 | --- | --- | --- |
 | Product version | `0.7.0` | Intended release version. |
-| Pre-report candidate commit | `d352c0fd06c43eb66c3cae822fac3fc7b3652172` | Current repository evidence baseline before this Release Report commit. |
+| Release commit | [`ffe5e69e4450863b0f881f47ce8e2a22f624ff59`](https://github.com/nestgrid/Nestgrid.Response/commit/ffe5e69e4450863b0f881f47ce8e2a22f624ff59) | Merged release baseline. |
 | Dependency implementation commit | `3c0e151` | Candidate A dependency implementation. |
 | Engineering evidence commit | `6a0598fefda587ef283129c51d4f56e611534fa` | Candidate package and implementation evidence baseline. |
-| MVC evidence package SHA-256 | `88b250cd14d34a60565489ef78b15b7ec4ef9a60aed97c42ef91a232e14b3d63` | Retained Engineering evidence; final protected-CI package provenance remains outstanding. |
-| Git tag | Not yet created | Must be recorded after merge and at publication. |
-| Protected workflow run | Not yet executed | Must be retained after the tag-triggered publication workflow. |
-| Published package hashes | Not yet available | Must be retained from the protected workflow. |
+| MVC evidence package SHA-256 | `88b250cd14d34a60565489ef78b15b7ec4ef9a60aed97c42ef91a232e14b3d63` | Retained Engineering evidence. |
+| Git tag | [`v0.7.0`](https://github.com/nestgrid/Nestgrid.Response/tree/v0.7.0) | Verified tag at the release commit. |
+| Protected workflow run | [Publish workflow 32158331286](https://github.com/nestgrid/Nestgrid.Response/actions/runs/32158331286) | Successful; publish job completed in 1m 6s. |
+| Publish artifact SHA-256 | `a1eca24cdd83186f566fe3743f18d2cb386b42ed193827bc2b3f3074950eb4df` | Retained from the protected publish workflow artifact. |
 
-The final release tag and commit must be recorded in this report after the Release Report commit is included in the approved release baseline. Any source or dependency change after the recorded candidate commit requires the release evidence to be reassessed.
+The release commit, tag, protected workflow and publication artifact provenance are recorded above. Any source or dependency change after this baseline requires the release evidence to be reassessed.
+
+### Release Evidence Links
+
+| Evidence | Link / result |
+| --- | --- |
+| Main CI | [Successful CI run 32157570178](https://github.com/nestgrid/Nestgrid.Response/actions/runs/32157570178) |
+| Mutation testing | [Successful mutation run 32157570179](https://github.com/nestgrid/Nestgrid.Response/actions/runs/32157570179) — five package suites completed. |
+| Protected publication | [Successful publish run 32158331286](https://github.com/nestgrid/Nestgrid.Response/actions/runs/32158331286) — verification, upload, Trusted Publishing and package publication completed. |
+| `Nestgrid.Response` 0.7.0 | [NuGet package](https://www.nuget.org/packages/Nestgrid.Response/0.7.0) |
+| `Nestgrid.Response.Http` 0.7.0 | [NuGet package](https://www.nuget.org/packages/Nestgrid.Response.Http/0.7.0) |
+| `Nestgrid.Response.AspNetCore` 0.7.0 | [NuGet package](https://www.nuget.org/packages/Nestgrid.Response.AspNetCore/0.7.0) |
+| `Nestgrid.Response.Extensions.Validation` 0.7.0 | [NuGet package](https://www.nuget.org/packages/Nestgrid.Response.Extensions.Validation/0.7.0) |
+| `Nestgrid.Response.Mvc` 0.7.0 | [NuGet package](https://www.nuget.org/packages/Nestgrid.Response.Mvc/0.7.0) |
 
 ## Quality Summary
 
@@ -93,9 +106,9 @@ Quality’s current [Release Readiness Report](../04%20Quality/Release%20Readine
 - no vulnerable packages in the current source, test and sample advisory scan; and
 - SEC-006/Q-007 reconciliation against the retained MVC closure evidence.
 
-Quality recommends proceeding to the downstream Release gate but defers final release approval until protected publication/provenance evidence is retained and the final dispositions are recorded.
+Quality’s pre-publication recommendation was conditional on protected publication/provenance evidence. That evidence is now retained in this report; the non-blocking sample endpoint limitation remains open for follow-up.
 
-The remaining Quality follow-up is endpoint-level exercise of web samples, currently treated as non-blocking. It must not be represented as completed Release evidence unless executed.
+The remaining Quality follow-up is endpoint-level exercise of web samples, currently treated as non-blocking. It is not represented as completed Release evidence.
 
 ## Security Summary
 
@@ -107,27 +120,28 @@ The current [Security Assessment](../05%20Security/Security%20Assessment.md) and
 - safe exception output by default under ADR-008; and
 - protected-CI execution and package provenance remaining post-publication evidence conditions.
 
-Security recommends proceeding with conditions. The tag-triggered workflow remains the required control and its successful execution and provenance must be retained after publication.
+Security’s pre-publication recommendation was conditional on the tag-triggered workflow and its provenance. The required control completed successfully and its evidence is retained in this report.
 
 ## Operational Summary
 
 The [Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) confirms that the NuGet publication, installation, upgrade, rollback and support model is documented and repeatable in principle.
 
-The protected `nuget` environment, immutable workflow action pins and NuGet Trusted Publishing controls are configured. The current candidate requires one supported-CI execution through that path when the `v0.7.0` tag is pushed. The workflow itself performs publication; its run, commit/tag, package artefacts, hashes and provenance must then be retained.
+The protected `nuget` environment, immutable workflow action pins and NuGet Trusted Publishing controls were used successfully. The initial package-verification script issue was corrected before publication. The `v0.7.0` tag-triggered run then verified the packages and consumer installation, authenticated through NuGet Trusted Publishing, and published the five packages and symbol packages.
 
 ## Release Recommendations
 
 | Area | Recommendation | Evidence |
 | --- | --- | --- |
-| Quality | Proceed to merge and tagged publication; complete the Release evidence after the workflow succeeds. | [Release Readiness Report](../04%20Quality/Release%20Readiness%20Report.md) |
-| Security | Proceed with conditions; no current vulnerability risk is accepted, and protected-CI provenance must be retained after publication. | [Security Assessment](../05%20Security/Security%20Assessment.md) |
-| Platform | Proceed to the tag-triggered protected publication workflow; retain and verify the resulting operational evidence. | [Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) |
+| Quality | Release evidence is complete for the published packages; retain the non-blocking sample endpoint limitation. | [Release Readiness Report](../04%20Quality/Release%20Readiness%20Report.md) |
+| Security | Release evidence is complete; no current vulnerability risk is accepted. | [Security Assessment](../05%20Security/Security%20Assessment.md) |
+| Platform | Publication completed through the protected workflow and the resulting provenance is retained. | [Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) |
 
 ## Known Issues and Release Conditions
 
 | Issue | Impact | Mitigation / Acceptance |
 | --- | --- | --- |
-| Protected-CI execution and immutable publication provenance are not available before the candidate is pushed to GitHub. | The evidence is necessarily generated by the tag-triggered workflow that also publishes the packages. | This is a sequencing condition, not an accepted publication risk. The Project Sponsor authorises the merge and tag; Platform/Release must retain and verify the workflow and package provenance immediately afterwards. |
+| GitHub Release was not created for v0.7.0. | The repository has a verified tag and NuGet publication, but no GitHub Release page. | Intentionally deferred by the Project Sponsor until the 1.0.0 public-release convention. The tag, Release Report and NuGet records remain the authoritative release traceability for v0.7.0. |
+| GitHub Actions reports Node.js 20 deprecation warnings for actions currently forced to Node.js 24. | The protected CI and publication jobs succeeded, but the action runtime configuration requires maintenance. | Non-blocking follow-up for Platform; update the affected actions before their enforced runtime transition. |
 | Web samples have startup evidence but not endpoint-level assertions. | Some adapter response regressions could remain undetected by the current smoke evidence. | Quality treats this as non-blocking; preserve the limitation and address it as follow-up validation if required by the final Release review. |
 
 No residual dependency vulnerability, package-boundary change or MVC support-boundary change is accepted by this report.
@@ -136,15 +150,15 @@ No residual dependency vulnerability, package-boundary change or MVC support-bou
 
 Deployment is NuGet package publication through the protected GitHub Actions workflow and NuGet Trusted Publishing.
 
-Release/Platform must:
+Release/Platform completed:
 
 1. merge the approved candidate to `main`;
-2. create and push the immutable `v0.7.0` tag, which triggers the protected publication workflow;
-3. monitor the workflow and retain its run, commit/tag, environment approval and package provenance;
-4. verify the generated five-package artefacts, NuGet availability, versions, dependency metadata and hashes; and
+2. create and push the immutable `v0.7.0` tag, triggering the protected publication workflow;
+3. retain the successful workflow run, commit/tag and package provenance;
+4. verify the generated five-package artefacts, NuGet availability, versions, dependency metadata and publication artifact hash; and
 5. update this report with the final release identifiers and evidence links.
 
-The tag-triggered workflow publishes the packages after its validation steps succeed. A GitHub Release is a separate action and is not created by the current publication workflow.
+The tag-triggered workflow published the packages after its validation steps succeeded. A GitHub Release is a separate action and was intentionally deferred for this pre-1.0 release.
 
 ## Rollback Position
 
@@ -154,10 +168,10 @@ Unpublishing is not the normal rollback mechanism. If the protected workflow or 
 
 ## Release Decision
 
-The Project Sponsor’s decision authorises the merge and tag because the tag triggers the protected publication workflow. The final report completion remains conditional on retaining and verifying the resulting evidence.
+The Project Sponsor authorised the merge and tag because the tag triggers the protected publication workflow. Following successful publication and verification, the Project Sponsor decided to defer creation of a GitHub Release until 1.0.0.
 
 | Approved By | Date | Decision | Accepted Risks | Notes |
 | --- | --- | --- | --- | --- |
-| Knight — Project Sponsor | 2026-08-18 | Proceed with merging the approved candidate and pushing the `v0.7.0` tag, authorising the tag-triggered protected NuGet publication workflow. | None. The absence of pre-tag CI/provenance is a sequencing condition, not an accepted publication risk. | Retain and verify the protected workflow, package provenance and NuGet publication evidence after the run; then create the GitHub Release and complete this report. |
+| Knight — Project Sponsor | 2026-08-18 | Proceed with merging the approved candidate and pushing the `v0.7.0` tag, authorising the tag-triggered protected NuGet publication workflow. | None. The absence of pre-tag CI/provenance was a sequencing condition, not an accepted publication risk. | Protected publication completed successfully. GitHub Release creation is intentionally deferred until 1.0.0. |
 
-Release progression is **Approved with post-publication evidence conditions**. The report must be updated after the workflow succeeds with the final merge commit, tag, workflow run, NuGet package links and package hashes. A failed workflow or provenance mismatch requires publication follow-up and a return to the relevant role review.
+Release progression is **Published to NuGet with evidence complete; GitHub Release deferred**. A failed workflow or provenance mismatch would require publication follow-up and a return to the relevant role review; neither condition occurred for v0.7.0.
