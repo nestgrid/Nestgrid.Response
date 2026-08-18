@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Plan
-version: 1.5
-status: In Review
+version: 1.6
+status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Software Engineer, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-17
+date: 2026-08-18
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -28,6 +28,7 @@ related_artefacts:
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
   - SEC-006 Dependency Path Matrix.md
+  - SEC-006 Closure Evidence.md
   - ../05 Security/Security Feedback - SEC-006 Candidate A Approval.md
 ```
 
@@ -174,7 +175,7 @@ This is a NuGet library. Engineering will validate Release build, tests, package
 | ENG-012 | Produce the SEC-006 baseline dependency-path matrix and classify published, supported and repository-only graphs. | Completed for review |
 | ENG-013 | Obtain Architecture and Security review of the SEC-006 plan, matrix and remediation options before implementation. | Security review completed — Candidate A approved with conditions; deviations remain subject to Architecture authority |
 | ENG-014 | Implement the approved compatible remediation or authorised exception path. | Completed — Candidate A pins implemented |
-| ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | In progress — advisory, restore, build, test and three-package consumer evidence complete; MVC archive and MVC consumer evidence outstanding |
+| ENG-015 | Re-verify advisory, restore, package closure, consumer installation and downstream handover evidence. | Completed with conditions — MVC metadata and supported consumer evidence retained; final Quality reconciliation and Security closure remain |
 
 ## Interfaces and Contracts
 
@@ -211,7 +212,7 @@ The separate package-management task will retain project-local ownership declara
 
 with versions maintained in the root `Directory.Packages.props`. The migration must not introduce package upgrades, package downgrades or new dependencies.
 
-SEC-006 remediation is intentionally not a contract change. Candidate A was assessed for public API, target-framework, package identity, dependency closure and MVC consumer compatibility before selection; final MVC closure evidence remains outstanding.
+SEC-006 remediation is intentionally not a contract change. Candidate A was assessed for public API, target-framework, package identity, dependency closure and MVC consumer compatibility before selection; the Engineering closure evidence is retained and final Security closure remains outstanding.
 
 ## Data Changes
 

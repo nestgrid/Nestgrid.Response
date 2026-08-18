@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 Implementation Report
-version: 1.4
+version: 1.5
 status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-17
+date: 2026-08-18
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -18,6 +18,8 @@ related_decisions:
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
 related_work_items:
   - IR-004
+  - SEC-006
+  - Q-007
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -26,6 +28,7 @@ related_artefacts:
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
   - SEC-006 Dependency Path Matrix.md
+  - SEC-006 Closure Evidence.md
 ```
 
 ## Scope
@@ -38,7 +41,7 @@ No package boundary, status semantic, MVC support intent or deferred capability 
 
 The existing five-package architecture remains the implementation baseline. Existing validation methods retain their behaviour. TDR-001 is implemented through additive extension methods that produce member-aware messages only when the consumer opts in. Member names are filtered for blank values, source order is preserved, and memberless validation results produce one message with a stable default code and fallback message.
 
-Engineering is ready to hand the implementation to Quality, Security and Platform with conditions. IR-004 remains open for downstream mutation, coverage, CI and release evidence; the exact MVC compatibility and maintenance policy remains a governance follow-up.
+Engineering is ready to hand the implementation to Quality, Security and Platform with conditions. Quality has recorded the current mutation and coverage evidence; CI/protected publication remains a Platform/Release condition. The exact MVC compatibility baseline is retained and the common library maintenance policy is recorded in the support guidance.
 
 SEC-006 Candidate A is now implemented under the recorded Architecture and Security approvals. The [dependency-path matrix](SEC-006%20Dependency%20Path%20Matrix.md) records the baseline, exact pins, resolved graph, package metadata and remaining evidence conditions. No package identity, target framework or MVC support-boundary change was made.
 
@@ -107,7 +110,7 @@ SEC-006 Candidate A is now implemented under the recorded Architecture and Secur
 | Security-sensitive adapter mappings | `Unauthorized`, `Forbidden`, `Error` and `NoContent` defaults. | ASP.NET Core and MVC adapter suites cover the normative mappings. |
 | Central package management | Twelve direct package versions centralised; project references retain package ownership. | Restore and `dotnet list package --include-transitive` resolve the approved Candidate A versions. |
 | Full solution regression | 289 tests passed, 0 failed, 0 skipped. | Release configuration with shared compilation disabled for the local environment. |
-| Package validation | Core, HTTP and Validation Candidate A packages packed successfully; ASP.NET Core metadata remained unchanged and MVC metadata was verified through project evaluation and resolved closure. | Fresh MVC archive inspection remains an evidence condition because the isolated MSBuild pack target hangs. |
+| Package validation | Core, HTTP and Validation Candidate A packages packed successfully; ASP.NET Core metadata remained unchanged; MVC metadata and a supported MVC consumer were verified through the equivalent current-commit evidence package. | Standard MVC `dotnet pack` remains environmentally limited; evidence is retained in the SEC-006 Closure Evidence artefact. |
 | Samples | Core and validation console samples completed; ASP.NET Core and MVC hosts started successfully. | Web hosts are intentionally long-running applications. |
 
 ## Architecture Traceability
@@ -147,9 +150,9 @@ No data store, migration, runtime integration, authentication or secret handling
 
 ### Evidence Limitations and Approved Deviations
 
-- No current mutation report, coverage report or CI run is retained in the repository; IR-004 remains open for Quality.
-- The solution-level pack command remains affected by an environment/MSBuild hang. Core, HTTP and Validation packages were generated and inspected on the implemented branch; ASP.NET Core metadata was cross-checked against the unchanged package; MVC project evaluation and resolved metadata were inspected, but a fresh MVC archive was not emitted.
-- MVC’s exact compatibility range and maintenance duration remain Architecture/Product governance obligations; Engineering did not invent a broader support claim.
+- Quality’s current mutation and coverage evidence is retained in the Quality artefacts; protected CI/publication evidence remains a Platform/Release condition.
+- The solution-level pack command remains affected by an environment/MSBuild hang. Core, HTTP and Validation packages were generated and inspected on the implemented branch; ASP.NET Core metadata was cross-checked against the unchanged package; MVC metadata was inspected from the project-generated `.nuspec` and verified through the equivalent current-commit evidence package and supported consumer.
+- MVC’s approved baseline is `Microsoft.AspNetCore.Mvc.Core 2.1.38`; MVC follows the common library maintenance, versioning and review lifecycle recorded in the support guidance.
 - No deviations from the approved Architecture Pack or TDR-001 were identified.
 - ADR-008 is implemented as approved; its intentional pre-1.0 behavioural correction is documented in the changelog and package README.
 
@@ -168,18 +171,18 @@ The implemented Engineering scope is coherent, tested and traceable. Downstream 
 
 ## Known Limitations
 
-- Mutation effectiveness and coverage are not established by retained Engineering evidence.
 - Dependency advisory and restore evidence remain a Security/Platform release obligation under ADR-007.
 - CI-equivalent package publication and target-environment consumer installation remain downstream validation activities.
-- Fresh MVC Candidate A `.nupkg`/`.nuspec` generation remains blocked by the isolated MSBuild pack hang; an equivalent authoritative metadata inspection or successful package generation is required before SEC-006 closure.
+- Standard MVC Candidate A `.nupkg` generation remains blocked by the isolated MSBuild pack hang; equivalent authoritative metadata, package hash and supported consumer evidence are retained for Security review.
 - The web samples were startup-checked but not subjected to endpoint-level Quality validation.
 
 ## Outstanding Work
 
 - Quality to execute and retain mutation, coverage, CI-equivalent and release-readiness evidence, resolving IR-004.
 - Quality to validate package consumption, adapter compatibility, response contracts and sample workflows.
-- Engineering to complete the remaining MVC `.nuspec` and supported MVC package-consumer evidence before SEC-006 closure. A temporary consumer restored and built successfully against the three generated Core, HTTP and Validation packages.
-- Architecture/Product to maintain the exact MVC support policy and review triggers.
+- Quality to reconcile the current MVC package-consumer evidence in the Release Readiness Report.
+- Security to perform final SEC-006 closure review under ADR-007.
+- Platform/Release to retain protected CI publication and final provenance evidence.
 - Security and Platform to perform their downstream reviews.
 - Security to re-review SEC-001, SEC-004 and SEC-005 against the updated implementation and guidance.
 
@@ -204,10 +207,10 @@ Engineering verification for this handover is:
 
 - Release solution build succeeded with 0 warnings and 0 errors.
 - 289 automated tests passed with 0 failures and 0 skips.
-- Core, HTTP and Validation `0.7.0` package and symbol outputs were created successfully; ASP.NET Core metadata was cross-checked and MVC metadata was verified through project evaluation and resolved closure.
+- Core, HTTP and Validation `0.7.0` package and symbol outputs were created successfully; ASP.NET Core metadata was cross-checked; MVC metadata and a supported MVC consumer were verified through the current-commit evidence package.
 - All twelve centrally managed package versions resolve, including the three approved SEC-006 pins.
 - The final advisory scan reports no vulnerable packages across source, test and sample projects.
-- A temporary consumer restored and built successfully against the three generated package outputs.
+- A temporary MVC consumer restored, built and executed successfully against the current-commit MVC evidence package and local Nestgrid dependency feed.
 
 Quality remains responsible for its own mutation, coverage, package-consumer and release-evidence conclusions. The Engineering evidence does not replace the Quality gate.
 
@@ -217,4 +220,4 @@ Security should confirm that validation property names and messages are handled 
 
 ## Recommendation
 
-Engineering recommends the implemented Candidate A for final Architecture/Security evidence review and conditional Quality validation. SEC-006 remains a release blocker until the MVC package metadata and supported consumer evidence are retained and Security records final closure.
+Engineering recommends the completed Candidate A evidence for Quality reconciliation and final Security review. SEC-006 remains a release blocker until Security records final closure; protected publication and Release-stage decisions remain outside Engineering authority.

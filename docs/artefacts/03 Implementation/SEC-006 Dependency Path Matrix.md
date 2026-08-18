@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.7.0 SEC-006 Dependency Path Matrix
-version: 0.3
-status: In Review
+version: 0.4
+status: Complete with conditions
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Solution Architect, Security Engineer, Quality Engineer, Platform Engineer
-date: 2026-08-17
+date: 2026-08-18
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -31,15 +31,15 @@ related_artefacts:
 
 This matrix records the Engineering baseline and Candidate A implementation evidence for SEC-006. It separates published package closure, supported consumer graphs and repository-only test/sample graphs as required by the approved Architecture Feedback. It is not release approval; SEC-006 remains subject to final Security, Quality and Platform evidence.
 
-The resolved versions below come from the implemented solution restore graph on 2026-08-17. Published-closure entries are separated by evidence status; the MVC archive inspection and supported MVC package-consumer check remain open closure conditions.
+The resolved versions below come from the implemented solution restore graph. Published-closure entries are separated by evidence status. The MVC package archive and supported MVC package-consumer evidence are recorded in [SEC-006 Closure Evidence](SEC-006%20Closure%20Evidence.md); final Security closure remains outstanding.
 
 ## Advisory Matrix
 
 | Advisory / reported package | Ownership and affected graph | Dependency path | Requested and resolved versions | Published closure | Runtime context | Candidate remediation / decision gate | Verification status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Critical — `System.Text.Encodings.Web` | Published: Core, HTTP and Validation package families. Supported: Core, HTTP, Validation and their consumer graphs. Repository-only: test/sample graphs also inherit it through project references. | `Nestgrid.Response` → `System.Text.Json` → `System.Text.Encodings.Web`; HTTP and Validation reach the same path through Core. | Baseline: `System.Text.Encodings.Web` 4.6.0/4.5.0. Candidate A resolves the affected evaluated graphs to 4.7.2 while retaining `System.Text.Json` 4.6.0. | Candidate A package closure is non-vulnerable in the generated/inspected Core, HTTP and Validation metadata; final release evidence remains required. | `netstandard2.0` library runtime for Core, HTTP and Validation; consumer runtime determines execution. | Candidate A is the selected lowest-compatible patched dependency under ADR-007. | Baseline confirmed; Candidate A evaluated closure remediated. Final evidence remains open. |
-| High — `Microsoft.AspNetCore.Http` | Published: MVC package family. Supported: MVC consumers using the approved legacy baseline. Repository-only: MVC tests and MVC sample. | Baseline: `Nestgrid.Response.Mvc` → `Microsoft.AspNetCore.Mvc.Core 2.1.38` → `Microsoft.AspNetCore.Http 2.1.1`. Candidate A adds the patched direct dependency. | Baseline: 2.1.1. Candidate A: 2.1.22 with MVC parent 2.1.38 retained. | Candidate A MVC closure is evaluated as non-vulnerable; fresh MVC archive and package-consumer evidence remain outstanding. | `netstandard2.0` MVC adapter and the approved MVC consumer baseline; MVC support promise must not be broadened silently. | Candidate A preserves the active MVC boundary under Architecture approval. | Baseline confirmed; Candidate A compatibility passed at compile/regression level. Final MVC evidence remains open. |
-| High — `Newtonsoft.Json` | Published: MVC package family. Supported: MVC consumers using the approved legacy baseline. Repository-only: MVC tests and MVC sample. | Baseline: `Nestgrid.Response.Mvc` → `Microsoft.AspNetCore.Mvc.Core 2.1.38` → ASP.NET Core 2.1 dependency graph → `Newtonsoft.Json 9.0.1`. Candidate A adds the patched direct dependency. | Baseline: 9.0.1. Candidate A: 13.0.1 with MVC parent 2.1.38 retained. | Candidate A MVC closure is evaluated as non-vulnerable; fresh MVC archive and package-consumer evidence remain outstanding. | `netstandard2.0` MVC adapter and approved legacy consumer baseline. | Candidate A preserves the active MVC boundary under Architecture approval. | Baseline confirmed; Candidate A compatibility passed at compile/regression level. Final MVC evidence remains open. |
+| High — `Microsoft.AspNetCore.Http` | Published: MVC package family. Supported: MVC consumers using the approved legacy baseline. Repository-only: MVC tests and MVC sample. | Baseline: `Nestgrid.Response.Mvc` → `Microsoft.AspNetCore.Mvc.Core 2.1.38` → `Microsoft.AspNetCore.Http 2.1.1`. Candidate A adds the patched direct dependency. | Baseline: 2.1.1. Candidate A: 2.1.22 with MVC parent 2.1.38 retained. | Candidate A MVC closure is evidenced as non-vulnerable in the current-commit equivalent package metadata and consumer graph. | `netstandard2.0` MVC adapter and the approved MVC consumer baseline; MVC support promise must not be broadened silently. | Candidate A preserves the active MVC boundary under Architecture approval. | Baseline confirmed; Candidate A build, tests, metadata and consumer evidence passed. Security closure remains open. |
+| High — `Newtonsoft.Json` | Published: MVC package family. Supported: MVC consumers using the approved legacy baseline. Repository-only: MVC tests and MVC sample. | Baseline: `Nestgrid.Response.Mvc` → `Microsoft.AspNetCore.Mvc.Core 2.1.38` → ASP.NET Core 2.1 dependency graph → `Newtonsoft.Json 9.0.1`. Candidate A adds the patched direct dependency. | Baseline: 9.0.1. Candidate A: 13.0.1 with MVC parent 2.1.38 retained. | Candidate A MVC closure is evidenced as non-vulnerable in the current-commit equivalent package metadata and consumer graph. | `netstandard2.0` MVC adapter and approved legacy consumer baseline. | Candidate A preserves the active MVC boundary under Architecture approval. | Baseline confirmed; Candidate A build, tests, metadata and consumer evidence passed. Security closure remains open. |
 
 ## Graph Classification
 
@@ -55,8 +55,8 @@ The resolved versions below come from the implemented solution restore graph on 
 
 - Fresh restore output for all source, test and sample projects, including direct and transitive versions. **Complete.**
 - Dependency-path evidence identifying the introducing package for each advisory.
-- Generated `.nupkg` and `.nuspec` inspection for all five published packages and each target framework dependency group. **Complete for Core, HTTP and Validation; ASP.NET Core cross-checked; MVC archive inspection outstanding.**
-- Affected consumer-installation checks from a local package source rather than project references alone. **Complete for Core, HTTP and Validation; MVC package consumer outstanding.**
+- Generated `.nupkg` and `.nuspec` inspection for all five published packages and each target framework dependency group. **Complete for Core, HTTP and Validation; ASP.NET Core cross-checked; MVC equivalent current-commit package metadata and hash retained.**
+- Affected consumer-installation checks from a local package source rather than project references alone. **Complete for Core, HTTP, Validation and MVC through the retained local evidence packages.**
 - Lowest compatible patched-version candidates, with target-framework, API and MVC support analysis.
 - Advisory scan results for the baseline and each candidate graph. **Candidate A final scan complete: no vulnerable packages reported.**
 - Explicit Architecture and Security disposition for any support-boundary change or residual-risk exception.
@@ -73,17 +73,18 @@ Candidate A was implemented on the product branch in commit `3c0e151` after Arch
 | Advisory scan | No vulnerable packages reported across source, test and sample projects | The three reported SEC-006 findings are absent from the evaluated Candidate A graphs. |
 | MVC parent compatibility | Passed at compile and regression-test level | `Microsoft.AspNetCore.Mvc.Core 2.1.38` remains resolved alongside `Microsoft.AspNetCore.Http 2.1.22` and `Newtonsoft.Json 13.0.1`. |
 | MVC encoding path | Passed at resolved-graph level | `System.Text.Encodings.Web` resolves to `4.7.2`; the previous `4.5.0` path is no longer selected. |
+| MVC package consumer | Passed | The current MVC evidence package restored, built and executed a temporary consumer exercising successful and invalid result conversion. |
 
 ## Candidate A Published Dependency Metadata
 
-The table shows the final dependency groups expected in each published package’s `.nuspec`. Core, HTTP and Validation metadata was generated and inspected from the implemented branch pack. ASP.NET Core metadata is unchanged by Candidate A and was cross-checked against the existing generated package metadata. MVC metadata is confirmed from the evaluated project/package references and the resolved graph; the isolated MSBuild pack target still hangs before emitting the MVC archive, so fresh MVC `.nuspec` inspection remains a release-evidence condition.
+The table shows the final dependency groups expected in each published package’s `.nuspec`. Core, HTTP and Validation metadata was generated and inspected from the implemented branch pack. ASP.NET Core metadata is unchanged by Candidate A and was cross-checked against the existing generated package metadata. MVC metadata was inspected from the project-generated 0.7.0 `.nuspec` and retained in the equivalent current-commit evidence package described in [SEC-006 Closure Evidence](SEC-006%20Closure%20Evidence.md). The standard isolated MSBuild pack target still hangs, so the evidence package is not a release publication artefact.
 
 | Published package | Target framework | Direct dependency metadata in Candidate A `.nuspec` | Resolved affected closure | Evidence status |
 | --- | --- | --- | --- | --- |
 | `Nestgrid.Response` | `netstandard2.0` | `System.Text.Encodings.Web 4.7.2`; `System.Text.Json 4.6.0` | `System.Text.Encodings.Web 4.7.2`; no reported vulnerable JSON encoding version | Implemented-branch `.nuspec` generated and inspected. |
 | `Nestgrid.Response.Http` | `netstandard2.0` | `Nestgrid.Response 0.7.0` | Inherits Core’s `System.Text.Encodings.Web 4.7.2` closure | Implemented-branch `.nuspec` generated and inspected; transitive closure verified by restore. |
 | `Nestgrid.Response.AspNetCore` | `net8.0` | `Nestgrid.Response.Http 0.7.0`; framework reference `Microsoft.AspNetCore.App` | Host framework supplies ASP.NET Core dependencies; project graph resolves `System.Text.Encodings.Web 4.7.2` through Core | Project unchanged; existing generated metadata cross-checked; fresh pack archive blocked by MSBuild hang. |
-| `Nestgrid.Response.Mvc` | `netstandard2.0` | `Nestgrid.Response.Http 0.7.0`; `Microsoft.AspNetCore.Mvc.Core 2.1.38`; `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1` | `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1`; `System.Text.Encodings.Web 4.7.2`; no reported `Http 2.1.1`, `Newtonsoft.Json 9.0.1` or encoding `4.5.0` selected | MSBuild project evaluation, package metadata and resolved closure verified; fresh MVC `.nuspec` inspection remains outstanding due MSBuild hang. |
+| `Nestgrid.Response.Mvc` | `netstandard2.0` | `Nestgrid.Response.Http 0.7.0`; `Microsoft.AspNetCore.Mvc.Core 2.1.38`; `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1` | `Microsoft.AspNetCore.Http 2.1.22`; `Newtonsoft.Json 13.0.1`; `System.Text.Encodings.Web 4.7.2`; no reported `Http 2.1.1`, `Newtonsoft.Json 9.0.1` or encoding `4.5.0` selected | Project-generated `.nuspec`, equivalent current-commit evidence package, resolved closure and supported consumer verified; standard `dotnet pack` remains environmentally limited. |
 | `Nestgrid.Response.Extensions.Validation` | `netstandard2.0` | `Nestgrid.Response 0.7.0`; `System.ComponentModel.Annotations 4.1.0` | Inherits Core’s `System.Text.Encodings.Web 4.7.2` closure | Implemented-branch `.nuspec` generated and inspected; transitive closure verified by restore. |
 
 ### MVC Encoding Path
@@ -102,7 +103,7 @@ Nestgrid.Response.Mvc
             └── System.Text.Encodings.Web 4.7.2
 ```
 
-The parent package compiled and all MVC tests passed without changing the approved MVC target framework or parent package identity. MSBuild project evaluation confirms the four direct published dependencies shown above. The remaining `.nuspec` archive inspection is evidence completion, not an identified compatibility failure.
+The parent package compiled and all MVC tests passed without changing the approved MVC target framework or parent package identity. MSBuild project evaluation and the inspected package metadata confirm the four direct published dependencies shown above. The supported package consumer restored, built and executed successfully. The standard pack limitation is retained as an environmental limitation, not an identified compatibility failure.
 
 ## Candidate Remediation Comparison
 
@@ -136,4 +137,4 @@ Candidate A implementation is approved and complete. The following conditions no
 
 ## Current Conclusion
 
-Candidate A is implemented with the approved exact pins. It remediates all currently affected resolved graphs without changing package identity, target frameworks or the approved MVC parent package/support boundary. SEC-006 remains open only for the final package-consumer and generated MVC metadata evidence gate; no Architecture/Product/Sponsor boundary decision is indicated by the implementation evidence.
+Candidate A is implemented with the approved exact pins. It remediates all currently affected resolved graphs without changing package identity, target frameworks or the approved MVC parent package/support boundary. Engineering’s package metadata and supported consumer evidence gate is complete; final Quality reconciliation and Security closure remain. No Architecture/Product/Sponsor boundary decision is indicated by the implementation evidence.
