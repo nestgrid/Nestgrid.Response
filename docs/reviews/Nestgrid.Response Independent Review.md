@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v2.1
+version: v2.3
 status: In Review
 owner: Independent Reviewer
 contributors:
@@ -35,11 +35,11 @@ The review stops at the Recommend stage. It does not approve a release, accept m
 
 ## Readiness Claim
 
-The current candidate claims conditional readiness for Release review through the Quality, Security and Platform artefacts. No Release Report or final release decision is present. This review therefore assesses readiness to enter Release review, not readiness for final publication.
+The current candidate has entered Release review: Quality, Security and Platform recommendations are available, and the Release Report records Project Sponsor approval to merge and push the `v0.7.0` tag. The protected workflow run, final tag, package hashes and post-publication provenance are not yet present, so this review does not assess final release completion.
 
 ## Overall Assessment
 
-The implementation and lifecycle evidence are substantially complete for Release review: Architecture, Engineering, Quality, Security and Platform artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; and Platform records a repeatable publication model. Final release confidence remains conditional because final Security closure, protected-environment publication/provenance evidence and the Release Report are outstanding.
+The implementation and lifecycle evidence are substantially complete for Release progression: Architecture, Engineering, Quality, Security, Platform and Release artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; Security has closed SEC-006 for the evaluated candidate; and the Release Report records Sponsor approval for the protected tag-triggered publication path. Final release completion remains conditional because the protected workflow, immutable package provenance and post-publication Release Report update are outstanding.
 
 ## Evidence Reviewed
 
@@ -52,12 +52,12 @@ The implementation and lifecycle evidence are substantially complete for Release
 - Current staged and working-tree state.
 - Current Quality and Platform evidence recording 289 Release tests passed, 0 failed, 0 skipped; package-owned coverage; sequential 100% mutation results; package creation and consumer verification.
 - Current Architecture, Engineering, Quality, Security and Platform artefacts and their handovers.
-- Latest candidate commits through `b2025ac [Engineering] Reconcile SEC-006 handover records`.
+- Latest candidate commits through `9210cec [Architecture] Correct tagged release sequencing`.
 
 ## Evidence Limitations and Inferences
 
 - The canonical review has prior findings through version v1.7; this is the next follow-up review in the same series.
-- No Release Report or retained protected-environment publication run is present in the repository state reviewed. Engineering has now retained current MVC `.nuspec`/dependency metadata, package hash and supported MVC package-consumer execution evidence; final Security closure and protected-CI provenance remain open.
+- The Release Report is present and records Project Sponsor approval to merge and push the `v0.7.0` tag. No final tag, protected-environment workflow run, published package hashes or post-publication provenance update is present in the repository state reviewed. Engineering has retained current MVC `.nuspec`/dependency metadata, package hash and supported MVC package-consumer execution evidence; Security has closed SEC-006 for the evaluated candidate.
 - A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction; this is not treated as a product failure because current Quality evidence records an isolated successful run.
 - The retrofit scope is based on the user's stated objective; the responsible roles should confirm the staged lifecycle sequence and acceptance criteria before execution.
 
@@ -137,25 +137,25 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 **Owner:** Product Owner. **Disposition:** Resolved. The comparison basis, date, alternatives and decisive trade-offs are recorded; its proportionate scope is accepted for this stage.
 
-### IR-008 — P1 — SEC-006 release-blocking evidence is incomplete
+### IR-008 — Resolved — SEC-006 package and consumer evidence was incomplete
 
-**Evidence:** Security Assessment, Quality Release Readiness Report and Platform Operational Readiness Review all state that SEC-006/Q-007 remains open. Candidate A's evaluated graphs report no vulnerable packages, and Engineering has retained current MVC package metadata, package hash and supported MVC package-consumer evidence. Security explicitly states that no exception is implied.
+**Evidence:** [SEC-006 Closure Evidence](../artefacts/03%20Implementation/SEC-006%20Closure%20Evidence.md) records the evaluated MVC dependency group, package hash, advisory result and supported consumer execution. Quality Release Readiness Report v1.6 reconciles the evidence, and Security Assessment v1.6 closes SEC-006 for the evaluated current candidate. Protected-CI publication and provenance are explicitly retained as separate release conditions.
 
-**Impact:** The final published MVC package may differ from the evaluated dependency graph, and the supported MVC consumer boundary is not independently demonstrated. The reported Critical/High dependency risk cannot be considered closed by implementation evidence alone.
+**Impact:** The prior package and supported-consumer evidence gap is addressed for the evaluated candidate. The final published package must still be shown to match the evaluated evidence through protected-CI publication and immutable provenance.
 
-**Recommendation:** Review the retained [SEC-006 Closure Evidence](../artefacts/03%20Implementation/SEC-006%20Closure%20Evidence.md), including the MVC dependency group, package hash, advisory result and supported consumer execution. Reconcile Quality and Security records and obtain final Security closure or an explicit authorised risk decision before release approval.
+**Recommendation:** Preserve the closure evidence and link it from the Release Report. Do not treat the engineering package evidence as a substitute for protected-CI publication and provenance evidence.
 
-**Owner:** Engineering / Quality / Security. **Disposition:** Engineering evidence complete in `SEC-006 Closure Evidence`; Quality reconciliation and final Security closure remain open.
+**Owner:** Engineering / Quality / Security. **Disposition:** Resolved for the evaluated candidate on 2026-08-18. Engineering, Quality and Security evidence and closure are recorded; Platform / Release own the remaining protected-CI publication and provenance evidence.
 
-### IR-009 — P1 — Release Report and final release decision are absent
+### IR-009 — Resolved with follow-up — Release Report and final release decision were absent
 
-**Evidence:** The repository contains a release roadmap and Quality, Security and Platform recommendations, but no `docs/artefacts/07 Release/Release Report.md` or equivalent current release decision. The Release Gate requires Quality, Security and Platform recommendations, dispositioned findings and Project Sponsor approval recorded in a Release Report.
+**Evidence:** [Release Report](../artefacts/07%20Release/Release%20Report.md) now exists, links the Quality, Security, Platform and Engineering evidence, records the final pre-publication candidate baseline and records `Knight — Project Sponsor` approval to merge and push the `v0.7.0` tag through the protected workflow. The report status is `Approved for tagged publication; post-publication evidence pending`.
 
-**Impact:** There is no canonical record tying the final version, immutable commit, package artefacts, provenance, evidence links, accepted risks and release outcome together. Publication would not be auditable through the EOS Release Gate.
+**Impact:** The pre-publication Release Gate record and Sponsor decision now exist. Publication is not yet fully auditable because the final tag, protected workflow run, package hashes and post-publication provenance have not been retained or added to the Release Report.
 
-**Recommendation:** Produce the Release Report as the next lifecycle artefact. It must link the current Quality, Security and Platform evidence, record SEC-006/SEC-003/SEC-002 dispositions, identify the exact version and commit, and capture the Project Sponsor's final Proceed or Stop decision.
+**Recommendation:** Execute only the approved protected tag-triggered workflow, then update the Release Report with the final merge commit, tag, workflow run, package links, hashes, provenance and final publication outcome. Any workflow failure or provenance mismatch must return to the relevant role review.
 
-**Owner:** Release Owner / Project Sponsor. **Disposition:** Open. No Release Report or final release decision has been produced; Release review may begin once the evidence pack is assembled.
+**Owner:** Release Owner / Project Sponsor. **Disposition:** Resolved for the pre-publication Release Gate on 2026-08-18. The Release Report and Sponsor approval are recorded; post-publication evidence and final report completion remain open follow-up.
 
 ### IR-010 — Resolved with recording action — MVC follows the common library maintenance lifecycle
 
@@ -175,8 +175,8 @@ The implementation and lifecycle evidence are substantially complete for Release
 - IR-003 is resolved through Architecture; IR-004 is resolved for Quality-stage evidence.
 - IR-006 is resolved: approval authority and the Discovery boundary are explicit.
 - IR-007 is resolved: the proportionate existing-solution comparison is recorded.
-- IR-008 remains open for final Quality/Security disposition: Engineering has retained the MVC metadata, package hash and supported consumer evidence.
-- IR-009 remains open: Release Owner and Project Sponsor have not yet produced or approved a Release Report.
+- IR-008 is resolved for the evaluated candidate: Engineering, Quality and Security have recorded the MVC metadata, package hash, supported consumer evidence and Security closure; protected-CI provenance remains a Release condition.
+- IR-009 is resolved for the pre-publication Release Gate: the Release Report and Sponsor approval are recorded. Post-publication evidence and final report completion remain follow-up conditions.
 - IR-010 is resolved: the common library maintenance lifecycle and review policy are recorded in the durable Architecture, package and Platform documentation.
 
 ## Lifecycle Feedback
@@ -187,7 +187,7 @@ The implementation and lifecycle evidence are substantially complete for Release
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
 - The Architecture Recommendation was approved by the Project Sponsor and the Architecture Pack and Engineering Handover were produced for the v0.7.0 retrofit. Engineering readiness remains conditional on implementation evidence and downstream gates.
 - Quality, Security and Platform recommend proceeding to Release review with explicit conditions; none of those artefacts approves final publication.
-- SEC-006/Q-007, protected publication/provenance evidence and the Release Report are the current release-gate concerns.
+- Protected publication/provenance evidence and the post-publication Release Report update are the current release-completion concerns; SEC-006/Q-007 is resolved for the evaluated candidate.
 
 ## Engineering Operating System Feedback
 
@@ -197,29 +197,29 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 ## Accepted or Deferred Risks
 
-None recorded. SEC-006/Q-007, SEC-003 evidence and protected-publication evidence remain open rather than accepted.
+None recorded. Protected-publication/provenance evidence and post-publication report completion remain open rather than accepted.
 
 ## Follow-up Actions
 
-1. Review the completed SEC-006/Q-007 MVC package-closure and supported-consumer evidence and obtain Security closure or an authorised risk decision.
+1. Retain the completed SEC-006/Q-007 MVC package-closure and supported-consumer evidence in the Release evidence pack.
 2. Retain the protected-environment publication execution and immutable package provenance evidence.
 3. Keep the common MVC maintenance, support ownership and review triggers current.
-4. Produce the canonical Release Report and obtain Project Sponsor release approval.
+4. Execute the Sponsor-approved protected tag-triggered workflow and complete the Release Report with final publication evidence.
 5. Re-review this canonical document after the responsible roles record dispositions.
 
 ## Product Owner Handover
 
 The Product Owner can pick up this review from the following actions:
 
-1. Review IR-008, IR-009 and IR-010 as the current release-readiness conditions.
+1. Review the remaining IR-009 post-publication follow-up and IR-010 policy record, and retain IR-008 closure evidence.
 2. Confirm and record the common library maintenance policy, including the shared support owner and review triggers.
 3. Provide the Release Owner and Project Sponsor with this review and the current Quality, Security and Platform recommendations.
 
-Expected handover output: a Release-stage evidence pack with explicit open-finding dispositions, support-policy decision, provenance links and a canonical Release Report ready for Sponsor decision.
+Expected handover output: a completed Release-stage evidence pack with protected workflow, package provenance and final publication outcome recorded in the canonical Release Report.
 
 ## Overall Recommendation
 
-**Proceed with conditions.** Proceed to Release review and preparation only. Do not approve or publish v0.7.0 until IR-008 receives final Quality/Security disposition and IR-009 is resolved or explicitly accepted by the authorised roles. IR-010 is resolved. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
+**Proceed with conditions.** Proceed to the Sponsor-approved protected tag-triggered publication workflow only. Do not treat v0.7.0 as finally released until the workflow succeeds, immutable package provenance is retained and the Release Report is completed. IR-008 is resolved for the evaluated candidate, IR-009 is resolved for the pre-publication gate with post-publication follow-up, and IR-010 is resolved for its recorded scope. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
 
 ## Next Review
 
@@ -241,3 +241,5 @@ Re-review the same canonical document after the responsible roles update the rep
 | v1.9 | 2026-08-18 | Recorded the required SEC-006 closure evidence and the Product Owner clarification that MVC follows the common library maintenance lifecycle. |
 | v2.0 | 2026-08-18 | Updated the standard artefact metadata, recorded responsible-role dispositions for IR-008 through IR-010, and preserved the current Release-stage recommendation without adding findings. |
 | v2.1 | 2026-08-18 | Recorded Engineering’s MVC package metadata, hash and supported-consumer evidence, updated the IR-008 disposition to await Quality/Security closure, and closed the durable MVC lifecycle recording action. |
+| v2.2 | 2026-08-18 | Recorded Quality reconciliation and Security closure of IR-008 for the evaluated candidate, narrowed the remaining Release conditions to protected-CI publication/provenance and the Release Report, and preserved all finding IDs. |
+| v2.3 | 2026-08-18 | Reviewed the new Release Report and Sponsor approval, resolved IR-009 for the pre-publication Release Gate, and retained protected workflow, package provenance and post-publication report completion as follow-up conditions. |
