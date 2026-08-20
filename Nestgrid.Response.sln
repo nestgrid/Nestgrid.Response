@@ -154,6 +154,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Architecture", "02 Archi
 		docs\artefacts\02 Architecture\Engineering Handover.md = docs\artefacts\02 Architecture\Engineering Handover.md
 		docs\artefacts\02 Architecture\Architecture Feedback - Security.md = docs\artefacts\02 Architecture\Architecture Feedback - Security.md
 		docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md = docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md
+		docs\artefacts\02 Architecture\Architecture Investigation - OpenAPI Metadata Integration.md = docs\artefacts\02 Architecture\Architecture Investigation - OpenAPI Metadata Integration.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Implementation", "03 Implementation", "{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B}"
