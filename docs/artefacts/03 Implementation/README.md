@@ -5,6 +5,7 @@ Engineering artefacts record how the approved Nestgrid.Response Architecture is 
 ## Artefacts
 
 - [Implementation Plan](Implementation%20Plan.md)
+- [HTTP Client Capability Implementation Plan](Implementation%20Plan%20-%20HTTP%20Client%20Capability.md)
 - [Implementation Report](Implementation%20Report.md)
 - [SEC-006 Dependency Path Matrix](SEC-006%20Dependency%20Path%20Matrix.md)
 - [SEC-006 Closure Evidence](SEC-006%20Closure%20Evidence.md)

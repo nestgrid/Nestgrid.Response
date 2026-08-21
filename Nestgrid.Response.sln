@@ -165,6 +165,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Implementation", "03 Imp
 	ProjectSection(SolutionItems) = preProject
 		docs\artefacts\03 Implementation\README.md = docs\artefacts\03 Implementation\README.md
 		docs\artefacts\03 Implementation\Implementation Plan.md = docs\artefacts\03 Implementation\Implementation Plan.md
+		docs\artefacts\03 Implementation\Implementation Plan - HTTP Client Capability.md = docs\artefacts\03 Implementation\Implementation Plan - HTTP Client Capability.md
 		docs\artefacts\03 Implementation\Implementation Report.md = docs\artefacts\03 Implementation\Implementation Report.md
 		docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md = docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md
 		docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md = docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md
