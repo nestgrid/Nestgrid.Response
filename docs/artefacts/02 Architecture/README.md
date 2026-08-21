@@ -14,6 +14,8 @@ The existing v0.6.0 implementation is the baseline for review. Architecture appr
 6. [Architecture Investigation - OpenAPI Metadata Integration](Architecture%20Investigation%20-%20OpenAPI%20Metadata%20Integration.md)
 7. [Architecture Recommendation - HTTP Client Capability](Architecture%20Recommendation%20-%20HTTP%20Client%20Capability.md)
 
+The HTTP client capability is approved for detailed Architecture and Engineering handover under ADR-009 through ADR-011. Implementation remains subject to the revised Architecture Pack and Engineering evidence requirements.
+
 The Architecture Pack and related decision records are the approved basis for Engineering handover. Conditional release items remain governed by the downstream Security, Quality and Platform gates.
 
 ## Navigation

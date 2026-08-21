@@ -41,7 +41,7 @@ Repository inspection confirms that the current implementation contains five pac
 | Question | Current clarification | Source |
 | --- | --- | --- |
 | Is the existing five-package product in scope? | Yes. It is the approved baseline for Architecture review, not proof that every current decision remains correct. | [Product Brief](../01%20Discovery/Product%20Brief.md), [Architecture Handover](../01%20Discovery/Architecture%20Handover.md) |
-| Are OpenAPI, `ProblemDetails` and additional adapters in scope? | No. They remain deferred until a later Product decision. | [Product Brief](../01%20Discovery/Product%20Brief.md) |
+| Are OpenAPI, `ProblemDetails` and additional adapters in scope for the v0.7.0 retrofit? | No. They remain deferred unless separately authorised. The later HTTP client capability is separately approved under the dedicated client assessment and ADR-009 through ADR-011. | [Product Brief](../01%20Discovery/Product%20Brief.md), [HTTP Client Assessment](Architecture%20Recommendation%20-%20HTTP%20Client%20Capability.md) |
 | Is MVC support intended to continue? | Yes. It is an approved, equally supported segment, subject to Architecture defining the support boundary and compatibility policy. | [Architecture Handover](../01%20Discovery/Architecture%20Handover.md) |
 
 ## Proposed Architectural Direction
@@ -70,7 +70,7 @@ The Architecture Pack should document the architecture as it is intended to be m
 | MVC support | Continue support, but define supported framework versions, maintenance duration, compatibility expectations and review triggers. | Equal support is an approved product intent with material cost and compatibility consequences. |
 | Public compatibility | Establish an API and behaviour compatibility policy before further broad changes or 1.0 planning. | Statuses, result shapes, mappings and package targets are consumer-facing contracts. |
 | ADR-006 | Update or supersede ADR-006 to record the implemented MVC package, actual dependency and support boundary. | The current record is stale and conflicts with the implementation and approved Discovery artefacts. |
-| Deferred capabilities | Do not add OpenAPI, `ProblemDetails` or additional adapters in this retrofit. | These capabilities are explicitly outside the approved scope. |
+| Deferred capabilities | Do not add OpenAPI, `ProblemDetails` or unapproved adapters in the v0.7.0 retrofit. The HTTP client capability is governed separately by its approved detailed Architecture. | Preserves the v0.7.0 boundary while allowing the explicitly authorised additive client package. |
 
 ## Principal Risks and Trade-offs
 

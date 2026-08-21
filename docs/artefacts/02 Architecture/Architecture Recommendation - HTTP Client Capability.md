@@ -3,7 +3,7 @@
 ```yaml
 title: Nestgrid.Response HTTP Client Capability Architecture Assessment and Recommendation
 version: 1.0
-status: Recommend — pending Product Sponsor approval; no architectural decision made
+status: Approved direction — detailed Architecture authorised
 owner: Solution Architect
 contributors:
   - Knight
@@ -15,6 +15,7 @@ consumed_by:
   - Quality Engineer
   - Security Engineer
 date: 2026-08-21
+approval: Project Sponsor approved progression beyond Recommend on 2026-08-21
 related_decisions:
   - ../../decisions/ADR-001-Result-Pattern-Philosophy.md
   - ../../decisions/ADR-002-Status-Driven-Results.md
@@ -49,7 +50,7 @@ The assessment is intentionally separate from the existing server-side adapters,
 Result / Result<T> -> HTTP response
 ```
 
-No implementation, public API approval, ADR or change to the approved Architecture Pack is authorised by this document.
+At the original Recommend stage, no implementation, public API approval, ADR or change to the approved Architecture Pack was authorised by this document. Sponsor approval recorded on 2026-08-21 authorises the detailed Architecture work captured by the related ADRs, Architecture Pack revision and Engineering handover.
 
 ## Established requirements
 
@@ -220,7 +221,7 @@ Rejected. Core construction is deliberately controlled, `Status` is not the HTTP
 
 ## Recommended public-contract direction
 
-Subject to approval, detailed design should investigate a small set of additive APIs with these properties:
+The detailed Architecture defines a small set of additive APIs with these properties:
 
 - an explicit operation/policy declaration for payload mode and target type;
 - a stateless response interpreter over `HttpResponseMessage`;
@@ -231,7 +232,7 @@ Subject to approval, detailed design should investigate a small set of additive 
 - protocol exceptions that are safe by default and do not include raw response content;
 - serializer options that are immutable, explicit and compatible with the existing JSON wire contract.
 
-This is contract direction, not an approved API design. Names, overloads, target frameworks, serializer dependency versions and exception types require a follow-up Architecture Pack revision and Engineering design.
+The detailed API shape, wire contract, status policy, construction strategy and exception boundary are recorded in ADR-009, ADR-010, ADR-011 and the revised Architecture Pack. Engineering may refine internal names and implementation details within that boundary, but must escalate a public-contract or semantic deviation.
 
 ## Minimum proving scenarios
 
@@ -266,19 +267,19 @@ Golden wire fixtures should be cross-checked against the existing ASP.NET Core a
 
 **Recommend pursuing the capability as a new, separate, additive HTTP client adapter package, with an explicit declared wire representation and a stateless `HttpResponseMessage` interpreter.** Keep `Nestgrid.Response` unchanged, keep `Nestgrid.Response.Http` as the server-side mapping owner, and do not use a handler or reverse mapping as the primary abstraction.
 
-This assessment records the findings, constraints and recommended direction only. **No architectural decision has been made.**
+This assessment originally recorded findings and a recommendation only. The Project Sponsor has now approved progression beyond Recommend. The detailed decisions are recorded in ADR-009 through ADR-011; implementation remains governed by the revised Architecture Pack and Engineering handover.
 
-Before progressing beyond the Recommend stage, the Project Sponsor/Product Owner should approve or reject:
+The Sponsor approval authorises:
 
 1. creation of a separate client adapter package in the Nestgrid.Response ecosystem;
 2. the explicit FullResult/ValueOnly contract approach;
-3. the expected-outcome versus exceptional-condition split; and
-4. preparation of a detailed Architecture Pack revision, public contract proposal, ADRs and Engineering handover.
+3. the client-owned HTTP-outcome policy and expected-outcome versus exceptional-condition split; and
+4. execution of the detailed Architecture and Engineering handover recorded in the related artefacts.
 
-If approved, the next Architecture stage must refine the API shape, target frameworks, serializer strategy, status policy and package/version lifecycle before Engineering implementation begins.
+Engineering implementation must remain within the refined API shape, target frameworks, serializer strategy, status policy and package/version lifecycle recorded in the revised Architecture Pack and handover.
 
 ## Closure
 
-Assessment status: **Recommendation recorded — pending approval.**
+Assessment status: **Approved direction — detailed Architecture authorised.**
 
 No source implementation, existing package change or public API decision has been made by this document.
