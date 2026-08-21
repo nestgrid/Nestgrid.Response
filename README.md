@@ -18,6 +18,7 @@ It gives application and domain code a clear way to return expected outcomes suc
 | [`Nestgrid.Response.AspNetCore`](src/Nestgrid.Response.AspNetCore/README.md) | Minimal API `IResult` and controller `IActionResult` adapters for ASP.NET Core. | `net8.0` |
 | [`Nestgrid.Response.Mvc`](src/Nestgrid.Response.Mvc/README.md) | MVC `IActionResult` adapter for older ASP.NET Core MVC applications. | `netstandard2.0` |
 | [`Nestgrid.Response.Extensions.Validation`](src/Nestgrid.Response.Extensions.Validation/README.md) | Data annotations validation extensions for invalid results and result messages. | `netstandard2.0` |
+| [`Nestgrid.Response.Http.Client`](src/Nestgrid.Response.Http.Client/README.md) | Explicit HTTP response interpretation into `Result` and `Result<T>` values. | `netstandard2.0` |
 
 ## Package Relationships
 
@@ -31,6 +32,8 @@ Nestgrid.Response
                     +--> Nestgrid.Response.AspNetCore
                     |
                     +--> Nestgrid.Response.Mvc
+        |
+        +--> Nestgrid.Response.Http.Client
 ```
 
 The core package has no presentation-framework dependency. HTTP policy lives in one shared package so the ASP.NET Core and MVC adapters behave consistently.
@@ -104,6 +107,7 @@ app.MapGet("/users/{id:int}", (int id, UserService users) =>
 | `Nestgrid.Response.Extensions.Validation` | .NET Standard 2.0 consumers |
 | `Nestgrid.Response.AspNetCore` | ASP.NET Core on .NET 8 |
 | `Nestgrid.Response.Mvc` | ASP.NET Core MVC applications compatible with `Microsoft.AspNetCore.Mvc.Core` 2.1.x |
+| `Nestgrid.Response.Http.Client` | .NET Standard 2.0 consumers interpreting Nestgrid HTTP responses |
 
 ## Ecosystem
 
@@ -129,6 +133,7 @@ Other libraries are being developed to provide reusable building blocks for mode
 | [`samples/Nestgrid.Response.Extensions.Validation.Sample`](samples/Nestgrid.Response.Extensions.Validation.Sample/README.md) | Data annotations validation results converted to messages and invalid results. |
 | [`samples/Nestgrid.Response.AspNetCore.Sample`](samples/Nestgrid.Response.AspNetCore.Sample/README.md) | Minimal API endpoints returning `result.ToIResult()`, including value-only responses. |
 | [`samples/Nestgrid.Response.Mvc.Sample`](samples/Nestgrid.Response.Mvc.Sample/README.md) | MVC controller actions returning `result.ToActionResult()`. |
+| [`samples/Nestgrid.Response.Http.Client.Sample`](samples/Nestgrid.Response.Http.Client.Sample/README.md) | FullResult and ValueOnly HTTP client interpretation for reusable consumer scenarios. |
 
 Run a sample from the repository root:
 

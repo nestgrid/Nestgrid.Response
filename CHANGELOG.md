@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2026-08-21
+
+### Added
+
+- Added the additive `Nestgrid.Response.Http.Client` package for explicit HTTP response interpretation into `Result` and `Result<T>`.
+- Added explicit `FullResult` and `ValueOnly` payload modes, immutable client options and client-owned HTTP status mappings.
+- Added safe protocol failures for malformed, mismatched and unmapped responses while preserving transport and cancellation exceptions.
+- Added reusable licence-service and Portal-to-Finance proving scenarios.
+
+### Changed
+
+- Updated the global package version to `0.8.0` for the additive HTTP client capability.
+- Documented response ownership, normal `HttpClient` composition and the distinction between client and server HTTP mapping semantics.
+
 ## [0.7.0] - 2026-08-18
 
 ### Changed
