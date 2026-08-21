@@ -123,6 +123,27 @@ public sealed class NestgridResponseReaderTests
         result.Status.ShouldBe(ResultStatus.Cancelled);
     }
 
+    [Theory]
+    [InlineData(200, ResultStatus.Ok)]
+    [InlineData(201, ResultStatus.Created)]
+    [InlineData(202, ResultStatus.Accepted)]
+    [InlineData(400, ResultStatus.Invalid)]
+    [InlineData(401, ResultStatus.Unauthorized)]
+    [InlineData(403, ResultStatus.Forbidden)]
+    [InlineData(404, ResultStatus.NotFound)]
+    [InlineData(409, ResultStatus.Conflict)]
+    [InlineData(422, ResultStatus.Failed)]
+    [InlineData(500, ResultStatus.Error)]
+    [InlineData(599, ResultStatus.Error)]
+    public async Task Default_status_matrix_maps_observed_http_outcomes(int statusCode, ResultStatus expected)
+    {
+        using var response = Response((HttpStatusCode)statusCode, "{\"Messages\":[]}");
+
+        var result = await new NestgridResponseReader().ReadAsync(response);
+
+        result.Status.ShouldBe(expected);
+    }
+
     [Fact]
     public async Task Three_hundred_and_fourteen_is_unmapped_by_default()
     {
