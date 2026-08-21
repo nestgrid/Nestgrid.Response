@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Nestgrid.Response.Http.Client</PackageId>
+        <Description>Explicit HTTP response interpretation for Nestgrid.Response results.</Description>
+        <PackageTags>response;result;results;http;client;json</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Nestgrid.Response\Nestgrid.Response.csproj" />
+        <PackageReference Include="System.Text.Json" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>
