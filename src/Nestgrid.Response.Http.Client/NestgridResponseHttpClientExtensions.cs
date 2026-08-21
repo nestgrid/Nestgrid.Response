@@ -1,5 +1,3 @@
-using System.Net.Http;
-
 namespace Nestgrid.Response.Http.Client;
 
 /// <summary>

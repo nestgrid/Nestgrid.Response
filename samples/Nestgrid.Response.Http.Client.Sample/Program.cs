@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http;
 using Nestgrid.Response.Http.Client;
 
 using var licenceClient = new HttpClient(new StaticHandler(
@@ -24,18 +23,3 @@ var finance = await financeClient.SendNestgridResponseAsync<Invoice>(
 
 Console.WriteLine($"Licence: {licence.Value?.Name} ({licence.Status})");
 Console.WriteLine($"Invoice: {finance.Value?.InvoiceId} {finance.Value?.Currency} ({finance.Status})");
-
-internal sealed record Licence(int Id, string Name);
-
-internal sealed record Invoice(int InvoiceId, string Currency);
-
-internal sealed class StaticHandler : HttpMessageHandler
-{
-    private readonly HttpResponseMessage response;
-
-    public StaticHandler(HttpResponseMessage response) => this.response = response;
-
-    protected override Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request,
-        CancellationToken cancellationToken) => Task.FromResult(response);
-}

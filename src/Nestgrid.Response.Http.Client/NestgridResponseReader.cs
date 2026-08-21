@@ -1,6 +1,4 @@
-using System.Net.Http;
 using System.Text.Json;
-using Nestgrid.Response.Extensions;
 using Nestgrid.Response.Http.Client.Internal;
 
 namespace Nestgrid.Response.Http.Client;

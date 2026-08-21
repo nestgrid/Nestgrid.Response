@@ -1,6 +1,6 @@
-namespace Nestgrid.Response.Http.Client.Internal;
-
 using Nestgrid.Response;
+
+namespace Nestgrid.Response.Http.Client.Internal;
 
 internal static class ClientResultFactory
 {
