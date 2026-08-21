@@ -1,6 +1,6 @@
 ---
 title: Nestgrid.Response Independent Review
-version: v2.3
+version: v2.4
 status: In Review
 owner: Independent Reviewer
 contributors:
@@ -13,7 +13,7 @@ consumed_by:
   - Quality Engineer
   - Security Engineer
   - Platform Engineer
-date: 2026-08-18
+date: 2026-08-20
 related_decisions:
   - ../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
 related_work_items:
@@ -29,17 +29,17 @@ related_repositories:
 
 ## Purpose and Scope
 
-This review assesses the current `/response` v0.7.0 candidate after Architecture, Engineering, Quality, Security and Platform work, before the Release stage. The scope is repository-wide: lifecycle artefacts, decisions, documentation, source, tests, solution structure, package evidence and publication controls.
+This review assesses the `/response` public API for the planned 1.0.0 stability decision after the v0.7.0 release. The scope covers names, statuses, factories, nullable semantics, Map/Match behaviour, exception conversion, HTTP mappings, validation extensions, package boundaries, public extensibility, compatibility evidence and missing capabilities that could force a later breaking change.
 
 The review stops at the Recommend stage. It does not approve a release, accept material risk or execute remediation owned by another lifecycle role.
 
 ## Readiness Claim
 
-The current candidate has entered Release review: Quality, Security and Platform recommendations are available, and the Release Report records Project Sponsor approval to merge and push the `v0.7.0` tag. The protected workflow run, final tag, package hashes and post-publication provenance are not yet present, so this review does not assess final release completion.
+The v0.7.0 candidate is released to NuGet with protected workflow and publication evidence recorded in the Release Report. This review is advisory for 1.0.0 API stabilisation; it does not approve a 1.0.0 release.
 
 ## Overall Assessment
 
-The implementation and lifecycle evidence are substantially complete for Release progression: Architecture, Engineering, Quality, Security, Platform and Release artefacts exist; current Quality evidence records 289 passing tests, coverage, mutation and package-consumer checks; Security has closed SEC-006 for the evaluated candidate; and the Release Report records Sponsor approval for the protected tag-triggered publication path. Final release completion remains conditional because the protected workflow, immutable package provenance and post-publication Release Report update are outstanding.
+The product has a coherent five-package shape, immutable result snapshots, explicit semantic statuses, shared HTTP policy, separated validation extensions and safe-by-default exception conversion. The current full suite passes 289 tests. It is not yet ready for a 1.0 API freeze because several observable contracts are not explicitly settled: public `Result` extensibility, `NoContent` value/callback semantics, the `Cancelled` and `Failed` HTTP defaults, the low-level mapper invariant and a durable public API compatibility baseline.
 
 ## Evidence Reviewed
 
@@ -52,12 +52,16 @@ The implementation and lifecycle evidence are substantially complete for Release
 - Current staged and working-tree state.
 - Current Quality and Platform evidence recording 289 Release tests passed, 0 failed, 0 skipped; package-owned coverage; sequential 100% mutation results; package creation and consumer verification.
 - Current Architecture, Engineering, Quality, Security and Platform artefacts and their handovers.
-- Latest candidate commits through `9210cec [Architecture] Correct tagged release sequencing`.
+- Latest candidate commits through `0b22b03 [Architecture] Record OpenAPI metadata investigation`.
+- Current Release Report confirming v0.7.0 publication to NuGet through protected workflow `32158331286`.
+- Current 1.0 roadmap and the closed OpenAPI metadata investigation, which explicitly defers new public metadata APIs pending a new Product and Architecture decision.
+- Current Release test execution: 289 passed, 0 failed, 0 skipped.
 
 ## Evidence Limitations and Inferences
 
-- The canonical review has prior findings through version v1.7; this is the next follow-up review in the same series.
-- The Release Report is present and records Project Sponsor approval to merge and push the `v0.7.0` tag. No final tag, protected-environment workflow run, published package hashes or post-publication provenance update is present in the repository state reviewed. Engineering has retained current MVC `.nuspec`/dependency metadata, package hash and supported MVC package-consumer execution evidence; Security has closed SEC-006 for the evaluated candidate.
+- This is the 1.0 API Stability follow-up review in the same canonical review series; all prior finding IDs are retained.
+- The review found no dedicated public API inventory, approved 1.0 API baseline, API compatibility diff or compatibility gate. The repository has behavioural tests and broad compatibility policy, but these do not by themselves prove that the intended public surface is frozen.
+- The OpenAPI investigation is closed without implementation or public API approval; OpenAPI metadata and `ProblemDetails` are therefore not treated as missing 1.0 core capabilities.
 - A fresh local test rerun was attempted but was blocked by the execution environment's socket-permission restriction; this is not treated as a product failure because current Quality evidence records an isolated successful run.
 - The retrofit scope is based on the user's stated objective; the responsible roles should confirm the staged lifecycle sequence and acceptance criteria before execution.
 
@@ -68,6 +72,19 @@ The implementation and lifecycle evidence are substantially complete for Release
 - The complete automated test suite passed locally with no failures.
 - The working-tree documentation has useful root, handbook, artefact and decision entry points.
 - The repository uses immutable result models, explicit statuses and shared HTTP mapping as documented.
+
+## API Stability Conclusions
+
+- **Names:** The core names are broadly coherent and aligned across code, documentation and tests. No rename is recommended on current evidence. `Info` versus `Information` is a minor abbreviation choice, not a 1.0 blocker.
+- **Factories:** The generic and non-generic factory families are consistently shaped. `NoContent<T>()` is the deliberate asymmetry; its relationship to value-bearing factories must be frozen with IR-013.
+- **Statuses:** The semantic vocabulary is sufficient for the approved product, but `Cancelled` versus `Failed` needs the explicit HTTP contract decision in IR-014.
+- **Map/Match and nullable semantics:** The behaviour is implemented and tested, but the `NoContent<T>` and null-value contract is not yet sufficiently intentional for 1.0; see IR-013.
+- **Exceptions:** SEC-001 is settled for the normal path. `Error(Exception)` is safe by default, while explicitly named diagnostic factories remain a deliberate trusted-workflow escape hatch under ADR-008.
+- **HTTP mappings:** The shared policy and adapter reuse are correct in principle. Default mappings are stable in implementation, with the semantic rationale gap captured by IR-014 and the custom-adapter invariant by IR-015.
+- **Validation:** The separate DataAnnotations package and additive member-aware methods are appropriately separated and consistent with TDR-001. No core validation model or package merge is indicated.
+- **Package boundaries:** The five-package boundary is sound. The modern ASP.NET Core package and legacy MVC package overlap on `IActionResult` support for different framework baselines; this is documented and does not currently justify a boundary change.
+- **Public exposure:** No obviously regrettable public type was found beyond the unresolved `Result` extensibility and low-level mapper contracts in IR-011 and IR-015. Diagnostic exception factories are intentionally public and explicitly named.
+- **Missing capability:** Nothing reviewed would force a 1.x breaking feature addition. OpenAPI metadata, `ProblemDetails` and further adapters are correctly deferred pending Product and Architecture decisions.
 
 ## Findings
 
@@ -155,7 +172,7 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 **Recommendation:** Execute only the approved protected tag-triggered workflow, then update the Release Report with the final merge commit, tag, workflow run, package links, hashes, provenance and final publication outcome. Any workflow failure or provenance mismatch must return to the relevant role review.
 
-**Owner:** Release Owner / Project Sponsor. **Disposition:** Resolved for the pre-publication Release Gate on 2026-08-18. The Release Report and Sponsor approval are recorded; post-publication evidence and final report completion remain open follow-up.
+**Owner:** Release Owner / Project Sponsor. **Disposition:** Resolved for the Release Gate on 2026-08-20. The Release Report records the final commit, tag, protected workflow, package hash and publication outcome; GitHub Release creation is intentionally deferred until 1.0.0.
 
 ### IR-010 — Resolved with recording action — MVC follows the common library maintenance lifecycle
 
@@ -167,6 +184,56 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 **Owner:** Product Owner / Solution Architect / Platform Engineer. **Disposition:** Resolved. The common library maintenance, versioning, support and review lifecycle is now recorded in ADR-006, the Architecture Pack, package guidance and Platform documentation.
 
+### IR-011 — P1 — Public `Result` extensibility is not compatible with a closed status and mapping contract
+
+**Evidence:** `Result` is a public, non-sealed class with a `protected internal` constructor, so external consumers can derive from it and supply any `ResultStatus` value. `ResultStatus` is an enum, and `HttpResultMapper` falls back to the fixed default dictionary when a configured mapping is absent. An unknown status therefore reaches a dictionary lookup with no defined result. No documentation describes consumer derivation as a supported extension point.
+
+**Impact:** A consumer can create a result that passes the core type boundary but cannot be mapped reliably by the shared HTTP policy. Sealing `Result` later, or defining a supported extension model later, would be a breaking 1.x change.
+
+**Recommendation:** Before the 1.0 freeze, decide whether `Result` is intentionally extensible. Prefer a closed core model unless derivation is a supported requirement; otherwise define the extension contract and deterministic handling for unknown statuses, with tests and documentation.
+
+**Owner:** Solution Architect / Software Engineer. **Disposition:** Open for 1.0 API decision.
+
+### IR-012 — P1 — The intended 1.0 public API surface has no durable compatibility baseline
+
+**Evidence:** The Architecture Pack requires public compatibility, and the roadmap names API stability review as a 1.0 candidate. The repository contains behavioural tests and package documentation, but no public API inventory, approved baseline, API diff, `PublicAPI` file or compatibility gate covering public types, members, overloads, enum values, nullability and package ownership.
+
+**Impact:** Accidental exposure, renaming, overload changes, nullability changes or package movement could reach 1.0 without a reproducible indication that the intended contract changed. Behavioural tests alone do not detect every source or binary compatibility change.
+
+**Recommendation:** Produce and approve a 1.0 API baseline for all five packages, including public names, signatures, nullability, enum numeric values, supported package/target matrix and deliberate exclusions. Add a repeatable compatibility check to the release workflow and document the policy for additive, obsolete and breaking changes.
+
+**Owner:** Solution Architect / Software Engineer / Quality Engineer. **Disposition:** Open for 1.0 readiness.
+
+### IR-013 — P1 — `NoContent` success semantics and nullable `Map`/`Match` callbacks are not sufficiently explicit
+
+**Evidence:** `Result<T>.Value` is `T?`, `Results.Ok<T>(T value)` permits a null value, and both `Map` and generic `Match` accept `Func<T?, ...>`. `ResultStatus.NoContent` is classified as success, so `Map` and `Match` invoke the success delegate for `Results.NoContent<T>()` with the default value. The tests explicitly include `NoContent<T>` among successful Map/Match cases, while the README example uses the null-forgiving operator for a mapped success value.
+
+**Impact:** Consumers cannot tell from the API whether a successful typed result is guaranteed to contain a value, whether null success is intentional, or whether `NoContent<T>` should execute value callbacks. Changing callback nullability or excluding `NoContent` later would be a breaking source/behaviour change.
+
+**Recommendation:** Approve one explicit contract before 1.0: either document success-with-null/default and `NoContent` callback behaviour as intentional, or separate value-bearing success from bodyless success in Map/Match semantics. Add contract tests for null reference values, value types, `NoContent<T>`, mapper exceptions and the HTTP result of each mode.
+
+**Owner:** Solution Architect / Software Engineer. **Disposition:** Open for 1.0 API decision.
+
+### IR-014 — P1 — `Cancelled` and `Failed` default HTTP mappings are normative but under-justified
+
+**Evidence:** ADR-002 defines `Cancelled` as a distinct semantic outcome and `Failed` as an expected failure. The shared default mapping fixes `Cancelled` to HTTP 409 and `Failed` to HTTP 422, and both values are repeated in package documentation and tests. No approved decision explains why cancellation is a conflict or why the generic expected failure category is unprocessable content, nor whether these are normative defaults or merely examples.
+
+**Impact:** These mappings are observable client contracts. Changing either after 1.0 could alter client retry, cancellation, validation and monitoring behaviour across both adapters.
+
+**Recommendation:** Record and approve the semantic rationale and intended client behaviour for every default status mapping, especially `Cancelled` and `Failed`. If the current values are intentional, freeze them with contract tests and migration guidance; if not, correct them before 1.0.
+
+**Owner:** Product Owner / Solution Architect / Software Engineer. **Disposition:** Open for 1.0 API decision.
+
+### IR-015 — P2 — The low-level HTTP mapper exposes an unsafe value-presence invariant
+
+**Evidence:** `HttpResultMapper.Map` accepts a non-generic `Result`, a separate `bool hasValue` and an unrelated `object? value`. The adapter implementations supply these arguments consistently, but public custom-adapter consumers can combine them inconsistently. In `ValueOnly` mode, a successful non-generic result with `hasValue: true` can produce a value-only null body, while a typed result with `hasValue: false` cannot produce its value. The API has no typed overload or validation for these states.
+
+**Impact:** The shared package is intended to be the single mapping policy owner, yet its public primitive permits custom adapters to emit a wire contract that does not match the result shape. Repairing the signature after 1.0 would be a breaking change.
+
+**Recommendation:** Before 1.0, either replace the invariant with typed/non-generic overloads or explicitly define and validate the supported combinations. Add public contract tests for custom-adapter use, including non-generic results, typed results, null values, `NoContent` and both payload modes.
+
+**Owner:** Solution Architect / Software Engineer. **Disposition:** Open for 1.0 API decision.
+
 ## Previous Finding Dispositions
 
 - IR-001 is resolved: superseded documentation indexes were removed.
@@ -175,9 +242,10 @@ The implementation and lifecycle evidence are substantially complete for Release
 - IR-003 is resolved through Architecture; IR-004 is resolved for Quality-stage evidence.
 - IR-006 is resolved: approval authority and the Discovery boundary are explicit.
 - IR-007 is resolved: the proportionate existing-solution comparison is recorded.
-- IR-008 is resolved for the evaluated candidate: Engineering, Quality and Security have recorded the MVC metadata, package hash, supported consumer evidence and Security closure; protected-CI provenance remains a Release condition.
-- IR-009 is resolved for the pre-publication Release Gate: the Release Report and Sponsor approval are recorded. Post-publication evidence and final report completion remain follow-up conditions.
+- IR-008 is resolved: Engineering, Quality, Security and the Release Report record the MVC metadata, package hash, supported consumer evidence and protected publication provenance.
+- IR-009 is resolved: the Release Report records the final release evidence and Sponsor decision; GitHub Release creation is an explicit 1.0.0 convention rather than a current product defect.
 - IR-010 is resolved: the common library maintenance lifecycle and review policy are recorded in the durable Architecture, package and Platform documentation.
+- IR-011 through IR-015 are new 1.0 API stability findings recorded in this review; no responsible-role dispositions have yet been provided.
 
 ## Lifecycle Feedback
 
@@ -186,8 +254,8 @@ The implementation and lifecycle evidence are substantially complete for Release
 - The next responsible role should consume this canonical review and record dispositions, completion evidence or explicit deferrals before the next gate.
 - The current recommendation is based on repository evidence and the clarified retrofit objective, not on an assumption that the branch is a release candidate.
 - The Architecture Recommendation was approved by the Project Sponsor and the Architecture Pack and Engineering Handover were produced for the v0.7.0 retrofit. Engineering readiness remains conditional on implementation evidence and downstream gates.
-- Quality, Security and Platform recommend proceeding to Release review with explicit conditions; none of those artefacts approves final publication.
-- Protected publication/provenance evidence and the post-publication Release Report update are the current release-completion concerns; SEC-006/Q-007 is resolved for the evaluated candidate.
+- Quality, Security and Platform recommendations were completed and the v0.7.0 Release Report records successful protected publication.
+- The v0.7.0 release evidence is complete. The current 1.0 concerns are API surface baselining, result/nullability semantics, public extensibility, low-level mapper invariants and normative HTTP mapping decisions.
 
 ## Engineering Operating System Feedback
 
@@ -197,33 +265,33 @@ The implementation and lifecycle evidence are substantially complete for Release
 
 ## Accepted or Deferred Risks
 
-None recorded. Protected-publication/provenance evidence and post-publication report completion remain open rather than accepted.
+None recorded. IR-011 through IR-015 remain open rather than accepted.
 
 ## Follow-up Actions
 
-1. Retain the completed SEC-006/Q-007 MVC package-closure and supported-consumer evidence in the Release evidence pack.
-2. Retain the protected-environment publication execution and immutable package provenance evidence.
+1. Produce and approve the 1.0 public API baseline and compatibility gate.
+2. Decide IR-011 through IR-015 before API freeze, recording rationale in approved Architecture/Product artefacts.
 3. Keep the common MVC maintenance, support ownership and review triggers current.
-4. Execute the Sponsor-approved protected tag-triggered workflow and complete the Release Report with final publication evidence.
+4. Preserve the v0.7.0 release evidence and the non-blocking sample endpoint limitation.
 5. Re-review this canonical document after the responsible roles record dispositions.
 
 ## Product Owner Handover
 
 The Product Owner can pick up this review from the following actions:
 
-1. Review the remaining IR-009 post-publication follow-up and IR-010 policy record, and retain IR-008 closure evidence.
-2. Confirm and record the common library maintenance policy, including the shared support owner and review triggers.
-3. Provide the Release Owner and Project Sponsor with this review and the current Quality, Security and Platform recommendations.
+1. Review IR-011 through IR-015 as the current 1.0 API stability conditions.
+2. Confirm the intended public API baseline, names, statuses, mappings and support boundaries with the Solution Architect and Software Engineer.
+3. Confirm and record the common library maintenance policy, including the shared support owner and review triggers.
 
-Expected handover output: a completed Release-stage evidence pack with protected workflow, package provenance and final publication outcome recorded in the canonical Release Report.
+Expected handover output: an approved 1.0 API baseline, explicit semantic decisions for IR-011 through IR-015, compatibility evidence and a revised release recommendation.
 
 ## Overall Recommendation
 
-**Proceed with conditions.** Proceed to the Sponsor-approved protected tag-triggered publication workflow only. Do not treat v0.7.0 as finally released until the workflow succeeds, immutable package provenance is retained and the Release Report is completed. IR-008 is resolved for the evaluated candidate, IR-009 is resolved for the pre-publication gate with post-publication follow-up, and IR-010 is resolved for its recorded scope. IR-001, IR-003, IR-004, IR-005, IR-006 and IR-007 are resolved, and IR-002 is superseded.
+**Revise before 1.0.0.** The v0.7.0 product is released and the current tests provide strong behavioural confidence. Do not freeze or publish 1.0.0 until IR-011 through IR-015 are resolved or explicitly accepted by the authorised roles, with the public API baseline and compatibility gate in place. No evidence currently requires a new core capability such as OpenAPI or `ProblemDetails`; those remain correctly deferred unless Product and Architecture authorise them.
 
 ## Next Review
 
-Re-review the same canonical document after the responsible roles update the repository and record dispositions. Preserve IR-001 through IR-010 IDs and append material changes to the review history.
+Re-review the same canonical document after the responsible roles update the repository and record dispositions. Preserve IR-001 through IR-015 IDs and append material changes to the review history.
 
 ## Review History
 
@@ -243,3 +311,4 @@ Re-review the same canonical document after the responsible roles update the rep
 | v2.1 | 2026-08-18 | Recorded Engineering’s MVC package metadata, hash and supported-consumer evidence, updated the IR-008 disposition to await Quality/Security closure, and closed the durable MVC lifecycle recording action. |
 | v2.2 | 2026-08-18 | Recorded Quality reconciliation and Security closure of IR-008 for the evaluated candidate, narrowed the remaining Release conditions to protected-CI publication/provenance and the Release Report, and preserved all finding IDs. |
 | v2.3 | 2026-08-18 | Reviewed the new Release Report and Sponsor approval, resolved IR-009 for the pre-publication Release Gate, and retained protected workflow, package provenance and post-publication report completion as follow-up conditions. |
+| v2.4 | 2026-08-20 | Conducted the 1.0 API Stability Review, recorded IR-011 through IR-015 for public extensibility, API baselining, nullable/NoContent semantics, HTTP mapping decisions and mapper invariants, and recommended revision before 1.0. |
