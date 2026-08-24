@@ -9,9 +9,15 @@ public sealed class NestgridResponseClientOptions
     private static readonly IReadOnlyDictionary<int, ResultStatus> DefaultStatusMappings =
         new ReadOnlyDictionary<int, ResultStatus>(new Dictionary<int, ResultStatus>
         {
-            [200] = ResultStatus.Ok, [201] = ResultStatus.Created, [202] = ResultStatus.Accepted,
-            [204] = ResultStatus.NoContent, [400] = ResultStatus.Invalid, [401] = ResultStatus.Unauthorized,
-            [403] = ResultStatus.Forbidden, [404] = ResultStatus.NotFound, [409] = ResultStatus.Conflict,
+            [200] = ResultStatus.Ok,
+            [201] = ResultStatus.Created,
+            [202] = ResultStatus.Accepted,
+            [204] = ResultStatus.NoContent,
+            [400] = ResultStatus.Invalid,
+            [401] = ResultStatus.Unauthorized,
+            [403] = ResultStatus.Forbidden,
+            [404] = ResultStatus.NotFound,
+            [409] = ResultStatus.Conflict,
             [422] = ResultStatus.Failed
         });
 

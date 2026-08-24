@@ -1,11 +1,13 @@
 using System.Net;
 using Nestgrid.Response.Http.Client;
+using Nestgrid.Response.Http.Client.Sample;
 
 using var licenceClient = new HttpClient(new StaticHandler(
     new HttpResponseMessage(HttpStatusCode.OK)
     {
         Content = new StringContent("{\"Value\":{\"Id\":17,\"Name\":\"Standard\"},\"Messages\":[]}")
     }));
+
 using var licenceRequest = new HttpRequestMessage(HttpMethod.Get, "https://licence-service.example/licences/17");
 var licence = await licenceClient.SendNestgridResponseAsync<Licence>(
     licenceRequest,
@@ -16,6 +18,7 @@ using var financeClient = new HttpClient(new StaticHandler(
     {
         Content = new StringContent("{\"InvoiceId\":42,\"Currency\":\"GBP\"}")
     }));
+
 using var financeRequest = new HttpRequestMessage(HttpMethod.Get, "https://finance.example/invoices/42");
 var finance = await financeClient.SendNestgridResponseAsync<Invoice>(
     financeRequest,

@@ -1,5 +1,3 @@
-using Nestgrid.Response;
-
 namespace Nestgrid.Response.Http.Client.Internal;
 
 internal static class ClientStatusPolicy

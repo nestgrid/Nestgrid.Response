@@ -1,5 +1,3 @@
-using Nestgrid.Response;
-
 namespace Nestgrid.Response.Http.Client.Internal;
 
 internal sealed class NestgridResponseWireMessage
