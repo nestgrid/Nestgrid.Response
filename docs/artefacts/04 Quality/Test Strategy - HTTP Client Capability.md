@@ -48,30 +48,30 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 
 | Level | Required proof | Result |
 | --- | --- | --- |
-| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 64 client tests passed |
+| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 72 client tests passed |
 | Integration | Fake `HttpMessageHandler` and convenience methods over normal `HttpClient` | Passed in client suite |
-| Regression | All existing packages plus new package | 353 passed, 0 failed, 0 skipped |
+| Regression | All existing packages plus new package | 361 passed, 0 failed, 0 skipped |
 | Consumer/package | Pack, inspect `.nuspec`, README, XML and local consumer installation | New package pack and metadata inspection passed |
 | Sample | Licence-service FullResult and Portal-to-Finance ValueOnly proving scenarios | Engineering reports success; local rerun encountered the known build hang |
 | Coverage | Package-owned line coverage above 90% | Client 94.16%; existing packages retain 97.7–100% evidence |
-| Mutation | Dedicated client mutation suite and existing package suites | Client 80.99%, below the 90% break threshold; existing five-package evidence remains 100% |
+| Mutation | Dedicated client mutation suite and existing package suites | Client 86.62%, below the 90% break threshold; existing five-package evidence remains 100% |
 
 ## Verification performed
 
-1. Full Release solution regression: 353 passed, 0 failed, 0 skipped.
-2. Focused HTTP client suite: 64 passed, 0 failed, 0 skipped.
+1. Full Release solution regression: 361 passed, 0 failed, 0 skipped.
+2. Focused HTTP client suite: 72 passed, 0 failed, 0 skipped.
 3. Package-owned client line coverage: 94.16%; branch coverage 91.4%.
 4. Existing package coverage and mutation evidence retained from the current v0.7 baseline.
 5. New client package packed successfully as `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`.
 6. Package contains the netstandard2.0 assembly, XML documentation, README, icon and dependency metadata for only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
-7. Dedicated Stryker configuration was added and executed sequentially. The result was 80.99%, below the configured 90% break threshold.
-8. Engineering’s 40-test baseline was extended to 64 tests for result-factory branches, invalid custom status mappings, exact protocol-safe messages, null guards, empty failures, cancellation and generic missing-value behaviour.
+7. Dedicated Stryker configuration was added and executed sequentially. The result was 86.62%, below the configured 90% break threshold.
+8. Engineering’s 40-test baseline was extended to 72 tests for result-factory branches, invalid custom status mappings, exact protocol-safe messages, null guards, empty failures, cancellation and generic missing-value behaviour.
 
 ## Evidence limitations
 
 - The local client sample build/run encountered the repository’s known local build hang; Engineering’s successful sample evidence remains available, but supported CI should repeat it.
 - Live endpoints, authentication, resilience, retry, telemetry and handler composition beyond fake-handler proof are consumer responsibilities and are outside this package’s scope.
-- The current client mutation score is not sufficient for release confidence. Surviving mutants remain concentrated in reader control-flow, factory/error branches and convenience-method behaviour.
+- The current client mutation score is not sufficient for release confidence. The suite killed 122 mutants, with 19 surviving and one timeout; survivors remain concentrated in reader control-flow, convenience-method async plumbing and internal exception-detail strings. These should be reviewed for meaningful contract gaps versus equivalent implementation mutations.
 - IR-011 through IR-015 remain open 1.0 API-stability findings and are not silently resolved by this additive package.
 
 ## Quality exit criteria
@@ -80,4 +80,4 @@ Quality can recommend release only when all relevant tests pass, package coverag
 
 ## Current recommendation
 
-Functional confidence is high, and the package-owned coverage target is met. Quality does not recommend v0.8.0 release yet because the client mutation score is 80.99% against the 90% break threshold and the local proving-sample execution was not independently completed in this environment.
+Functional confidence is high, and the package-owned coverage target is met. Quality does not recommend v0.8.0 release yet because the client mutation score is 86.62% against the 90% break threshold and the local proving-sample execution was not independently completed in this environment.

@@ -55,13 +55,13 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 | Test Area | Status | Notes |
 | --- | --- | --- |
-| Unit/contract | Passed | 64 HTTP client tests passed, 0 failed, 0 skipped |
+| Unit/contract | Passed | 72 HTTP client tests passed, 0 failed, 0 skipped |
 | Integration | Passed | Fake-handler composition and thin `HttpClient` conveniences passed |
 | API | Passed with 1.0 follow-up | New public API is additive; compatibility inventory and IR-011–IR-015 remain open |
-| Regression | Passed | 353 full-solution tests passed, 0 failed, 0 skipped |
+| Regression | Passed | 361 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
 | Coverage | Passed | HTTP client package-owned line coverage 94.16%, branch coverage 91.4%; existing package evidence remains 97.7–100% |
-| Mutation | Failed quality threshold | HTTP client mutation score 80.99% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
+| Mutation | Failed quality threshold | HTTP client mutation score 86.62% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
 | Package/consumer | Passed with release follow-up | `0.8.0` package and symbols created; README, XML, icon and dependency metadata inspected; supported-CI consumer/provenance evidence remains open |
 
 ## Defects
@@ -69,7 +69,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | ID | Severity | Summary | Status |
 | --- | --- | --- | --- |
 | None | — | No functional defect was identified by the passing client contract, integration or full regression tests. | No open functional defect |
-| Q-HTTP-001 | P1 | Client mutation score is 80.99%, below the configured 90% break threshold. Surviving mutants remain in reader control-flow, factory/error branches and convenience-method behaviour. | Open release blocker; Engineering/Quality test strengthening or authorised threshold exception required |
+| Q-HTTP-001 | P1 | Client mutation score is 86.62%, below the configured 90% break threshold. The latest run killed 122 mutants, with 19 surviving and one timeout; remaining survivors are concentrated in reader control-flow, convenience-method async plumbing and internal exception-detail strings. | Open release blocker; Engineering/Quality test strengthening or authorised threshold exception required |
 | Q-HTTP-002 | P2 | Local proving-sample execution could not be independently completed because the build hung in the local environment. | Open evidence limitation; supported CI confirmation required |
 
 ## Regression Risks
@@ -85,7 +85,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Outstanding Issues
 
-- Q-HTTP-001: raise HTTP client mutation effectiveness from 80.99% to at least 90%, or obtain an explicit authorised exception with rationale and review date.
+- Q-HTTP-001: raise HTTP client mutation effectiveness from 86.62% to at least 90%, or obtain an explicit authorised exception with rationale and review date.
 - Q-HTTP-002: repeat the client proving sample and package-consumer checks in supported CI.
 - Security to review protocol exception disclosure, dependency metadata and the new package boundary.
 - Platform/Release to retain protected publication, package provenance and final consumer evidence for the v0.8.0 candidate.
@@ -93,17 +93,17 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Test Evidence
 
-- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 353 passed, 0 failed, 0 skipped.
-- Focused client suite: 64 passed, 0 failed, 0 skipped.
+- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 361 passed, 0 failed, 0 skipped.
+- Focused client suite: 72 passed, 0 failed, 0 skipped.
 - Client coverage report: package-owned line coverage 94.16%, branch coverage 91.4%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
-- Dedicated Stryker result: 80.99%, 114 killed, 27 surviving mutants and 1 timeout in the configured report; the suite failed its 90% break threshold.
+- Dedicated Stryker result: 86.62%, 122 killed, 19 surviving mutants and 1 timeout in the configured report; the suite failed its 90% break threshold.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
 
 ## Release Confidence
 
-Functional confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, and package metadata is correct for the approved boundary. Confidence in mutation effectiveness is insufficient because the client score is 80.99%, and the local sample execution was not independently completed.
+Functional confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, and package metadata is correct for the approved boundary. Confidence in mutation effectiveness is improved but insufficient because the client score is 86.62%, and the local sample execution was not independently completed.
 
 Overall release confidence is **conditional and not yet release-ready**. The candidate should remain at Quality Recommend until Q-HTTP-001 is resolved or formally accepted and the downstream Security, Platform and consumer evidence is complete.
 

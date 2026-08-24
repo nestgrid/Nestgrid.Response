@@ -38,6 +38,19 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Value_only_generic_success_requires_a_value()
+    {
+        using var response = Response(HttpStatusCode.OK, string.Empty);
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("A value was required for the generic response.");
+    }
+
+    [Fact]
     public async Task Full_result_failure_preserves_structured_messages()
     {
         using var response = Response(HttpStatusCode.UnprocessableEntity, """
@@ -233,6 +246,20 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Generic_unsupported_custom_mapping_fails_safely()
+    {
+        using var response = Response((HttpStatusCode)498, "{\"Messages\":[]}");
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            statusMappings: new Dictionary<int, ResultStatus> { [498] = (ResultStatus)999 });
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("The client status mapping is not supported.");
+    }
+
+    [Fact]
     public async Task Unsupported_custom_mapping_fails_safely()
     {
         using var response = Response((HttpStatusCode)498, "{\"Messages\":[]}");
@@ -276,8 +303,10 @@ public sealed class NestgridResponseReaderTests
     {
         using var response = Response(HttpStatusCode.OK, "null");
 
-        await Should.ThrowAsync<NestgridResponseProtocolException>(
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldBe("The response body is not a valid Nestgrid envelope.");
     }
 
     [Fact]
@@ -300,8 +329,51 @@ public sealed class NestgridResponseReaderTests
         var reader = new NestgridResponseReader(
             new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
 
-        await Should.ThrowAsync<NestgridResponseProtocolException>(
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => reader.ReadAsync<int>(response));
+
+        exception.Message.ShouldBe("The response body is not a valid value for the requested type.");
+    }
+
+    [Fact]
+    public async Task Null_value_for_a_nullable_value_type_is_rejected_by_the_value_contract()
+    {
+        using var response = Response(HttpStatusCode.OK, "null");
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<int?>(response));
+
+        exception.Message.ShouldBe("The response body is not a valid value for the requested type.");
+    }
+
+    [Fact]
+    public async Task Null_value_for_a_reference_type_is_preserved()
+    {
+        using var response = Response(HttpStatusCode.OK, "null");
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var result = await reader.ReadAsync<Licence>(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Protocol_exception_from_a_value_converter_is_not_wrapped()
+    {
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new ProtocolExceptionConverter());
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly, serializerOptions));
+        using var response = Response(HttpStatusCode.OK, "\"custom\"");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("converter protocol failure");
     }
 
     [Fact]
@@ -312,6 +384,33 @@ public sealed class NestgridResponseReaderTests
         var result = await new NestgridResponseReader().ReadAsync(response);
 
         result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Generic_response_without_content_requires_a_value_in_value_only_mode()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("A value was required for the generic response.");
+    }
+
+    [Fact]
+    public async Task Custom_content_stream_is_fully_read()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new FixedStreamContent("{\"Messages\":[{\"Message\":\"from-stream\",\"Severity\":0}]}")
+        };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        var result = await new NestgridResponseReader().ReadAsync(response);
+
+        result.Messages.Single().Message.ShouldBe("from-stream");
     }
 
     [Fact]
@@ -430,9 +529,23 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Cancellation_after_body_read_is_propagated_before_result_construction()
+    {
+        using var cancellation = new CancellationTokenSource();
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new CancellingContent(cancellation)
+        };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => new NestgridResponseReader().ReadAsync(response, cancellation.Token));
+    }
+
+    [Fact]
     public async Task Cancellation_before_non_generic_read_is_propagated()
     {
-        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
 
@@ -443,7 +556,7 @@ public sealed class NestgridResponseReaderTests
     [Fact]
     public async Task Cancellation_before_generic_read_is_propagated()
     {
-        using var response = Response(HttpStatusCode.OK, "{\"Value\":1,\"Messages\":[]}");
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
 
@@ -485,6 +598,20 @@ public sealed class NestgridResponseReaderTests
             JsonSerializerOptions options) => writer.WriteStringValue(value.Name);
     }
 
+    private sealed class ProtocolExceptionConverter : JsonConverter<Licence>
+    {
+        public override Licence Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options) =>
+            throw new NestgridResponseProtocolException("converter protocol failure");
+
+        public override void Write(
+            Utf8JsonWriter writer,
+            Licence value,
+            JsonSerializerOptions options) => writer.WriteStringValue(value.Name);
+    }
+
     private sealed class DelayedContent : HttpContent
     {
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
@@ -498,6 +625,69 @@ public sealed class NestgridResponseReaderTests
 
         protected override Task<Stream> CreateContentReadStreamAsync() =>
             Task.FromResult<Stream>(new DelayedReadStream());
+    }
+
+    private sealed class FixedStreamContent : HttpContent
+    {
+        private readonly byte[] bytes;
+
+        public FixedStreamContent(string body) => bytes = Encoding.UTF8.GetBytes(body);
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
+            stream.WriteAsync(bytes, 0, bytes.Length);
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = bytes.Length;
+            return true;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync() =>
+            Task.FromResult<Stream>(new MemoryStream(bytes, writable: false));
+    }
+
+    private sealed class CancellingContent : HttpContent
+    {
+        private readonly CancellationTokenSource cancellation;
+
+        public CancellingContent(CancellationTokenSource cancellation) => this.cancellation = cancellation;
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
+            Task.CompletedTask;
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = -1;
+            return false;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync() =>
+            Task.FromResult<Stream>(new CancellingReadStream(cancellation));
+    }
+
+    private sealed class CancellingReadStream : MemoryStream
+    {
+        private readonly CancellationTokenSource cancellation;
+        private bool returnedBody;
+
+        public CancellingReadStream(CancellationTokenSource cancellation)
+            : base(Encoding.UTF8.GetBytes("{\"Messages\":[]}")) => this.cancellation = cancellation;
+
+        public override Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken)
+        {
+            if (!returnedBody)
+            {
+                returnedBody = true;
+                return base.ReadAsync(buffer, offset, count, cancellationToken);
+            }
+
+            cancellation.Cancel();
+            return Task.FromResult(0);
+        }
     }
 
     private sealed class DelayedReadStream : Stream
