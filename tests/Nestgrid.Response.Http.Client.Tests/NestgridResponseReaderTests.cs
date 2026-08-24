@@ -400,6 +400,19 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Explicitly_null_content_is_treated_as_an_empty_body()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = null
+        };
+
+        var result = await new NestgridResponseReader().ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
     public async Task Custom_content_stream_is_fully_read()
     {
         using var response = new HttpResponseMessage(HttpStatusCode.OK)

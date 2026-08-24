@@ -24,4 +24,4 @@ Quality execution is complete for the post-Engineering handover candidate. Quali
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md)
 - [Release Readiness Report — HTTP Client Capability](Release%20Readiness%20Report%20-%20HTTP%20Client%20Capability.md)
 
-The v0.8.0 additive HTTP client candidate has 361 passing solution tests and 94.16% package-owned line coverage. Quality does not recommend publication yet because its dedicated mutation score is 86.62%, below the configured 90% break threshold; supported sample/consumer and downstream Security/Platform evidence also remain required.
+The v0.8.0 additive HTTP client candidate has 362 passing solution tests and 94.16% package-owned line coverage. Quality does not recommend publication yet because its dedicated mutation score is 86.62%, below the configured 90% break threshold; supported sample/consumer and downstream Security/Platform evidence also remain required.

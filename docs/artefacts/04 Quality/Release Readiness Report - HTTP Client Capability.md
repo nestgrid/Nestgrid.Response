@@ -55,10 +55,10 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 | Test Area | Status | Notes |
 | --- | --- | --- |
-| Unit/contract | Passed | 72 HTTP client tests passed, 0 failed, 0 skipped |
+| Unit/contract | Passed | 73 HTTP client tests passed, 0 failed, 0 skipped |
 | Integration | Passed | Fake-handler composition and thin `HttpClient` conveniences passed |
 | API | Passed with 1.0 follow-up | New public API is additive; compatibility inventory and IR-011–IR-015 remain open |
-| Regression | Passed | 361 full-solution tests passed, 0 failed, 0 skipped |
+| Regression | Passed | 362 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
 | Coverage | Passed | HTTP client package-owned line coverage 94.16%, branch coverage 91.4%; existing package evidence remains 97.7–100% |
 | Mutation | Failed quality threshold | HTTP client mutation score 86.62% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
@@ -93,8 +93,8 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Test Evidence
 
-- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 361 passed, 0 failed, 0 skipped.
-- Focused client suite: 72 passed, 0 failed, 0 skipped.
+- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 362 passed, 0 failed, 0 skipped.
+- Focused client suite: 73 passed, 0 failed, 0 skipped.
 - Client coverage report: package-owned line coverage 94.16%, branch coverage 91.4%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
 - Dedicated Stryker result: 86.62%, 122 killed, 19 surviving mutants and 1 timeout in the configured report; the suite failed its 90% break threshold.

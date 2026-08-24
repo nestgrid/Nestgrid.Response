@@ -48,9 +48,9 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 
 | Level | Required proof | Result |
 | --- | --- | --- |
-| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 72 client tests passed |
+| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 73 client tests passed |
 | Integration | Fake `HttpMessageHandler` and convenience methods over normal `HttpClient` | Passed in client suite |
-| Regression | All existing packages plus new package | 361 passed, 0 failed, 0 skipped |
+| Regression | All existing packages plus new package | 362 passed, 0 failed, 0 skipped |
 | Consumer/package | Pack, inspect `.nuspec`, README, XML and local consumer installation | New package pack and metadata inspection passed |
 | Sample | Licence-service FullResult and Portal-to-Finance ValueOnly proving scenarios | Engineering reports success; local rerun encountered the known build hang |
 | Coverage | Package-owned line coverage above 90% | Client 94.16%; existing packages retain 97.7–100% evidence |
@@ -58,14 +58,14 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 
 ## Verification performed
 
-1. Full Release solution regression: 361 passed, 0 failed, 0 skipped.
-2. Focused HTTP client suite: 72 passed, 0 failed, 0 skipped.
+1. Full Release solution regression: 362 passed, 0 failed, 0 skipped.
+2. Focused HTTP client suite: 73 passed, 0 failed, 0 skipped.
 3. Package-owned client line coverage: 94.16%; branch coverage 91.4%.
 4. Existing package coverage and mutation evidence retained from the current v0.7 baseline.
 5. New client package packed successfully as `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`.
 6. Package contains the netstandard2.0 assembly, XML documentation, README, icon and dependency metadata for only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
 7. Dedicated Stryker configuration was added and executed sequentially. The result was 86.62%, below the configured 90% break threshold.
-8. Engineering’s 40-test baseline was extended to 72 tests for result-factory branches, invalid custom status mappings, exact protocol-safe messages, null guards, empty failures, cancellation and generic missing-value behaviour.
+8. Engineering’s 40-test baseline was extended to 73 tests for result-factory branches, invalid custom status mappings, exact protocol-safe messages, null guards, empty failures, cancellation and generic missing-value behaviour.
 
 ## Evidence limitations
 
