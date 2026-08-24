@@ -10,13 +10,13 @@ public sealed class NestgridResponseHttpClientExtensionsTests
         using var client = new HttpClient(new StaticHandler(
             new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent("{\"Id\":9,\"Name\":\"Finance\"}")
+                Content = new StringContent("{\"Id\":9,\"Name\":\"Finance\"}", System.Text.Encoding.UTF8, "application/json")
             }));
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/licence");
         var reader = new NestgridResponseReader(
             new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
 
-        var result = await client.SendNestgridResponseAsync<Licence>(request, reader);
+        var result = await client.SendAndReadNestgridResponseAsync<Licence>(request, reader);
 
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(new Licence(9, "Finance"));
@@ -30,7 +30,7 @@ public sealed class NestgridResponseHttpClientExtensionsTests
         var reader = new NestgridResponseReader();
 
         await Should.ThrowAsync<HttpRequestException>(
-            () => client.SendNestgridResponseAsync(request, reader));
+            () => client.SendAndReadNestgridResponseAsync(request, reader));
     }
 
     private sealed record Licence(int Id, string Name);

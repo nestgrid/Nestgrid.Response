@@ -1,5 +1,7 @@
 using System.Net;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Nestgrid.Response.Http.Client.Tests;
 
@@ -64,6 +66,19 @@ public sealed class NestgridResponseReaderTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.Value.ShouldBeNull();
         result.Messages.Single().Message.ShouldBe("Bad request");
+    }
+
+    [Fact]
+    public async Task Value_only_non_generic_success_reads_the_explicit_result_envelope()
+    {
+        using var response = Response(HttpStatusCode.OK, """{"Messages":[{"Message":"Accepted","Severity":0}]}""");
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var result = await reader.ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Messages.Single().Message.ShouldBe("Accepted");
     }
 
     [Fact]
@@ -166,6 +181,60 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Non_json_media_types_are_rejected()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/plain");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldContain("JSON media type");
+    }
+
+    [Fact]
+    public async Task Missing_media_type_is_accepted_for_legacy_http_responses()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
+        response.Content.Headers.ContentType = null;
+
+        var result = await new NestgridResponseReader().ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Reader_isolated_from_later_serializer_option_mutation_and_preserves_converter()
+    {
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new LicenceConverter());
+        var clientOptions = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.ValueOnly,
+            serializerOptions);
+        var reader = new NestgridResponseReader(clientOptions);
+        clientOptions.SerializerOptions.Converters.Clear();
+
+        using var response = Response(HttpStatusCode.OK, "\"custom\"");
+        var result = await reader.ReadAsync<Licence>(response);
+
+        result.Value.ShouldBe(new Licence(99, "custom"));
+    }
+
+    [Fact]
+    public async Task Cancellation_during_body_read_is_propagated()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new DelayedContent()
+        };
+        using var cancellation = new CancellationTokenSource();
+        var read = new NestgridResponseReader().ReadAsync(response, cancellation.Token);
+        cancellation.Cancel();
+
+        await Should.ThrowAsync<OperationCanceledException>(() => read);
+    }
+
+    [Fact]
     public async Task Reader_does_not_dispose_the_caller_owned_response()
     {
         using var response = Response(HttpStatusCode.OK, """{"Messages":[]}""");
@@ -185,4 +254,60 @@ public sealed class NestgridResponseReaderTests
     }
 
     private sealed record Licence(int Id, string Name);
+
+    private sealed class LicenceConverter : JsonConverter<Licence>
+    {
+        public override Licence Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options) => new(99, reader.GetString()!);
+
+        public override void Write(
+            Utf8JsonWriter writer,
+            Licence value,
+            JsonSerializerOptions options) => writer.WriteStringValue(value.Name);
+    }
+
+    private sealed class DelayedContent : HttpContent
+    {
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
+            Task.CompletedTask;
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = -1;
+            return false;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync() =>
+            Task.FromResult<Stream>(new DelayedReadStream());
+    }
+
+    private sealed class DelayedReadStream : Stream
+    {
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => 0;
+        public override long Position { get; set; }
+
+        public override int Read(byte[] buffer, int offset, int count) => 0;
+
+        public override Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken) => ReadUntilCancelledAsync(cancellationToken);
+
+        private static async Task<int> ReadUntilCancelledAsync(CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.Infinite, cancellationToken);
+            return 0;
+        }
+
+        public override void Flush() => throw new NotSupportedException();
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
 }

@@ -49,6 +49,23 @@ public sealed class NestgridResponseClientOptionsTests
     }
 
     [Fact]
+    public void Custom_converters_are_preserved_in_the_serializer_snapshot()
+    {
+        var serializerOptions = new System.Text.Json.JsonSerializerOptions();
+        serializerOptions.Converters.Add(new StringToIntConverter());
+
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.ValueOnly,
+            serializerOptions);
+
+        serializerOptions.Converters.Clear();
+
+        options.SerializerOptions.Converters.Count.ShouldBe(1);
+
+        options.SerializerOptions.Converters[0].ShouldBeOfType<StringToIntConverter>();
+    }
+
+    [Fact]
     public void Protocol_exception_exposes_only_safe_protocol_context()
     {
         var exception = new NestgridResponseProtocolException(
@@ -59,5 +76,18 @@ public sealed class NestgridResponseClientOptionsTests
         exception.StatusCode.ShouldBe(502);
         exception.PayloadMode.ShouldBe(NestgridResponsePayloadMode.FullResult);
         exception.Message.ShouldNotContain("password");
+    }
+
+    private sealed class StringToIntConverter : System.Text.Json.Serialization.JsonConverter<int>
+    {
+        public override int Read(
+            ref System.Text.Json.Utf8JsonReader reader,
+            Type typeToConvert,
+            System.Text.Json.JsonSerializerOptions options) => int.Parse(reader.GetString()!);
+
+        public override void Write(
+            System.Text.Json.Utf8JsonWriter writer,
+            int value,
+            System.Text.Json.JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
     }
 }

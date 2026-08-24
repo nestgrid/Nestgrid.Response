@@ -9,7 +9,7 @@ public static class NestgridResponseHttpClientExtensions
     /// Sends a caller-created request and reads the response as a non-generic result.
     /// </summary>
     /// <remarks>The response created by HttpClient is disposed by this method.</remarks>
-    public static async Task<Result> SendNestgridResponseAsync(
+    public static async Task<Result> SendAndReadNestgridResponseAsync(
         this HttpClient client,
         HttpRequestMessage request,
         NestgridResponseReader reader,
@@ -41,7 +41,7 @@ public static class NestgridResponseHttpClientExtensions
     /// Sends a caller-created request and reads the response as a typed result.
     /// </summary>
     /// <remarks>The response created by HttpClient is disposed by this method.</remarks>
-    public static async Task<Result<T>> SendNestgridResponseAsync<T>(
+    public static async Task<Result<T>> SendAndReadNestgridResponseAsync<T>(
         this HttpClient client,
         HttpRequestMessage request,
         NestgridResponseReader reader,

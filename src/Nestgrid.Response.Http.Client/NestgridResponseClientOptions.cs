@@ -56,7 +56,7 @@ public sealed class NestgridResponseClientOptions
             return new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
-        return new JsonSerializerOptions
+        var copy = new JsonSerializerOptions
         {
             AllowTrailingCommas = source.AllowTrailingCommas,
             DictionaryKeyPolicy = source.DictionaryKeyPolicy,
@@ -68,6 +68,13 @@ public sealed class NestgridResponseClientOptions
             ReadCommentHandling = source.ReadCommentHandling,
             WriteIndented = source.WriteIndented
         };
+
+        foreach (var converter in source.Converters)
+        {
+            copy.Converters.Add(converter);
+        }
+
+        return copy;
     }
 
     /// <summary>Gets the declared payload representation.</summary>
