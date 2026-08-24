@@ -142,7 +142,7 @@ The generated `.nuspec` declares only:
 - `Nestgrid.Response` `0.8.0`; and
 - `System.Text.Json` `4.6.0`.
 
-The final locally packed candidate hash is `e7ee2c2a7ec509cc6846b8dd095fd6e3c8944f02e28468fb14b2628e63aca4ed`. Its generated repository metadata points to Engineering evidence commit `448926dd8a82ee31babeee1d2c016264c65c724e`. Protected publication and final provenance are intentionally not performed by Engineering.
+The final locally packed candidate hash is `b9f66901d0d1464e27b51c3c5a1379f02530be73e793be08c8b36edbf39848bf`. Its generated repository metadata points to Engineering evidence commit `d66c600e12b54e60ec802dcfa12f7797983afcc5`. Protected publication and final provenance are intentionally not performed by Engineering.
 
 ## Known limitations
 
