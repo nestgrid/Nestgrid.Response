@@ -27,6 +27,17 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Full_result_generic_success_requires_a_value()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("The generic result envelope does not contain a value.");
+    }
+
+    [Fact]
     public async Task Full_result_failure_preserves_structured_messages()
     {
         using var response = Response(HttpStatusCode.UnprocessableEntity, """
@@ -122,6 +133,22 @@ public sealed class NestgridResponseReaderTests
             () => new NestgridResponseReader().ReadAsync<Licence>(response));
 
         exception.StatusCode.ShouldBe(200);
+        exception.Message.ShouldBe("A non-empty response envelope was required.");
+    }
+
+    [Fact]
+    public async Task Empty_non_success_responses_are_protocol_failures()
+    {
+        using var nonGenericResponse = Response(HttpStatusCode.BadRequest, string.Empty);
+        using var genericResponse = Response(HttpStatusCode.BadRequest, string.Empty);
+
+        var nonGenericException = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(nonGenericResponse));
+        var genericException = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync<Licence>(genericResponse));
+
+        nonGenericException.Message.ShouldBe("A non-empty response envelope was required.");
+        genericException.Message.ShouldBe("A non-empty response envelope was required.");
     }
 
     [Fact]
@@ -158,13 +185,76 @@ public sealed class NestgridResponseReaderTests
         result.Status.ShouldBe(expected);
     }
 
+    [Theory]
+    [InlineData(400, ResultStatus.Invalid)]
+    [InlineData(401, ResultStatus.Unauthorized)]
+    [InlineData(403, ResultStatus.Forbidden)]
+    [InlineData(404, ResultStatus.NotFound)]
+    [InlineData(409, ResultStatus.Conflict)]
+    [InlineData(422, ResultStatus.Failed)]
+    [InlineData(500, ResultStatus.Error)]
+    public async Task Generic_failure_statuses_construct_the_expected_result_family(
+        int statusCode,
+        ResultStatus expected)
+    {
+        using var response = Response((HttpStatusCode)statusCode, "{\"Messages\":[]}");
+
+        var result = await new NestgridResponseReader().ReadAsync<Licence>(response);
+
+        result.Status.ShouldBe(expected);
+        result.Value.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Custom_cancelled_mapping_constructs_a_cancelled_result()
+    {
+        using var response = Response((HttpStatusCode)499, "{\"Messages\":[]}");
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            statusMappings: new Dictionary<int, ResultStatus> { [499] = ResultStatus.Cancelled });
+
+        var result = await new NestgridResponseReader(options).ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Cancelled);
+    }
+
+    [Fact]
+    public async Task Generic_custom_cancelled_mapping_constructs_a_cancelled_result()
+    {
+        using var response = Response((HttpStatusCode)499, "{\"Messages\":[]}");
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            statusMappings: new Dictionary<int, ResultStatus> { [499] = ResultStatus.Cancelled });
+
+        var result = await new NestgridResponseReader(options).ReadAsync<Licence>(response);
+
+        result.Status.ShouldBe(ResultStatus.Cancelled);
+        result.Value.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Unsupported_custom_mapping_fails_safely()
+    {
+        using var response = Response((HttpStatusCode)498, "{\"Messages\":[]}");
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            statusMappings: new Dictionary<int, ResultStatus> { [498] = (ResultStatus)999 });
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync(response));
+
+        exception.Message.ShouldBe("The client status mapping is not supported.");
+    }
+
     [Fact]
     public async Task Three_hundred_and_fourteen_is_unmapped_by_default()
     {
         using var response = Response((HttpStatusCode)314, """{"Messages":[]}""");
 
-        await Should.ThrowAsync<NestgridResponseProtocolException>(
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldBe("The HTTP status code is not mapped by the client policy.");
     }
 
     [Fact]
@@ -176,8 +266,67 @@ public sealed class NestgridResponseReaderTests
         var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => new NestgridResponseReader().ReadAsync(response));
 
+        exception.Message.ShouldBe("The response body is not a valid Nestgrid envelope.");
         exception.Message.ShouldNotContain(secretBody);
         exception.Message.ShouldNotContain("secret");
+    }
+
+    [Fact]
+    public async Task Json_null_envelope_is_a_protocol_failure()
+    {
+        using var response = Response(HttpStatusCode.OK, "null");
+
+        await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+    }
+
+    [Fact]
+    public async Task Invalid_value_body_is_a_protocol_failure()
+    {
+        using var response = Response(HttpStatusCode.OK, "not-json");
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("The response body is not a valid value for the requested type.");
+    }
+
+    [Fact]
+    public async Task Null_value_for_a_value_type_is_a_protocol_failure()
+    {
+        using var response = Response(HttpStatusCode.OK, "null");
+        var reader = new NestgridResponseReader(
+            new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly));
+
+        await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => reader.ReadAsync<int>(response));
+    }
+
+    [Fact]
+    public async Task Response_without_content_is_treated_as_an_empty_body()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
+
+        var result = await new NestgridResponseReader().ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Null_options_and_responses_are_rejected()
+    {
+        var optionsException = Should.Throw<ArgumentNullException>(() => new NestgridResponseReader(null!));
+        optionsException.ParamName.ShouldBe("options");
+        var reader = new NestgridResponseReader();
+
+        var nonGenericException = await Should.ThrowAsync<ArgumentNullException>(
+            () => reader.ReadAsync((HttpResponseMessage)null!));
+        nonGenericException.ParamName.ShouldBe("response");
+        var genericException = await Should.ThrowAsync<ArgumentNullException>(
+            () => reader.ReadAsync<Licence>(null!));
+        genericException.ParamName.ShouldBe("response");
     }
 
     [Theory]
@@ -194,6 +343,39 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Missing_messages_array_has_a_safe_protocol_message()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Value\":null}");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldBe("The Nestgrid response envelope does not contain a messages array.");
+    }
+
+    [Fact]
+    public async Task Invalid_message_has_a_safe_protocol_message()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[null]}");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldBe("The Nestgrid response contains an invalid message.");
+    }
+
+    [Fact]
+    public async Task Invalid_message_severity_has_a_safe_protocol_message()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[{\"Message\":\"Bad\",\"Severity\":99}]}");
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+
+        exception.Message.ShouldBe("The Nestgrid response contains an invalid message.");
+    }
+
+    [Fact]
     public async Task Non_json_media_types_are_rejected()
     {
         using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
@@ -202,7 +384,7 @@ public sealed class NestgridResponseReaderTests
         var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => new NestgridResponseReader().ReadAsync(response));
 
-        exception.Message.ShouldContain("JSON media type");
+        exception.Message.ShouldBe("The response content type is not a supported JSON media type.");
     }
 
     [Fact]
@@ -245,6 +427,28 @@ public sealed class NestgridResponseReaderTests
         cancellation.Cancel();
 
         await Should.ThrowAsync<OperationCanceledException>(() => read);
+    }
+
+    [Fact]
+    public async Task Cancellation_before_non_generic_read_is_propagated()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Messages\":[]}");
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => new NestgridResponseReader().ReadAsync(response, cancellation.Token));
+    }
+
+    [Fact]
+    public async Task Cancellation_before_generic_read_is_propagated()
+    {
+        using var response = Response(HttpStatusCode.OK, "{\"Value\":1,\"Messages\":[]}");
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => new NestgridResponseReader().ReadAsync<int>(response, cancellation.Token));
     }
 
     [Fact]

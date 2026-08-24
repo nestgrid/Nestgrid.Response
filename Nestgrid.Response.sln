@@ -183,6 +183,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Quality", "04 Quality", 
 		docs\artefacts\04 Quality\README.md = docs\artefacts\04 Quality\README.md
 		docs\artefacts\04 Quality\Test Strategy.md = docs\artefacts\04 Quality\Test Strategy.md
 		docs\artefacts\04 Quality\Release Readiness Report.md = docs\artefacts\04 Quality\Release Readiness Report.md
+		docs\artefacts\04 Quality\Test Strategy - HTTP Client Capability.md = docs\artefacts\04 Quality\Test Strategy - HTTP Client Capability.md
+		docs\artefacts\04 Quality\Release Readiness Report - HTTP Client Capability.md = docs\artefacts\04 Quality\Release Readiness Report - HTTP Client Capability.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Security", "05 Security", "{B7F9E0A1-2C34-4D56-8E78-9A0B1C2D3E4F}"

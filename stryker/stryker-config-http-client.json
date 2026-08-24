@@ -1,0 +1,21 @@
+{
+  "stryker-config": {
+    "project": "src/Nestgrid.Response.Http.Client/Nestgrid.Response.Http.Client.csproj",
+    "solution": "Nestgrid.Response.sln",
+    "test-projects": [
+      "tests/Nestgrid.Response.Http.Client.Tests/Nestgrid.Response.Http.Client.Tests.csproj"
+    ],
+    "reporters": ["html", "progress", "cleartext", "json", "dashboard"],
+    "coverage-analysis": "off",
+    "verbosity": "info",
+    "concurrency": 1,
+    "mutate": [
+      "**/*.cs",
+      "!**/*.g.cs",
+      "!**/*AssemblyInfo.cs",
+      "!**/Program.cs"
+    ],
+    "thresholds": { "high": 100, "low": 95, "break": 90 },
+    "language-version": "latest"
+  }
+}

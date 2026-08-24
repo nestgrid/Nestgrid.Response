@@ -5,6 +5,49 @@ namespace Nestgrid.Response.Http.Client.Tests;
 public sealed class NestgridResponseHttpClientExtensionsTests
 {
     [Fact]
+    public async Task Non_generic_convenience_method_reads_a_result()
+    {
+        using var client = new HttpClient(new StaticHandler(
+            new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\"Messages\":[]}", System.Text.Encoding.UTF8, "application/json")
+            }));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+
+        var result = await client.SendAndReadNestgridResponseAsync(request, new NestgridResponseReader());
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Convenience_methods_reject_null_arguments()
+    {
+        using var client = new HttpClient(new StaticHandler(new HttpResponseMessage(HttpStatusCode.OK)));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+        var reader = new NestgridResponseReader();
+
+        var nullClient = await Should.ThrowAsync<ArgumentNullException>(
+            () => NestgridResponseHttpClientExtensions.SendAndReadNestgridResponseAsync(
+                null!, request, reader));
+        nullClient.ParamName.ShouldBe("client");
+        var nullRequest = await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync(null!, reader));
+        nullRequest.ParamName.ShouldBe("request");
+        var nullReader = await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync(request, null!));
+        nullReader.ParamName.ShouldBe("reader");
+        var nullGenericClient = await Should.ThrowAsync<ArgumentNullException>(
+            () => NestgridResponseHttpClientExtensions.SendAndReadNestgridResponseAsync<Licence>(
+                null!, request, reader));
+        nullGenericClient.ParamName.ShouldBe("client");
+        var nullGenericRequest = await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync<Licence>(null!, reader));
+        nullGenericRequest.ParamName.ShouldBe("request");
+        var nullGenericReader = await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync<Licence>(request, null!));
+        nullGenericReader.ParamName.ShouldBe("reader");
+    }
+    [Fact]
     public async Task Fake_handler_proves_standard_httpclient_composition()
     {
         using var client = new HttpClient(new StaticHandler(
