@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Report
-version: 1.0
+version: 1.1
 status: Complete with conditions — handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Quality Engineer, Security Engineer, Solution Architect, Platform Engineer, Project Sponsor
-date: 2026-08-21
+date: 2026-08-24
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -28,6 +28,7 @@ related_artefacts:
   - ../02 Architecture/Architecture Pack.md
   - ../02 Architecture/Engineering Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
+  - ../02 Architecture/Architecture Feedback - HTTP Client Implementation Review.md
 ```
 
 ## Executive outcome
@@ -50,6 +51,7 @@ This report does not approve publication, protected CI, release progression or a
 - Added fake-handler and transport-failure proving paths.
 - Added a reusable sample covering licence-service `FullResult` and Portal-to-Finance `ValueOnly` scenarios.
 - Added package documentation, root documentation, changelog entry, v0.8.0 version metadata and IDE/solution visibility.
+- Resolved Architecture Feedback v1.0 conditions for serializer isolation, cancellation, media types, non-generic ValueOnly behaviour, convenience naming and evidence completeness.
 
 ## Conformance and implementation decisions
 
@@ -76,7 +78,7 @@ Conformant. HTTP status is interpreted before body shape. 200, 201, 202, 204, 40
 
 ## Tests written and executed
 
-The new client test project contains 30 passing tests covering:
+The new client test project contains 40 passing tests covering:
 
 - options defaults, copied serializer settings and copied custom mappings;
 - FullResult generic success and structured messages;
@@ -92,6 +94,11 @@ The new client test project contains 30 passing tests covering:
 - caller-owned response lifetime;
 - fake `HttpMessageHandler` composition; and
 - unchanged propagation of transport exceptions.
+- custom converter preservation and reader isolation from later options mutation;
+- cancellation during a delayed content read;
+- accepted/missing and rejected/non-JSON media types;
+- non-generic ValueOnly result envelopes; and
+- missing/null message collections, null messages and invalid severities.
 
 The complete solution suite passed after implementation:
 
@@ -102,10 +109,23 @@ The complete solution suite passed after implementation:
 | MVC | 28 | 0 | 0 |
 | HTTP policy | 15 | 0 | 0 |
 | Validation | 30 | 0 | 0 |
-| HTTP client | 30 | 0 | 0 |
-| **Total** | **319** | **0** | **0** |
+| HTTP client | 40 | 0 | 0 |
+| **Total** | **329** | **0** | **0** |
 
 The reusable client sample builds with zero warnings and runs successfully, producing successful licence-service and Portal-to-Finance results.
+
+## Architecture Feedback v1.0 disposition
+
+| Condition | Engineering disposition | Evidence |
+| --- | --- | --- |
+| Serializer isolation | Resolved. Supported serializer settings and custom converters are copied; the reader snapshots options again at construction. | Options and reader tests; package README |
+| Cancellation during content reading | Resolved. Body bytes are read through a cancellation-aware stream loop for `netstandard2.0`. | Delayed-content cancellation test |
+| Representation and media type | Resolved. JSON and `+json` are accepted, missing media type is accepted, and non-JSON content is rejected. | Media-type tests; package README |
+| Non-generic ValueOnly | Resolved. Explicit envelope handling is supported for messages and empty 200/201/202 responses. | Reader test; package README |
+| Consumer-facing documentation/API naming | Resolved. README expanded and convenience methods renamed to `SendAndReadNestgridResponseAsync`. | XML docs, README, sample and tests |
+| Additional evidence | Resolved. Invalid message collections/severity and ownership paths are covered. | 40 client tests |
+
+The feedback is conditional for downstream Quality and Security review; it is not a release approval.
 
 ## Package and dependency evidence
 
@@ -128,7 +148,7 @@ The final locally packed candidate hash is `e7ee2c2a7ec509cc6846b8dd095fd6e3c894
 
 - The local proving sample uses a deterministic fake handler; live endpoint execution, authentication and handler composition remain consumer-owned and downstream validation concerns.
 - The first client implementation supports the approved `System.Text.Json` baseline only. Newtonsoft.Json is not supported without a new Architecture decision.
-- `JsonSerializerOptions` exposes the copied .NET serializer object required by the approved API direction; callers remain responsible for not mutating their own options after construction.
+- `JsonSerializerOptions` exposes the copied .NET serializer object required by the approved API direction; readers isolate themselves from later mutation of the options object.
 - The repository’s existing Independent Review IR-011 through IR-015 findings remain open for 1.0 API stability and are not closed by this additive package.
 - Mutation-testing and protected-CI evidence remain downstream Quality/Platform evidence.
 
@@ -142,6 +162,7 @@ The final locally packed candidate hash is `e7ee2c2a7ec509cc6846b8dd095fd6e3c894
 | Existing `Result` extensibility and mapper invariant decisions (IR-011, IR-015) | Architecture / Product / Sponsor | Open 1.0 work items |
 | Existing nullable/NoContent semantics and normative server mapping decisions (IR-013, IR-014) | Architecture / Product / Sponsor | Open 1.0 work items |
 | Protected package publication, provenance and release decision | Platform / Release / Sponsor | Explicitly deferred |
+| Reconcile the feedback YAML references to `ADR-010-HTTP-Client-Wire-Representation.md` and `ADR-011-HTTP-Client-Outcome-Policy.md` with the canonical repository files `ADR-010-HTTP-Client-Wire-Contract.md` and `ADR-011-HTTP-Client-Outcome-Semantics.md` | Solution Architect | Documentation follow-up; no implementation blocker |
 
 ## Engineering Assurance
 

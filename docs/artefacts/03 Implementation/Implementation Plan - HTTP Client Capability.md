@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Plan
-version: 1.0
+version: 1.1
 status: Complete with conditions — handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Project Sponsor, Solution Architect, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-21
+date: 2026-08-24
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -30,6 +30,7 @@ related_artefacts:
   - ../02 Architecture/Engineering Handover.md
   - ../02 Architecture/Architecture Recommendation - HTTP Client Capability.md
   - ../../reviews/Nestgrid.Response Independent Review.md
+  - ../02 Architecture/Architecture Feedback - HTTP Client Implementation Review.md
 ```
 
 ## Purpose and approval boundary
@@ -236,3 +237,16 @@ The plan is implementation-ready within the approved Architecture boundary. Appr
 The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 319 passing solution tests, package metadata evidence, known limitations and downstream conditions.
 
 Engineering Assurance is **Assured with conditions**. The evidence is handed to Quality and Security for validation. Protected publication, final provenance and Release-stage decisions remain explicitly deferred to Platform, Release and the Project Sponsor.
+
+## Architecture Feedback v1.0 amendment
+
+Architecture Feedback — HTTP Client Implementation Review v1.0 was reviewed on 2026-08-24. Engineering resolved its implementation conditions without changing the approved package boundary, core Result model, target framework or JSON-only scope:
+
+- serializer options now preserve the supported settings and custom converters, and the reader takes an isolated snapshot;
+- content reads now pass the caller cancellation token through the supported `netstandard2.0` stream-read path;
+- `application/json` and `+json` media types are accepted, missing media type is explicitly accepted for legacy responses, and non-JSON media types fail safely;
+- non-generic ValueOnly behaviour is explicitly supported as an envelope contract, with tests and documentation;
+- the convenience operation is named `SendAndReadNestgridResponseAsync`; and
+- the package README, tests and evidence were expanded accordingly.
+
+The new client suite contains 40 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.

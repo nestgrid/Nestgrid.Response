@@ -15,6 +15,9 @@ All notable changes to this project will be documented in this file.
 
 - Updated the global package version to `0.8.0` for the additive HTTP client capability.
 - Documented response ownership, normal `HttpClient` composition and the distinction between client and server HTTP mapping semantics.
+- Isolated supported serializer settings and custom converters from later caller option mutation.
+- Added cancellation-aware HTTP content reading and explicit JSON media-type handling.
+- Clarified non-generic `ValueOnly` envelopes and renamed the convenience operation to `SendAndReadNestgridResponseAsync`.
 
 ## [0.7.0] - 2026-08-18
 
