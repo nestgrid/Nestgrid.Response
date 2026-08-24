@@ -180,6 +180,19 @@ public sealed class NestgridResponseReaderTests
         exception.Message.ShouldNotContain("secret");
     }
 
+    [Theory]
+    [InlineData("{\"Value\":null}")]
+    [InlineData("{\"Messages\":null}")]
+    [InlineData("{\"Messages\":[null]}")]
+    [InlineData("{\"Messages\":[{\"Message\":\"Bad\",\"Severity\":99}]}")]
+    public async Task Invalid_message_collections_and_severity_are_protocol_failures(string body)
+    {
+        using var response = Response(HttpStatusCode.OK, body);
+
+        await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+    }
+
     [Fact]
     public async Task Non_json_media_types_are_rejected()
     {
