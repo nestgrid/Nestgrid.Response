@@ -47,6 +47,25 @@ public sealed class NestgridResponseHttpClientExtensionsTests
             () => client.SendAndReadNestgridResponseAsync<Licence>(request, null!));
         nullGenericReader.ParamName.ShouldBe("reader");
     }
+
+    [Fact]
+    public async Task Null_request_or_reader_is_rejected_before_sending()
+    {
+        var handler = new CountingHandler();
+        using var client = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+
+        await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync(null!, new NestgridResponseReader()));
+        await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync(request, null!));
+        await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync<Licence>(null!, new NestgridResponseReader()));
+        await Should.ThrowAsync<ArgumentNullException>(
+            () => client.SendAndReadNestgridResponseAsync<Licence>(request, null!));
+
+        handler.CallCount.ShouldBe(0);
+    }
     [Fact]
     public async Task Fake_handler_proves_standard_httpclient_composition()
     {
@@ -76,6 +95,19 @@ public sealed class NestgridResponseHttpClientExtensionsTests
             () => client.SendAndReadNestgridResponseAsync(request, reader));
     }
 
+    [Fact]
+    public async Task Convenience_method_disposes_the_http_response_it_created()
+    {
+        var content = new StringContent("{\"Messages\":[]}", System.Text.Encoding.UTF8, "application/json");
+        using var client = new HttpClient(new StaticHandler(
+            new HttpResponseMessage(HttpStatusCode.OK) { Content = content }));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+
+        await client.SendAndReadNestgridResponseAsync(request, new NestgridResponseReader());
+
+        await Should.ThrowAsync<ObjectDisposedException>(() => content.ReadAsStringAsync());
+    }
+
     private sealed record Licence(int Id, string Name);
 
     private sealed class StaticHandler : HttpMessageHandler
@@ -95,5 +127,21 @@ public sealed class NestgridResponseHttpClientExtensionsTests
             HttpRequestMessage request,
             CancellationToken cancellationToken) =>
             Task.FromException<HttpResponseMessage>(new HttpRequestException("transport failure"));
+    }
+
+    private sealed class CountingHandler : HttpMessageHandler
+    {
+        public int CallCount { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            CallCount++;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\"Messages\":[]}", System.Text.Encoding.UTF8, "application/json")
+            });
+        }
     }
 }

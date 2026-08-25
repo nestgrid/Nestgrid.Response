@@ -57,9 +57,7 @@ public sealed class NestgridResponseReader
             return Results.NoContent();
         }
 
-        ValidateMediaType(response, statusCode);
-        var body = await ReadBodyAsync(response, cancellationToken).ConfigureAwait(false);
-        cancellationToken.ThrowIfCancellationRequested();
+        var body = await ReadResponseBodyAsync(response, statusCode, cancellationToken).ConfigureAwait(false);
 
         if (string.IsNullOrWhiteSpace(body))
         {
@@ -97,9 +95,7 @@ public sealed class NestgridResponseReader
             return Results.NoContent<T>();
         }
 
-        ValidateMediaType(response, statusCode);
-        var body = await ReadBodyAsync(response, cancellationToken).ConfigureAwait(false);
-        cancellationToken.ThrowIfCancellationRequested();
+        var body = await ReadResponseBodyAsync(response, statusCode, cancellationToken).ConfigureAwait(false);
 
         if (options.PayloadMode == NestgridResponsePayloadMode.ValueOnly && IsSuccess(status))
         {
@@ -138,6 +134,17 @@ public sealed class NestgridResponseReader
     private ResultStatus ResolveStatus(int statusCode) =>
         ClientStatusPolicy.Resolve(statusCode, options.StatusMappings, options.PayloadMode);
 
+    private async Task<string> ReadResponseBodyAsync(
+        HttpResponseMessage response,
+        int statusCode,
+        CancellationToken cancellationToken)
+    {
+        ValidateMediaType(response, statusCode);
+        var body = await ReadBodyAsync(response, cancellationToken).ConfigureAwait(false);
+        cancellationToken.ThrowIfCancellationRequested();
+        return body;
+    }
+
     private static bool IsSuccess(ResultStatus status) =>
         status is ResultStatus.Ok or ResultStatus.Created or ResultStatus.Accepted or ResultStatus.NoContent;
 
@@ -145,11 +152,6 @@ public sealed class NestgridResponseReader
         HttpResponseMessage response,
         CancellationToken cancellationToken)
     {
-        if (response.Content is null)
-        {
-            return string.Empty;
-        }
-
         using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         using var bufferStream = new MemoryStream();
         var buffer = new byte[81920];
@@ -182,7 +184,7 @@ public sealed class NestgridResponseReader
             var envelope = JsonSerializer.Deserialize<NestgridResponseWireEnvelope>(body, options.SerializerOptions);
             if (envelope is null)
             {
-                throw new JsonException("The response envelope was null.");
+                throw new JsonException();
             }
 
             return envelope;
@@ -200,7 +202,7 @@ public sealed class NestgridResponseReader
             var value = JsonSerializer.Deserialize<T>(body, options.SerializerOptions);
             if (value is null && typeof(T).IsValueType)
             {
-                throw new JsonException("The response value was null.");
+                throw new JsonException();
             }
 
             return value!;

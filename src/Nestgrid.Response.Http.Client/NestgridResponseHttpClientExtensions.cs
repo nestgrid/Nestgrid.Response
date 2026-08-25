@@ -15,20 +15,7 @@ public static class NestgridResponseHttpClientExtensions
         NestgridResponseReader reader,
         CancellationToken cancellationToken = default)
     {
-        if (client is null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (request is null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
-
-        if (reader is null)
-        {
-            throw new ArgumentNullException(nameof(reader));
-        }
+        ValidateArguments(client, request, reader);
 
         using var response = await client.SendAsync(
             request,
@@ -47,6 +34,20 @@ public static class NestgridResponseHttpClientExtensions
         NestgridResponseReader reader,
         CancellationToken cancellationToken = default)
     {
+        ValidateArguments(client, request, reader);
+
+        using var response = await client.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken).ConfigureAwait(false);
+        return await reader.ReadAsync<T>(response, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static void ValidateArguments(
+        HttpClient client,
+        HttpRequestMessage request,
+        NestgridResponseReader reader)
+    {
         if (client is null)
         {
             throw new ArgumentNullException(nameof(client));
@@ -61,11 +62,5 @@ public static class NestgridResponseHttpClientExtensions
         {
             throw new ArgumentNullException(nameof(reader));
         }
-
-        using var response = await client.SendAsync(
-            request,
-            HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken).ConfigureAwait(false);
-        return await reader.ReadAsync<T>(response, cancellationToken).ConfigureAwait(false);
     }
 }

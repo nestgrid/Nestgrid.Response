@@ -119,6 +119,20 @@ public sealed class NestgridResponseReaderTests
         typed.Value.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task No_content_does_not_read_or_validate_response_content()
+    {
+        var content = new TrackingContent();
+        using var response = new HttpResponseMessage(HttpStatusCode.NoContent) { Content = content };
+        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/plain");
+
+        var reader = new NestgridResponseReader();
+
+        (await reader.ReadAsync(response)).Status.ShouldBe(ResultStatus.NoContent);
+        (await reader.ReadAsync<Licence>(response)).Status.ShouldBe(ResultStatus.NoContent);
+        content.ReadCount.ShouldBe(0);
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.OK)]
     [InlineData(HttpStatusCode.Created)]
@@ -400,16 +414,24 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
-    public async Task Explicitly_null_content_is_treated_as_an_empty_body()
+    public async Task Default_empty_content_is_treated_as_an_empty_body()
     {
-        using var response = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = null
-        };
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
 
         var result = await new NestgridResponseReader().ReadAsync(response);
 
         result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Generic_full_result_with_null_content_requires_an_envelope()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("A non-empty response envelope was required.");
     }
 
     [Fact]
@@ -657,6 +679,29 @@ public sealed class NestgridResponseReaderTests
 
         protected override Task<Stream> CreateContentReadStreamAsync() =>
             Task.FromResult<Stream>(new MemoryStream(bytes, writable: false));
+    }
+
+    private sealed class TrackingContent : HttpContent
+    {
+        public int ReadCount { get; private set; }
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+        {
+            ReadCount++;
+            return Task.CompletedTask;
+        }
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = 0;
+            return true;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync()
+        {
+            ReadCount++;
+            return Task.FromResult<Stream>(new MemoryStream());
+        }
     }
 
     private sealed class CancellingContent : HttpContent
