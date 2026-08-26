@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Release Quality Recommendation
-version: 1.2
+version: 1.3
 status: Complete with conditions
 owner: Quality Engineer
 contributors:
@@ -60,7 +60,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | API | Passed with 1.0 follow-up | New public API is additive; compatibility inventory and IR-011–IR-015 remain open |
 | Regression | Passed | 366 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
-| Coverage | Passed | HTTP client package-owned line coverage 97.85%, branch coverage 95%; existing package evidence remains 97.7–100% |
+| Coverage | Passed | HTTP client package-owned line coverage 98.30%, branch coverage 95.76%; existing package evidence remains 97.7–100% |
 | Mutation | Passed | HTTP client mutation score 90.08% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
 | Package/consumer | Passed with release follow-up | `0.8.0` package and symbols created; README, XML, icon and dependency metadata inspected; supported-CI consumer/provenance evidence remains open |
 
@@ -95,9 +95,9 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 - Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 366 passed, 0 failed, 0 skipped.
 - Focused client suite: 77 passed, 0 failed, 0 skipped.
-- Client coverage report: package-owned line coverage 97.85%, branch coverage 95%.
+- Client coverage report: package-owned line coverage 98.30%, branch coverage 95.76%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
-- Dedicated Stryker result: 90.08%, 117 killed, 61 surviving mutants, 1 timeout and 5 compile errors in the configured report; the suite passed its 90% break threshold.
+- Dedicated Stryker result: 90.08%, 117 killed, 13 surviving mutants, 1 timeout and 5 compile errors in the configured report; the suite passed its 90% break threshold.
 - Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage` and `f4d17a5 [Engineering] Restore protocol severity failures`.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
