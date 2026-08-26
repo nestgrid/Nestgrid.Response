@@ -18,7 +18,7 @@ internal static class WireMessageConverter
         var messages = new List<ResultMessage>(wireMessages.Count);
         foreach (var wireMessage in wireMessages)
         {
-            if (wireMessage is null || wireMessage.Message is null || !Enum.IsDefined(typeof(ResultMessageSeverity), wireMessage.Severity))
+            if (wireMessage is null || wireMessage.Message is null)
             {
                 throw new NestgridResponseProtocolException(
                     "The Nestgrid response contains an invalid message.",
@@ -31,7 +31,10 @@ internal static class WireMessageConverter
                 ResultMessageSeverity.Information => ResultMessages.Info(wireMessage.Message, wireMessage.Code, wireMessage.Property),
                 ResultMessageSeverity.Warning => ResultMessages.Warning(wireMessage.Message, wireMessage.Code, wireMessage.Property),
                 ResultMessageSeverity.Error => ResultMessages.Error(wireMessage.Message, wireMessage.Code, wireMessage.Property),
-                _ => throw new ArgumentOutOfRangeException(nameof(wireMessage.Severity))
+                _ => throw new NestgridResponseProtocolException(
+                    "The Nestgrid response contains an invalid message.",
+                    statusCode,
+                    payloadMode)
             });
         }
 
