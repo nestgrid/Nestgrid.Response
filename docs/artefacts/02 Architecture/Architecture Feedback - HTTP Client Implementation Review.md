@@ -2,19 +2,20 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Architecture Feedback - HTTP Client Implementation Review
-version: 1.0
-status: Conditional approval for Quality and Security review
+version: 1.1
+status: Approved for SEC-007/SEC-008 implementation handover; release remains conditional
 owner: Solution Architect
 contributors:
   - Knight
 produced_by: Solution Architect
 consumed_by: Software Engineer, Quality Engineer, Security Engineer, Project Sponsor
-date: 2026-08-24
+date: 2026-08-26
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
-  - ../../decisions/ADR-010-HTTP-Client-Wire-Representation.md
-  - ../../decisions/ADR-011-HTTP-Client-Outcome-Policy.md
+  - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
+  - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
 related_work_items:
   - HTTP client capability
 related_repositories:
@@ -99,6 +100,21 @@ Architecture does not identify a need to alter the approved package boundary, co
 Architecture supports progression to Quality and Security review conditionally. The serializer isolation and cancellation items are implementation corrections unless Mason documents a framework limitation and obtains acceptance. The media-type contract, non-generic ValueOnly contract, README and additional tests are required clarity and evidence work.
 
 This feedback is not final API approval for 1.0 and is not release approval for v0.8.0.
+
+## Security remediation architecture
+
+Sponsor approval was granted on 2026-08-26 for the delivery-channel boundary and the security remediation direction recorded in [ADR-012](../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md).
+
+Mason may proceed with SEC-007 and SEC-008 implementation subject to that decision:
+
+- preserve API-provided failure statuses and structured messages as client-side results;
+- add the bounded response policy with a 1 MiB default and explicit larger positive limits;
+- enforce the limit during streaming for success and failure responses;
+- keep protocol exceptions for local processing failures only;
+- remove public inner-exception and diagnostic disclosure from serializer/converter failures; and
+- preserve safe status code and payload-mode context where applicable.
+
+The response-size option and any exception-constructor change are part of the additive pre-1.0 client package and must be recorded in the Implementation Report and reviewed by Quality and Security. Sponsor approval for this direction is recorded in the current Architecture workflow.
 
 ## Handover to Engineering
 

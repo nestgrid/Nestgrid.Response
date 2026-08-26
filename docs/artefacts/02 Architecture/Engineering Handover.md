@@ -17,6 +17,7 @@ related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
   - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
   - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
 related_work_items:
 related_repositories:
@@ -26,6 +27,7 @@ related_artefacts:
   - Architecture Pack.md
   - Architecture Feedback - SEC-006 Dependency Remediation.md
   - Architecture Recommendation - HTTP Client Capability.md
+  - Architecture Feedback - HTTP Client Implementation Review.md
   - ../01 Discovery/Product Brief.md
 ```
 
@@ -42,6 +44,7 @@ This handover gives Engineering the implementation boundary, priorities, constra
 - Preserve existing public behaviour unless a breaking change is justified, documented and approved.
 - Add or strengthen tests, samples and package documentation required by the Architecture Pack.
 - Implement the additive `Nestgrid.Response.Http.Client` package within ADR-009 through ADR-011.
+- Implement the approved HTTP client safety boundaries in ADR-012: preserve remote API failures as results, enforce bounded response buffering and keep local protocol failures safe.
 
 Out of scope:
 
@@ -138,6 +141,7 @@ The implementation must treat this as client semantics, never as reversal of `Ne
 - Preserve normative default mappings for `Unauthorized`, `Forbidden`, `Error` and `NoContent`; custom mapping remains an explicit consumer responsibility.
 - Retain dependency advisory, restore and package-provenance evidence according to ADR-007.
 - Complete the SEC-006 dependency-path and compatibility analysis described in [Architecture Feedback — SEC-006 Dependency Remediation](Architecture%20Feedback%20-%20SEC-006%20Dependency%20Remediation.md).
+- For the HTTP client, preserve API-provided failure messages in returned results. Treat response-size violations and serializer/converter failures as local protocol failures, with no public inner exceptions or response-derived diagnostic content.
 
 ### SEC-006 Dependency Remediation Acceptance Criteria
 
@@ -178,6 +182,9 @@ The implementation must treat this as client semantics, never as reversal of `Ne
 - ValueOnly failure deserializes the Nestgrid envelope and preserves structured messages.
 - Generic and non-generic results are both supported without direct core-type deserialisation.
 - 204 produces the existing typed and non-typed NoContent result behaviour.
+- Remote HTTP/application failures remain `Result`/`Result<T>` values with their structured API messages preserved; local protocol failures use the safe exception boundary.
+- Response content is bounded by `MaxResponseBodyBytes`, defaulting to 1 MiB, with streaming enforcement and explicit larger positive consumer configuration.
+- Serializer and custom-converter failures do not expose inner exceptions, converter messages or response-derived diagnostics through public protocol exceptions.
 - Empty 200/201/202 non-generic responses produce the mapped non-generic result; empty generic responses fail as protocol errors.
 - Default mappings for 200, 201, 202, 204, 400, 401, 403, 404, 409, 422 and 5xx are covered by contract tests.
 - Custom client mappings are covered and proven independent from server-side mapping configuration.

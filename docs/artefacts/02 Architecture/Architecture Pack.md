@@ -22,6 +22,7 @@ related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
   - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
   - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
   - ../../decisions/TDR-001-Validation-Result-Conversion-Detail.md
 related_work_items:
 related_repositories:
@@ -32,6 +33,7 @@ related_artefacts:
   - Architecture Feedback - Security.md
   - Architecture Feedback - SEC-006 Dependency Remediation.md
   - Architecture Recommendation - HTTP Client Capability.md
+  - Architecture Feedback - HTTP Client Implementation Review.md
   - ../01 Discovery/Product Brief.md
   - ../01 Discovery/Architecture Handover.md
   - ../../reviews/Nestgrid.Response Independent Review.md
