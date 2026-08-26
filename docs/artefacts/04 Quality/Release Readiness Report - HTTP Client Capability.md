@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Release Quality Recommendation
-version: 1.1
+version: 1.2
 status: Complete with conditions
 owner: Quality Engineer
 contributors:
@@ -10,7 +10,7 @@ contributors:
   - Solution Architect
 produced_by: Quality Engineer
 consumed_by: Project Sponsor, Software Engineer, Security Engineer, Platform Engineer
-date: 2026-08-25
+date: 2026-08-26
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -61,7 +61,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Regression | Passed | 366 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
 | Coverage | Passed | HTTP client package-owned line coverage 97.85%, branch coverage 95%; existing package evidence remains 97.7–100% |
-| Mutation | Passed | HTTP client mutation score 90.15% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
+| Mutation | Passed | HTTP client mutation score 90.08% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
 | Package/consumer | Passed with release follow-up | `0.8.0` package and symbols created; README, XML, icon and dependency metadata inspected; supported-CI consumer/provenance evidence remains open |
 
 ## Defects
@@ -69,9 +69,9 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | ID | Severity | Summary | Status |
 | --- | --- | --- | --- |
 | None | — | No functional defect was identified by the passing client contract, integration or full regression tests. | No open functional defect |
-| Q-HTTP-001 | P1 | Client mutation score was below threshold in the previous Quality run. Mason’s refactor and tests raised the score to 90.15%. | Closed by Engineering commit `104f197`; retain mutation gate in CI |
+| Q-HTTP-001 | P1 | Client mutation score was below threshold in the previous Quality run. Mason’s refactor and tests raised the score above threshold. | Closed by Engineering commits `104f197` and `f4d17a5`; retain mutation gate in CI |
 | Q-HTTP-002 | P2 | Local proving-sample execution could not be independently completed because the build hung in the local environment. | Open evidence limitation; supported CI confirmation required |
-| Q-HTTP-003 | P2 | The defensive invalid-severity switch now throws `ArgumentOutOfRangeException`, while protocol-invalid response data otherwise uses `NestgridResponseProtocolException` with safe public messaging. The current branch is unreachable after enum validation, but the boundary is inconsistent if that invariant changes. | Open Engineering finding; restore protocol exception or document and approve the intentional distinction |
+| Q-HTTP-003 | P2 | The defensive invalid-severity switch used a different exception type from the rest of the protocol-invalid wire boundary. | Resolved by Engineering commit `f4d17a5`; invalid severities now produce the existing safe `NestgridResponseProtocolException`. |
 
 ## Regression Risks
 
@@ -86,7 +86,6 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Outstanding Issues
 
-- Q-HTTP-003: Engineering to resolve the protocol-exception consistency finding before final v0.8.0 approval.
 - Q-HTTP-002: repeat the client proving sample and package-consumer checks in supported CI.
 - Security to review protocol exception disclosure, dependency metadata and the new package boundary.
 - Platform/Release to retain protected publication, package provenance and final consumer evidence for the v0.8.0 candidate.
@@ -98,19 +97,19 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 - Focused client suite: 77 passed, 0 failed, 0 skipped.
 - Client coverage report: package-owned line coverage 97.85%, branch coverage 95%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
-- Dedicated Stryker result: 90.15%, 118 killed, 13 surviving mutants and 1 timeout in the configured report; the suite passed its 90% break threshold.
-- Engineering implementation commit reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage`.
+- Dedicated Stryker result: 90.08%, 117 killed, 61 surviving mutants, 1 timeout and 5 compile errors in the configured report; the suite passed its 90% break threshold.
+- Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage` and `f4d17a5 [Engineering] Restore protocol severity failures`.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
 
 ## Release Confidence
 
-Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gap is the protocol-exception consistency finding and independently supported sample/consumer evidence.
+Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gap is independently supported sample/consumer evidence.
 
-Overall release confidence is **conditional**. The candidate may proceed beyond the Quality mutation gate, but should remain at Quality Recommend until Q-HTTP-003 is resolved or formally accepted and the downstream Security, Platform and consumer evidence is complete.
+Overall release confidence is **conditional**. The candidate may proceed beyond the Quality mutation gate; downstream Security, Platform and consumer evidence remains required.
 
 ## Recommendation
 
-**Recommend progression to Security and Platform review, but do not approve publication yet.** Engineering must resolve or obtain an authorised disposition for Q-HTTP-003, and Platform/Release must retain supported consumer, sample, provenance and protected-publication evidence before final approval.
+**Recommend progression to Security and Platform review, but do not approve publication yet.** Platform/Release must retain supported consumer, sample, provenance and protected-publication evidence before final approval.
 
 The Project Sponsor owns the final release decision. Quality does not waive the mutation threshold, consumer evidence gap or open 1.0 API compatibility findings.

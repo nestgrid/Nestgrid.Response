@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Report
-version: 1.1
+version: 1.2
 status: Complete with conditions — handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Quality Engineer, Security Engineer, Solution Architect, Platform Engineer, Project Sponsor
-date: 2026-08-24
+date: 2026-08-26
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -52,6 +52,7 @@ This report does not approve publication, protected CI, release progression or a
 - Added a reusable sample covering licence-service `FullResult` and Portal-to-Finance `ValueOnly` scenarios.
 - Added package documentation, root documentation, changelog entry, v0.8.0 version metadata and IDE/solution visibility.
 - Resolved Architecture Feedback v1.0 conditions for serializer isolation, cancellation, media types, non-generic ValueOnly behaviour, convenience naming and evidence completeness.
+- Resolved Quality finding Q-HTTP-003 by preserving protocol-safe exception handling for invalid wire-message severities, including the defensive switch fallback.
 
 ## Conformance and implementation decisions
 
@@ -78,7 +79,7 @@ Conformant. HTTP status is interpreted before body shape. 200, 201, 202, 204, 40
 
 ## Tests written and executed
 
-The new client test project contains 40 passing tests covering:
+The new client test project contains 77 passing tests covering:
 
 - options defaults, copied serializer settings and copied custom mappings;
 - FullResult generic success and structured messages;
@@ -109,8 +110,8 @@ The complete solution suite passed after implementation:
 | MVC | 28 | 0 | 0 |
 | HTTP policy | 15 | 0 | 0 |
 | Validation | 30 | 0 | 0 |
-| HTTP client | 40 | 0 | 0 |
-| **Total** | **329** | **0** | **0** |
+| HTTP client | 77 | 0 | 0 |
+| **Total** | **366** | **0** | **0** |
 
 The reusable client sample builds with zero warnings and runs successfully, producing successful licence-service and Portal-to-Finance results.
 
@@ -123,7 +124,7 @@ The reusable client sample builds with zero warnings and runs successfully, prod
 | Representation and media type | Resolved. JSON and `+json` are accepted, missing media type is accepted, and non-JSON content is rejected. | Media-type tests; package README |
 | Non-generic ValueOnly | Resolved. Explicit envelope handling is supported for messages and empty 200/201/202 responses. | Reader test; package README |
 | Consumer-facing documentation/API naming | Resolved. README expanded and convenience methods renamed to `SendAndReadNestgridResponseAsync`. | XML docs, README, sample and tests |
-| Additional evidence | Resolved. Invalid message collections/severity and ownership paths are covered. | 40 client tests |
+| Additional evidence | Resolved. Invalid message collections/severity and ownership paths are covered. | 77 client tests |
 
 The feedback is conditional for downstream Quality and Security review; it is not a release approval.
 
@@ -142,7 +143,7 @@ The generated `.nuspec` declares only:
 - `Nestgrid.Response` `0.8.0`; and
 - `System.Text.Json` `4.6.0`.
 
-The final locally packed candidate hash is `b9f66901d0d1464e27b51c3c5a1379f02530be73e793be08c8b36edbf39848bf`. Its generated repository metadata points to Engineering evidence commit `d66c600e12b54e60ec802dcfa12f7797983afcc5`. Protected publication and final provenance are intentionally not performed by Engineering.
+The refreshed locally packed candidate hash is `de6c43a6175c38abd47bcde650e012256af38450a6ea8468d52feb09972fa5b2`. Its generated repository metadata points to Engineering evidence commit `f4d17a5a5b9dc5fd2cdab8a871f1280f80daeff1`. Protected publication and final provenance are intentionally not performed by Engineering.
 
 ## Known limitations
 
@@ -156,7 +157,7 @@ The final locally packed candidate hash is `b9f66901d0d1464e27b51c3c5a1379f02530
 
 | Item | Owner | Status |
 | --- | --- | --- |
-| Quality validation of the 319-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
+| Quality validation of the 366-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
 | Security review of protocol exception disclosure, dependency metadata and package closure | Security Engineer | Outstanding downstream validation |
 | API compatibility baseline for all public packages (IR-012) | Architecture / Engineering / Quality | Open 1.0 work item |
 | Existing `Result` extensibility and mapper invariant decisions (IR-011, IR-015) | Architecture / Product / Sponsor | Open 1.0 work items |
@@ -171,6 +172,10 @@ The final locally packed candidate hash is `b9f66901d0d1464e27b51c3c5a1379f02530
 The implementation is coherent with the approved handover and ADRs, builds without warnings for the approved package target, passes the complete automated suite, produces the expected package metadata and demonstrates both proving scenarios. No unapproved architecture or security-boundary deviation was identified.
 
 The conditions are downstream validation of the retained evidence, including Quality mutation/coverage expectations, Security dependency and disclosure review, protected publication provenance and Release-stage approval. Engineering recommends progression to Quality and Security validation.
+
+## Quality feedback disposition
+
+Q-HTTP-003 is resolved by commit `f4d17a5 [Engineering] Restore protocol severity failures`. Unknown wire-message severities now use `NestgridResponseProtocolException` with the existing safe message, status code and payload mode. The redundant enum guard was removed so the switch fallback remains the protocol boundary for invalid severity values. Focused tests pass 77/77, full solution regression passes 366/366, and the dedicated client mutation score is 90.08%, above the configured 90% threshold.
 
 ## Handover recommendation
 

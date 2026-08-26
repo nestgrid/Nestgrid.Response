@@ -2,12 +2,12 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Test Strategy
-version: 1.1
+version: 1.2
 status: Complete with conditions
 owner: Quality Engineer
 produced_by: Quality Engineer
 consumed_by: Software Engineer, Security Engineer, Platform Engineer, Release Owner, Project Sponsor
-date: 2026-08-25
+date: 2026-08-26
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
   - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
@@ -54,7 +54,7 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 | Consumer/package | Pack, inspect `.nuspec`, README, XML and local consumer installation | New package pack and metadata inspection passed |
 | Sample | Licence-service FullResult and Portal-to-Finance ValueOnly proving scenarios | Engineering reports success; local rerun encountered the known build hang |
 | Coverage | Package-owned line coverage above 90% | Client 97.85% line and 95% branch; existing packages retain 97.7–100% evidence |
-| Mutation | Dedicated client mutation suite and existing package suites | Client 90.15%, above the 90% break threshold; existing five-package evidence remains 100% |
+| Mutation | Dedicated client mutation suite and existing package suites | Client 90.08%, above the 90% break threshold; existing five-package evidence remains 100% |
 
 ## Verification performed
 
@@ -64,7 +64,7 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 4. Existing package coverage and mutation evidence retained from the current v0.7 baseline.
 5. New client package packed successfully as `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`.
 6. Package contains the netstandard2.0 assembly, XML documentation, README, icon and dependency metadata for only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
-7. Dedicated Stryker configuration was executed sequentially against Mason’s refactor. The result was 90.15%, above the configured 90% break threshold: 118 mutants killed, 13 surviving, one timeout, with compile-error and covered-block mutants excluded by the configured analysis.
+7. Dedicated Stryker configuration was executed sequentially against Mason’s refactor and Q-HTTP-003 correction. The result was 90.08%, above the configured 90% break threshold: 117 mutants killed, 61 surviving, one timeout and five compile errors, with covered-block mutants excluded by the configured analysis.
 8. Engineering’s 40-test baseline was extended to 77 tests for result-factory branches, invalid custom status mappings, exact protocol-safe messages, null guards, empty failures, cancellation, response disposal and generic missing-value behaviour.
 
 ## Evidence limitations
@@ -80,4 +80,4 @@ Quality can recommend release only when all relevant tests pass, package coverag
 
 ## Current recommendation
 
-Functional and mutation confidence is high, and the package-owned coverage target is met. Quality recommends proceeding beyond the mutation gate, subject to the protocol-exception consistency finding, supported proving-sample/consumer evidence and downstream Security/Platform conditions.
+Functional and mutation confidence is high, and the package-owned coverage target is met. Q-HTTP-003 is resolved by Engineering commit `f4d17a5`; Quality recommends proceeding beyond the mutation gate, subject to supported proving-sample/consumer evidence and downstream Security/Platform conditions.

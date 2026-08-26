@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Plan
-version: 1.1
+version: 1.2
 status: Complete with conditions — handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Project Sponsor, Solution Architect, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-24
+date: 2026-08-26
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -234,7 +234,7 @@ The plan is implementation-ready within the approved Architecture boundary. Appr
 
 ## Execution outcome
 
-The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 319 passing solution tests, package metadata evidence, known limitations and downstream conditions.
+The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 366 passing solution tests, current package metadata evidence, known limitations and downstream conditions.
 
 Engineering Assurance is **Assured with conditions**. The evidence is handed to Quality and Security for validation. Protected publication, final provenance and Release-stage decisions remain explicitly deferred to Platform, Release and the Project Sponsor.
 
@@ -249,4 +249,8 @@ Architecture Feedback — HTTP Client Implementation Review v1.0 was reviewed on
 - the convenience operation is named `SendAndReadNestgridResponseAsync`; and
 - the package README, tests and evidence were expanded accordingly.
 
-The new client suite contains 40 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
+The new client suite contains 77 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
+
+## Quality feedback amendment
+
+Quality finding Q-HTTP-003 identified an inconsistent defensive fallback in wire-message severity conversion. The approved correction restores `NestgridResponseProtocolException` for invalid severities while preserving the existing safe public message and removing the redundant enum guard. Commit `f4d17a5` records the implementation; focused and full regression tests pass, and the dedicated client mutation score is 90.08%, above the configured 90% threshold.
