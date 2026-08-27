@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Release Quality Recommendation
-version: 1.6
+version: 1.7
 status: Complete with conditions
 owner: Quality Engineer
 contributors:
@@ -22,6 +22,10 @@ related_work_items:
   - IR-013
   - IR-014
   - IR-015
+  - IR-016
+  - IR-017
+  - IR-018
+  - IR-019
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -49,7 +53,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Ownership and exception separation | Covered with environment limitation | Caller response lifetime, convenience disposal, transport exception and cancellation tests passed; sample rerun was blocked by local build hang |
 | Existing product compatibility | Covered | Full solution regression passed; existing five-package tests and MVC baseline remain intact |
 | Package distribution | Covered with downstream condition | New package and symbols pack successfully; metadata and contents inspected; supported-CI consumer/provenance evidence remains required |
-| Public API stability | Partially covered | New surface is additive and documented; IR-011–IR-015 remain open 1.0 decisions |
+| Public API stability | Partially covered | New surface is additive and documented; IR-011–IR-015 and IR-018 remain open 1.0 decisions, with IR-012 requiring the six-package baseline |
 
 ## Test Execution Summary
 
@@ -90,7 +94,9 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 ## Outstanding Issues
 
 - Q-HTTP-002: repeat the client proving sample and package-consumer checks in supported CI.
-- Security to re-review SEC-007 response-size enforcement and SEC-008 exception safety, including dependency metadata and the new package boundary.
+- Security closure of SEC-007 through SEC-009 is recorded for the evaluated candidate; no further Quality action is required unless the implementation or evidence changes.
+- IR-016: complete supported-CI, protected-publication and final v0.8.0 Release evidence.
+- IR-012 and IR-018: complete the six-package API baseline and decide the supported serializer-options contract before 1.0.
 - Platform/Release to retain protected publication, package provenance and final consumer evidence for the v0.8.0 candidate.
 - Architecture/Product/Sponsor to resolve IR-011–IR-015 before 1.0 API freeze; these are not v0.8 implementation defects but remain compatibility risks.
 
@@ -103,7 +109,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 - Dedicated Stryker result: 90.85%, 128 killed, 60 surviving mutants, 1 timeout and 3 compile errors in the local report; the suite passed its 90% break threshold.
 - Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage`, `f4d17a5 [Engineering] Restore protocol severity failures` and `ee09c35 [Engineering] Enforce client safety boundaries`.
 - Quality hardening tests add UTF-8 byte-limit, mid-stream failure, cancellation under size policy, stream disposal, request cancellation and request ownership coverage.
-- Independent verification used the latest HEAD `8e91306`; the test, coverage, mutation and package hash now agree with the Engineering handover.
+- Independent verification used the source/evidence baseline `8e91306`; the test, coverage, mutation and package hash agree with the Engineering handover. Later commits record documentation-only reconciliation and role-owned dispositions.
 - Locally packed package hash: `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484`; package repository metadata points to `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
@@ -116,6 +122,6 @@ Overall release confidence is **conditional**. The candidate may proceed beyond 
 
 ## Recommendation
 
-**Recommend progression to Security and Platform review, but do not approve publication yet.** Platform/Release must retain supported consumer, sample, provenance and protected-publication evidence before final approval.
+**Recommend progression to Platform and Release review, but do not approve publication yet.** Security has closed SEC-007 through SEC-009 for the evaluated candidate. Platform/Release must retain supported consumer, sample, provenance and protected-publication evidence before final approval.
 
 The Project Sponsor owns the final release decision. Quality does not waive the mutation threshold, consumer evidence gap or open 1.0 API compatibility findings.

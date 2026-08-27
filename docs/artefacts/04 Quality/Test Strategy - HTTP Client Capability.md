@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Test Strategy
-version: 1.6
+version: 1.7
 status: Complete with conditions
 owner: Quality Engineer
 produced_by: Quality Engineer
@@ -18,6 +18,10 @@ related_work_items:
   - IR-013
   - IR-014
   - IR-015
+  - IR-016
+  - IR-017
+  - IR-018
+  - IR-019
 related_artefacts:
   - ../02 Architecture/Architecture Feedback - HTTP Client Implementation Review.md
   - ../03 Implementation/Implementation Report - HTTP Client Capability.md
@@ -72,8 +76,8 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 - The local client sample build/run encountered the repository’s known local build hang; Engineering’s successful sample evidence remains available, but supported CI should repeat it.
 - Live endpoints, authentication, resilience, retry, telemetry and handler composition beyond fake-handler proof are consumer responsibilities and are outside this package’s scope.
 - The client mutation threshold is now met. Remaining survivors are concentrated in equivalent convenience-method async plumbing and reader control-flow mutations; they remain visible in the Stryker report for future maintenance review.
-- The latest Engineering handover and independent Quality verification now agree on the test, coverage and mutation evidence.
-- IR-011 through IR-015 remain open 1.0 API-stability findings and are not silently resolved by this additive package.
+- The latest Engineering handover and independent Quality verification now agree on the test, coverage, mutation and package evidence. Security has closed SEC-007 through SEC-009; IR-016 remains the supported-CI and Release evidence condition, while IR-012 and IR-018 remain 1.0 API governance conditions.
+- IR-011 through IR-015 and IR-018 remain open 1.0 API-stability findings and are not silently resolved by this additive package. IR-017 and IR-019 have Architecture dispositions recorded; the canonical Independent Review should be re-reviewed to retain those closures.
 
 ## Quality exit criteria
 
@@ -81,4 +85,4 @@ Quality can recommend release only when all relevant tests pass, package coverag
 
 ## Current recommendation
 
-Functional and mutation confidence is high, and the package-owned coverage target is met. Q-HTTP-003 is resolved by Engineering commit `f4d17a5`; Quality recommends proceeding beyond the mutation gate, subject to supported proving-sample/consumer evidence and downstream Security/Platform conditions.
+Functional and mutation confidence is high, and the package-owned coverage target is met. Q-HTTP-003 is resolved by Engineering commit `f4d17a5`; Quality recommends proceeding beyond the mutation gate, subject to supported proving-sample/consumer evidence and downstream Platform/Release conditions. Security closure of SEC-007 through SEC-009 is recorded.
