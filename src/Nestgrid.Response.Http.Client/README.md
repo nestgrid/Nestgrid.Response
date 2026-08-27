@@ -69,7 +69,7 @@ Mappings can be extended or replaced through the immutable client policy. Three-
 
 The package supports JSON only through the centrally managed `System.Text.Json` baseline. `application/json` and `+json` media types are accepted. A missing media type is accepted for compatibility with legacy HTTP responses. Plain text, XML and other non-JSON media types are rejected with `NestgridResponseProtocolException`.
 
-The client options snapshot the supported serializer settings at construction, including naming, casing, comments, trailing commas, null handling, encoder, depth, indentation and custom converters. A reader takes another snapshot when it is constructed, so later mutation of the caller's options cannot change that reader's behaviour.
+The client options snapshot the supported serializer settings at construction, including naming, casing, comments, trailing commas, null handling, encoder, depth, indentation and custom converters. A reader takes another snapshot when it is constructed, so later mutation of the caller's options cannot change that reader's behaviour. Other `JsonSerializerOptions` properties are outside the currently supported client contract and are not claimed to be preserved; the supported subset is subject to the pre-1.0 contract decision recorded as IR-018.
 
 Response content is limited to 1 MiB by default through `MaxResponseBodyBytes`. Configure a larger positive limit explicitly only when the endpoint and payload size are trusted and understood. The limit is enforced while streaming for successful and failed responses; an over-limit response raises a protocol exception.
 

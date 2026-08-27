@@ -24,6 +24,7 @@ related_work_items:
   - IR-013
   - IR-014
   - IR-015
+  - IR-018
   - SEC-007
   - SEC-008
   - SEC-009

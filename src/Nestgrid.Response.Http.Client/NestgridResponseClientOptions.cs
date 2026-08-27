@@ -90,7 +90,7 @@ public sealed class NestgridResponseClientOptions
     /// <summary>Gets the declared payload representation.</summary>
     public NestgridResponsePayloadMode PayloadMode { get; }
 
-    /// <summary>Gets the immutable copy of serializer options.</summary>
+    /// <summary>Gets the captured copy of the supported serializer options.</summary>
     public JsonSerializerOptions SerializerOptions { get; }
 
     /// <summary>Gets the immutable client-owned status mappings.</summary>

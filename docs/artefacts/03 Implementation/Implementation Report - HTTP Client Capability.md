@@ -22,6 +22,7 @@ related_work_items:
   - IR-013
   - IR-014
   - IR-015
+  - IR-018
   - SEC-007
   - SEC-008
   - SEC-009
@@ -45,7 +46,7 @@ This report does not approve publication, protected CI, release progression or a
 
 - Added `Nestgrid.Response.Http.Client` with core and centrally managed `System.Text.Json` dependencies.
 - Added explicit `FullResult` and `ValueOnly` payload modes.
-- Added immutable client options with copied serializer settings and client-owned status mappings.
+- Added client options with a documented supported serializer-settings subset and client-owned status mappings.
 - Added stateless direct response reading over caller-owned `HttpResponseMessage` instances.
 - Added thin `HttpClient` request conveniences that dispose only responses created by those methods.
 - Added safe `NestgridResponseProtocolException` protocol failures.
@@ -69,7 +70,7 @@ Conformant. The capability is implemented in the separate `Nestgrid.Response.Htt
 
 Conformant. Internal wire models are used for envelopes and messages. Payload mode is explicit; JSON shape is not used to infer the mode. Core result types are not deserialised directly. Existing public factories reconstruct results and structured messages.
 
-The approved serializer baseline is the centrally managed `System.Text.Json` `4.6.0` package. Serializer options are copied at client-options construction; package code does not mutate the captured settings.
+The approved serializer baseline is the centrally managed `System.Text.Json` `4.6.0` package. The client captures the documented supported serializer-settings subset at options construction; package code does not mutate the captured settings. Full preservation of every framework `JsonSerializerOptions` property is not claimed and remains governed by IR-018 before 1.0.
 
 ### ADR-011 — outcome semantics
 
@@ -127,7 +128,7 @@ The reusable client sample builds with zero warnings and runs successfully, prod
 
 | Condition | Engineering disposition | Evidence |
 | --- | --- | --- |
-| Serializer isolation | Resolved. Supported serializer settings and custom converters are copied; the reader snapshots options again at construction. | Options and reader tests; package README |
+| Serializer isolation | Resolved for the documented supported subset. Supported settings and custom converters are copied; the reader snapshots options again at construction. Full framework-options preservation remains an IR-018 decision. | Options and reader tests; package README |
 | Cancellation during content reading | Resolved. Body bytes are read through a cancellation-aware stream loop for `netstandard2.0`. | Delayed-content cancellation test |
 | Representation and media type | Resolved. JSON and `+json` are accepted, missing media type is accepted, and non-JSON content is rejected. | Media-type tests; package README |
 | Non-generic ValueOnly | Resolved. Explicit envelope handling is supported for messages and empty 200/201/202 responses. | Reader test; package README |
@@ -157,7 +158,7 @@ The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb
 
 - The local proving sample uses a deterministic fake handler; live endpoint execution, authentication and handler composition remain consumer-owned and downstream validation concerns.
 - The first client implementation supports the approved `System.Text.Json` baseline only. Newtonsoft.Json is not supported without a new Architecture decision.
-- `JsonSerializerOptions` exposes the copied .NET serializer object required by the approved API direction; readers isolate themselves from later mutation of the options object.
+- `JsonSerializerOptions` exposes the captured .NET serializer object required by the approved API direction; the package documents the supported copied subset, readers isolate themselves from later mutation, and full framework-options preservation remains open under IR-018.
 - The repository’s existing Independent Review IR-011 through IR-015 findings remain open for 1.0 API stability and are not closed by this additive package.
 - Mutation-testing and protected-CI evidence remain downstream Quality/Platform evidence.
 - Security re-review of SEC-007 and SEC-008 remains outstanding; no security risk is accepted by Engineering.
@@ -172,8 +173,8 @@ The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb
 | API compatibility baseline for all public packages (IR-012) | Architecture / Engineering / Quality | Open 1.0 work item |
 | Existing `Result` extensibility and mapper invariant decisions (IR-011, IR-015) | Architecture / Product / Sponsor | Open 1.0 work items |
 | Existing nullable/NoContent semantics and normative server mapping decisions (IR-013, IR-014) | Architecture / Product / Sponsor | Open 1.0 work items |
+| Supported `JsonSerializerOptions` contract (IR-018) | Architecture / Engineering / Quality | Open 1.0 behaviour decision |
 | Protected package publication, provenance and release decision | Platform / Release / Sponsor | Explicitly deferred |
-| Reconcile the feedback YAML references to `ADR-010-HTTP-Client-Wire-Representation.md` and `ADR-011-HTTP-Client-Outcome-Policy.md` with the canonical repository files `ADR-010-HTTP-Client-Wire-Contract.md` and `ADR-011-HTTP-Client-Outcome-Semantics.md` | Solution Architect | Documentation follow-up; no implementation blocker |
 
 ## Engineering Assurance
 
