@@ -108,6 +108,37 @@ public sealed class NestgridResponseHttpClientExtensionsTests
         await Should.ThrowAsync<ObjectDisposedException>(() => content.ReadAsStringAsync());
     }
 
+    [Fact]
+    public async Task Convenience_method_propagates_request_cancellation()
+    {
+        using var client = new HttpClient(new CancellingHandler());
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+        using var cancellation = new CancellationTokenSource();
+
+        var read = client.SendAndReadNestgridResponseAsync(
+            request,
+            new NestgridResponseReader(),
+            cancellation.Token);
+        cancellation.Cancel();
+
+        await Should.ThrowAsync<OperationCanceledException>(() => read);
+    }
+
+    [Fact]
+    public async Task Convenience_method_does_not_dispose_the_caller_owned_request()
+    {
+        using var client = new HttpClient(new StaticHandler(new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{\"Messages\":[]}", System.Text.Encoding.UTF8, "application/json")
+        }));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/result");
+
+        await client.SendAndReadNestgridResponseAsync(request, new NestgridResponseReader());
+
+        request.Method.ShouldBe(HttpMethod.Get);
+        request.RequestUri!.AbsoluteUri.ShouldBe("https://example.test/result");
+    }
+
     private sealed record Licence(int Id, string Name);
 
     private sealed class StaticHandler : HttpMessageHandler
@@ -142,6 +173,17 @@ public sealed class NestgridResponseHttpClientExtensionsTests
             {
                 Content = new StringContent("{\"Messages\":[]}", System.Text.Encoding.UTF8, "application/json")
             });
+        }
+    }
+
+    private sealed class CancellingHandler : HttpMessageHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.Infinite, cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
     }
 }

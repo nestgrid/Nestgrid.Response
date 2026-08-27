@@ -261,6 +261,35 @@ public sealed class NestgridResponseReaderTests
         exception.InnerException.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task Response_size_limit_counts_utf8_bytes_at_the_boundary()
+    {
+        const string body = "{\"Messages\":[{\"Message\":\"café\",\"Severity\":0}]}";
+        var byteCount = Encoding.UTF8.GetByteCount(body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: byteCount - 1);
+        using var response = Response(HttpStatusCode.OK, body);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+    }
+
+    [Fact]
+    public async Task Mid_stream_read_failure_is_not_converted_to_a_protocol_result()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new FailingContent()
+        };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        await Should.ThrowAsync<IOException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.OK)]
     [InlineData(HttpStatusCode.Created)]
@@ -708,6 +737,23 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
+    public async Task Cancellation_during_oversized_body_is_propagated()
+    {
+        using var cancellation = new CancellationTokenSource();
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new CancellingContent(cancellation)
+        };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: 1_048_576);
+
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => new NestgridResponseReader(options).ReadAsync(response, cancellation.Token));
+    }
+
+    [Fact]
     public async Task Cancellation_before_non_generic_read_is_propagated()
     {
         using var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -738,6 +784,22 @@ public sealed class NestgridResponseReaderTests
         await reader.ReadAsync(response);
 
         (await response.Content.ReadAsStringAsync()).ShouldBe("{\"Messages\":[]}");
+    }
+
+    [Fact]
+    public async Task Reader_disposes_the_response_stream_after_a_read_failure()
+    {
+        var stream = new TrackingReadStream(Encoding.UTF8.GetBytes("not-json"));
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StreamContent(stream)
+        };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader().ReadAsync(response));
+
+        stream.WasDisposed.ShouldBeTrue();
     }
 
     private static HttpResponseMessage Response(HttpStatusCode statusCode, string body)
@@ -848,6 +910,44 @@ public sealed class NestgridResponseReaderTests
             int count,
             CancellationToken cancellationToken) =>
             base.ReadAsync(buffer, offset, Math.Min(count, chunkSize), cancellationToken);
+    }
+
+    private sealed class FailingContent : HttpContent
+    {
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
+            Task.CompletedTask;
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = -1;
+            return false;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync() =>
+            Task.FromResult<Stream>(new FailingReadStream());
+    }
+
+    private sealed class FailingReadStream : MemoryStream
+    {
+        public override Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken) =>
+            Task.FromException<int>(new IOException("stream failure"));
+    }
+
+    private sealed class TrackingReadStream : MemoryStream
+    {
+        public TrackingReadStream(byte[] bytes) : base(bytes, writable: false) { }
+
+        public bool WasDisposed { get; private set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            WasDisposed = true;
+            base.Dispose(disposing);
+        }
     }
 
     private sealed class TrackingContent : HttpContent

@@ -48,9 +48,9 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 
 | Level | Required proof | Result |
 | --- | --- | --- |
-| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 85 client tests passed |
+| Unit/contract | Reader, options, wire conversion, mappings and protocol failures | 91 client tests passed |
 | Integration | Fake `HttpMessageHandler` and convenience methods over normal `HttpClient` | Passed in client suite |
-| Regression | All existing packages plus new package | 374 passed, 0 failed, 0 skipped |
+| Regression | All existing packages plus new package | 380 passed, 0 failed, 0 skipped |
 | Consumer/package | Pack, inspect `.nuspec`, README, XML and local consumer installation | New package pack and metadata inspection passed |
 | Sample | Licence-service FullResult and Portal-to-Finance ValueOnly proving scenarios | Engineering reports success; local rerun encountered the known build hang |
 | Coverage | Package-owned line coverage above 90% | Client 97.95% line and 95.90% branch; existing packages retain 97.7–100% evidence |
@@ -58,14 +58,14 @@ The existing five-package v0.7.0 product remains the regression baseline. The cl
 
 ## Verification performed
 
-1. Full Release solution regression: 374 passed, 0 failed, 0 skipped.
-2. Focused HTTP client suite: 85 passed, 0 failed, 0 skipped.
+1. Full Release solution regression: 380 passed, 0 failed, 0 skipped.
+2. Focused HTTP client suite: 91 passed, 0 failed, 0 skipped.
 3. Package-owned client line coverage: 97.95%; branch coverage 95.90%.
 4. Existing package coverage and mutation evidence retained from the current v0.7 baseline.
 5. New client package packed successfully as `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`.
 6. Package contains the netstandard2.0 assembly, XML documentation, README, icon and dependency metadata for only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
 7. Dedicated Stryker configuration was executed sequentially against the latest commit. The result was 90.85%, above the configured 90% break threshold: 128 mutants killed, 60 surviving, one timeout and three compile errors in the local report, with covered-block mutants excluded by the configured analysis.
-8. Engineering’s 40-test baseline was extended to 85 tests for result-factory branches, invalid custom status mappings, response-size boundaries, cumulative streaming, exact protocol-safe messages, null guards, empty failures, cancellation, response disposal and generic missing-value behaviour.
+8. Engineering’s 40-test baseline was extended to 91 tests for result-factory branches, invalid custom status mappings, response-size boundaries including UTF-8 byte counts, cumulative streaming, mid-stream failures, exact protocol-safe messages, null guards, empty failures, cancellation, response disposal and generic missing-value behaviour.
 
 ## Evidence limitations
 
