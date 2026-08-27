@@ -15,7 +15,7 @@ The existing v0.6.0 implementation is the baseline for review. Architecture appr
 7. [Architecture Recommendation - HTTP Client Capability](Architecture%20Recommendation%20-%20HTTP%20Client%20Capability.md)
 8. [Architecture Feedback - HTTP Client Implementation Review](Architecture%20Feedback%20-%20HTTP%20Client%20Implementation%20Review.md)
 
-The HTTP client capability is approved for detailed Architecture and Engineering handover under ADR-009 through ADR-011. Implementation remains subject to the revised Architecture Pack and Engineering evidence requirements.
+The HTTP client capability is approved for detailed Architecture and Engineering handover under ADR-009 through ADR-012. The current canonical Independent Review is [Nestgrid.Response Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md); Architecture feedback records its responsible-role disposition. Implementation is complete with downstream Quality, Security, Platform and Release conditions still governed by their own artefacts.
 
 The Architecture Pack and related decision records are the approved basis for Engineering handover. Conditional release items remain governed by the downstream Security, Quality and Platform gates.
 

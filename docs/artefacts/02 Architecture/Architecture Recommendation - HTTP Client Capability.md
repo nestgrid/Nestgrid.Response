@@ -2,7 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response HTTP Client Capability Architecture Assessment and Recommendation
-version: 1.0
+eos_version: 1.1.0
+version: 1.1
 status: Approved direction — detailed Architecture authorised
 owner: Solution Architect
 contributors:
@@ -24,6 +25,10 @@ related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
   - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
+  - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
+  - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
+  - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
 related_artefacts:
   - ../01 Discovery/Product Brief.md
   - ../01 Discovery/Architecture Handover.md

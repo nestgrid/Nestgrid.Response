@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "stryker", "stryker", "{8F28
 		stryker\stryker-config-validation.json = stryker\stryker-config-validation.json
 		stryker\stryker-config-http.json = stryker\stryker-config-http.json
 		stryker\stryker-config-mvc.json = stryker\stryker-config-mvc.json
+		stryker\stryker-config-http-client.json = stryker\stryker-config-http-client.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C7E0D643-0102-4CD0-AA54-1464932B3828}"

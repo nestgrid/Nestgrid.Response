@@ -2,6 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response Architecture Pack
+eos_version: 1.1.0
 version: 1.2
 status: Approved for Engineering handover
 owner: Solution Architect

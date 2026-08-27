@@ -2,14 +2,15 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Architecture Feedback - HTTP Client Implementation Review
-version: 1.1
-status: Approved for SEC-007/SEC-008 implementation handover; release remains conditional
+eos_version: 1.1.0
+version: 1.2
+status: Reviewed against Independent Review v2.5; downstream release conditions remain
 owner: Solution Architect
 contributors:
   - Knight
 produced_by: Solution Architect
 consumed_by: Software Engineer, Quality Engineer, Security Engineer, Project Sponsor
-date: 2026-08-26
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -34,6 +35,12 @@ This feedback records Architecture's review of the Engineering implementation of
 
 This artefact does not replace the Engineering Implementation Report, Quality assessment, Security assessment or release approval.
 
+This review also records Architecture's response to the current canonical
+[Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md)
+v2.5. The Independent Review remains the authoritative independent findings
+register; this document records only the responsible-role architectural
+disposition and handover.
+
 ## Architectural assessment
 
 The implementation remains aligned with ADR-009 through ADR-011 in the following respects:
@@ -48,6 +55,21 @@ The implementation remains aligned with ADR-009 through ADR-011 in the following
 - server-side status mappings are not reversed.
 
 The package boundary and core Result model do not require architectural change.
+
+The latest implementation and downstream reviews do not identify a change to
+the approved client boundary. SEC-007, SEC-008 and SEC-009 are recorded as
+resolved by Engineering and Security for the evaluated candidate. This does
+not establish final release evidence: IR-016 remains open until supported-CI,
+protected-publication and immutable provenance evidence are recorded by the
+responsible roles.
+
+The Independent Review's IR-011 through IR-015 are legitimate pre-1.0 API
+governance findings, not implementation authorisation. They remain open for
+the authorised Architecture/Product/Sponsor decision path and must not be
+silently resolved by the HTTP client package. IR-018 is likewise a contract
+decision: the current implementation should not be described as preserving a
+complete `JsonSerializerOptions` contract until the supported subset or full
+snapshot behaviour is explicitly decided and evidenced.
 
 ## Required Engineering corrections
 
@@ -101,6 +123,24 @@ Architecture supports progression to Quality and Security review conditionally. 
 
 This feedback is not final API approval for 1.0 and is not release approval for v0.8.0.
 
+## Independent Review dispositions and handover
+
+| Finding | Architecture disposition | Responsible next owner | Gate position |
+| --- | --- | --- | --- |
+| IR-011 | Keep open. Decide whether public `Result` derivation is supported and define deterministic handling for any supported extension before the 1.0 baseline. | Solution Architect / Software Engineer / Project Sponsor | 1.0 API baseline; not a v0.8 implementation blocker unless the client relies on the decision. |
+| IR-012 | Keep open. Require a six-package public API inventory and repeatable compatibility gate before 1.0 freeze. | Solution Architect / Software Engineer / Quality Engineer | 1.0 readiness. |
+| IR-013 | Keep open. Freeze the existing nullable and `NoContent<T>` callback behaviour through an explicit decision and contract tests, or approve a separately governed change. | Solution Architect / Software Engineer / Project Sponsor | 1.0 API decision. |
+| IR-014 | Keep open. Obtain Product/Sponsor confirmation of the normative default HTTP semantics, especially `Cancelled` and `Failed`, before freezing them. | Product Owner / Solution Architect / Project Sponsor | 1.0 API decision. |
+| IR-015 | Keep open. Assess the public mapper invariant and choose validation or a compatible replacement before 1.0. | Solution Architect / Software Engineer | 1.0 API decision. |
+| IR-016 | Keep open. No release approval is implied by this feedback; Quality, Platform and Release must complete the protected evidence chain. | Quality / Platform / Release / Project Sponsor | v0.8 release blocker. |
+| IR-017 | Accepted as a documentation correction. The roadmap must distinguish the released v0.7 five-package baseline from the v0.8 six-package candidate. | Solution Architect / Release Owner | Traceability correction. |
+| IR-018 | Keep open. The serializer-options API must explicitly define its supported snapshot contract before 1.0; Engineering must not claim complete preservation from the current selective copy. | Solution Architect / Software Engineer / Quality Engineer | 1.0 API/behaviour decision; current claim requires correction. |
+| IR-019 | Resolved by this revision and the linked implementation-report correction: canonical ADR filenames are used. | Solution Architect | Traceability complete after link check. |
+
+These dispositions do not accept risk, approve publication or close findings in
+another role's artefact. They provide the handover required by the EOS review
+gate.
+
 ## Security remediation architecture
 
 Sponsor approval was granted on 2026-08-26 for the delivery-channel boundary and the security remediation direction recorded in [ADR-012](../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md).
@@ -119,3 +159,12 @@ The response-size option and any exception-constructor change are part of the ad
 ## Handover to Engineering
 
 Mason should resolve or explicitly disposition each condition in the Implementation Report. Architecture should be re-engaged if the changes alter the approved public contract, introduce non-JSON support, change exception semantics, weaken the core Result construction boundary or add a new dependency boundary.
+
+## Current handover outcome
+
+Architecture is complete for the current implementation review and supports
+conditional progression to downstream validation and Release review. The next
+required evidence is the supported-CI/provenance chain for v0.8.0 and the
+separately governed pre-1.0 API decisions identified above. A subsequent
+Architecture review is required if IR-011, IR-013, IR-014, IR-015 or IR-018 is
+resolved through a public or semantic contract change.

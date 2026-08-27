@@ -16,6 +16,14 @@ The roadmap records likely direction without promising dates or speculative comm
 - `Nestgrid.Response.Mvc`
 - `Nestgrid.Response.Extensions.Validation`
 
+These five packages are the released v0.7.0 baseline. The current v0.8.0
+candidate adds the following sibling package:
+
+- `Nestgrid.Response.Http.Client`
+
+The v0.8.0 candidate therefore has six packages. It remains a candidate until
+the supported validation, protected publication and Release gates are complete.
+
 ## Near-Term Focus
 
 - Keep public APIs stable.
