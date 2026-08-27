@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Feedback - HTTP Client Capability
-version: 1.2
+version: 1.3
 status: In Review
 owner: Security Engineer
 contributors:
@@ -35,7 +35,7 @@ The v0.8.0 candidate adds a client adapter that reads HTTP response content from
 | --- | --- | --- | --- | --- |
 | SEC-007 | P2 | The reader previously buffered an unbounded response body in memory. | **Resolved.** A 1 MiB default cumulative limit, positive-limit validation and boundary/chunked/cancellation tests are in place. | Software Engineer / Quality Engineer |
 | SEC-008 | P2 | Protocol exceptions previously retained inner exception details from serializer or custom-converter failures. | **Resolved.** Package-generated protocol exceptions now have fixed safe messages and no inner exception; hostile-converter tests cover the boundary. | Software Engineer / Quality Engineer |
-| SEC-009 | P2 | The latest Quality and Engineering reports record different test counts and package evidence baselines. | Refresh the Implementation Report against latest HEAD and reconcile counts, coverage, mutation, package hash and evidence commit before Release approval. | Software Engineer / Quality Engineer |
+| SEC-009 | P2 | The latest Quality and Engineering reports previously recorded different test counts and package evidence baselines. | **Resolved.** Both reports now record 91 client tests, 380 total tests, matching quality metrics and package hash `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484` built at evidence commit `8e91306`. The later `79ef468` commit is documentation-only. | Software Engineer / Quality Engineer |
 
 ## Controls confirmed
 
@@ -48,4 +48,4 @@ The v0.8.0 candidate adds a client adapter that reads HTTP response content from
 
 ## Recommendation
 
-SEC-007 and SEC-008 are closed from Security’s perspective. Do not approve final publication while SEC-009 remains unresolved, or while protected-CI provenance and final Release evidence are absent. Platform and Release review may proceed in parallel for evidence planning. This feedback is a Security recommendation, not implementation or release approval.
+SEC-007, SEC-008 and SEC-009 are closed from Security’s perspective. Do not approve final publication while protected-CI provenance and final Release evidence are absent. Platform and Release review may proceed in parallel for evidence planning. This feedback is a Security recommendation, not implementation or release approval.

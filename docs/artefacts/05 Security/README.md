@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Artefacts
-version: 1.6
+version: 1.7
 status: In Review
 owner: Security Engineer
 produced_by: Security Engineer
@@ -20,4 +20,4 @@ Security artefacts for the v0.7.0 EOS retrofit.
 - [Security Feedback - SEC-006 Candidate A Approval](Security%20Feedback%20-%20SEC-006%20Candidate%20A%20Approval.md)
 - [Security Feedback - HTTP Client Capability](Security%20Feedback%20-%20HTTP%20Client%20Capability.md)
 
-The v0.8.0 Security re-assessment recommends conditional progression to Platform and Release review. SEC-001 through SEC-008 are resolved or dispositioned for the evaluated candidate. SEC-009 remains an open P2 evidence/control gap because the Engineering and Quality artefacts are not synchronised to the same test and package baseline. No security risk is accepted; final publication is not recommended until SEC-009, protected-CI provenance and Release evidence are complete.
+The v0.8.0 Security re-assessment recommends conditional progression to Platform and Release review. SEC-001 through SEC-009 are resolved or dispositioned for the evaluated candidate; no security risk is accepted. Final publication remains conditional on protected-CI provenance and final Release evidence.
