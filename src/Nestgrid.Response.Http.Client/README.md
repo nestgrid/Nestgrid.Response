@@ -71,9 +71,13 @@ The package supports JSON only through the centrally managed `System.Text.Json` 
 
 The client options snapshot the supported serializer settings at construction, including naming, casing, comments, trailing commas, null handling, encoder, depth, indentation and custom converters. A reader takes another snapshot when it is constructed, so later mutation of the caller's options cannot change that reader's behaviour.
 
+Response content is limited to 1 MiB by default through `MaxResponseBodyBytes`. Configure a larger positive limit explicitly only when the endpoint and payload size are trusted and understood. The limit is enforced while streaming for successful and failed responses; an over-limit response raises a protocol exception.
+
 ## Messages and failures
 
 Wire messages preserve message text, code, property and severity through the existing `ResultMessages` factories. Malformed JSON, invalid envelopes, wrong payload representations, invalid messages and unsupported statuses raise `NestgridResponseProtocolException` without exposing raw response bodies or sensitive headers.
+
+Protocol exceptions are package-generated safe boundary failures. Their public construction surface is intentionally restricted; serializer and custom-converter failures are normalised to fixed messages with no inner exception. API-provided failure messages remain in returned results.
 
 Network, DNS, TLS, timeout and cancellation failures remain standard `HttpClient` exceptions. They are not converted into application results.
 

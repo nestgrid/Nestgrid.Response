@@ -4,12 +4,11 @@ namespace Nestgrid.Response.Http.Client;
 public sealed class NestgridResponseProtocolException : Exception
 {
     /// <summary>Creates a protocol exception.</summary>
-    public NestgridResponseProtocolException(
+    internal NestgridResponseProtocolException(
         string message,
         int? statusCode = null,
-        NestgridResponsePayloadMode? payloadMode = null,
-        Exception? innerException = null)
-        : base(message, innerException)
+        NestgridResponsePayloadMode? payloadMode = null)
+        : base(message)
     {
         StatusCode = statusCode;
         PayloadMode = payloadMode;

@@ -11,6 +11,7 @@ public sealed class NestgridResponseClientOptionsTests
         options.StatusMappings[200].ShouldBe(ResultStatus.Ok);
         options.StatusMappings[422].ShouldBe(ResultStatus.Failed);
         options.SerializerOptions.PropertyNameCaseInsensitive.ShouldBeTrue();
+        options.MaxResponseBodyBytes.ShouldBe(NestgridResponseClientOptions.DefaultMaxResponseBodyBytes);
     }
 
     [Fact]
@@ -66,16 +67,15 @@ public sealed class NestgridResponseClientOptionsTests
     }
 
     [Fact]
-    public void Protocol_exception_exposes_only_safe_protocol_context()
+    public void Non_positive_response_body_limits_are_rejected()
     {
-        var exception = new NestgridResponseProtocolException(
-            "Invalid response envelope.",
-            502,
-            NestgridResponsePayloadMode.FullResult);
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() =>
+            new NestgridResponseClientOptions(
+                NestgridResponsePayloadMode.FullResult,
+                maxResponseBodyBytes: 0));
 
-        exception.StatusCode.ShouldBe(502);
-        exception.PayloadMode.ShouldBe(NestgridResponsePayloadMode.FullResult);
-        exception.Message.ShouldNotContain("password");
+        exception.ParamName.ShouldBe("maxResponseBodyBytes");
+        exception.Message.ShouldContain("must be positive");
     }
 
     private sealed class StringToIntConverter : System.Text.Json.Serialization.JsonConverter<int>

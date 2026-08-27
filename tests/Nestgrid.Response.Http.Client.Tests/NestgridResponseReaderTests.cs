@@ -133,6 +133,134 @@ public sealed class NestgridResponseReaderTests
         content.ReadCount.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task Response_size_limit_accepts_an_exact_non_generic_success_body()
+    {
+        const string body = "{\"Messages\":[]}";
+        using var response = Response(HttpStatusCode.OK, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body));
+
+        var result = await new NestgridResponseReader(options).ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Response_size_limit_rejects_an_oversized_non_generic_failure_body()
+    {
+        const string body = "{\"Messages\":[{\"Message\":\"failed\",\"Severity\":2}]}";
+        using var response = Response(HttpStatusCode.BadRequest, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body) - 1);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+        exception.StatusCode.ShouldBe(400);
+        exception.InnerException.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Response_size_limit_accepts_an_exact_non_generic_failure_body()
+    {
+        const string body = "{\"Messages\":[{\"Message\":\"failed\",\"Severity\":2}]}";
+        using var response = Response(HttpStatusCode.BadRequest, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body));
+
+        var result = await new NestgridResponseReader(options).ReadAsync(response);
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Messages.Single().Message.ShouldBe("failed");
+    }
+
+    [Fact]
+    public async Task Response_size_limit_accepts_an_exact_generic_success_body()
+    {
+        const string body = "123";
+        using var response = Response(HttpStatusCode.OK, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.ValueOnly,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body));
+
+        var result = await new NestgridResponseReader(options).ReadAsync<int>(response);
+
+        result.Value.ShouldBe(123);
+    }
+
+    [Fact]
+    public async Task Response_size_limit_rejects_an_oversized_generic_failure_body()
+    {
+        const string body = "{\"Messages\":[{\"Message\":\"failed\",\"Severity\":2}]}";
+        using var response = Response(HttpStatusCode.BadRequest, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body) - 1);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync<Licence>(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+        exception.StatusCode.ShouldBe(400);
+        exception.InnerException.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Response_size_limit_rejects_an_oversized_non_generic_success_body()
+    {
+        const string body = "{\"Messages\":[]}";
+        using var response = Response(HttpStatusCode.OK, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body) - 1);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+        exception.StatusCode.ShouldBe(200);
+    }
+
+    [Fact]
+    public async Task Response_size_limit_rejects_an_oversized_generic_success_body()
+    {
+        const string body = "123";
+        using var response = Response(HttpStatusCode.OK, body);
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.ValueOnly,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body) - 1);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync<int>(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+        exception.StatusCode.ShouldBe(200);
+    }
+
+    [Fact]
+    public async Task Response_size_limit_is_enforced_across_multiple_reads()
+    {
+        const string body = "{\"Messages\":[]}";
+        using var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ChunkedContent(body, chunkSize: 5)
+        };
+        var options = new NestgridResponseClientOptions(
+            NestgridResponsePayloadMode.FullResult,
+            maxResponseBodyBytes: Encoding.UTF8.GetByteCount(body) - 1);
+
+        var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
+            () => new NestgridResponseReader(options).ReadAsync(response));
+
+        exception.Message.ShouldBe("The response body exceeds the configured maximum size.");
+        exception.InnerException.ShouldBeNull();
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.OK)]
     [InlineData(HttpStatusCode.Created)]
@@ -376,10 +504,10 @@ public sealed class NestgridResponseReaderTests
     }
 
     [Fact]
-    public async Task Protocol_exception_from_a_value_converter_is_not_wrapped()
+    public async Task Hostile_value_converter_failure_is_normalised_without_diagnostics()
     {
         var serializerOptions = new JsonSerializerOptions();
-        serializerOptions.Converters.Add(new ProtocolExceptionConverter());
+        serializerOptions.Converters.Add(new HostileConverter());
         var reader = new NestgridResponseReader(
             new NestgridResponseClientOptions(NestgridResponsePayloadMode.ValueOnly, serializerOptions));
         using var response = Response(HttpStatusCode.OK, "\"custom\"");
@@ -387,7 +515,9 @@ public sealed class NestgridResponseReaderTests
         var exception = await Should.ThrowAsync<NestgridResponseProtocolException>(
             () => reader.ReadAsync<Licence>(response));
 
-        exception.Message.ShouldBe("converter protocol failure");
+        exception.Message.ShouldBe("The response body is not a valid value for the requested type.");
+        exception.InnerException.ShouldBeNull();
+        exception.Message.ShouldNotContain("secret");
     }
 
     [Fact]
@@ -633,13 +763,13 @@ public sealed class NestgridResponseReaderTests
             JsonSerializerOptions options) => writer.WriteStringValue(value.Name);
     }
 
-    private sealed class ProtocolExceptionConverter : JsonConverter<Licence>
+    private sealed class HostileConverter : JsonConverter<Licence>
     {
         public override Licence Read(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options) =>
-            throw new NestgridResponseProtocolException("converter protocol failure");
+            throw new InvalidOperationException("secret converter detail", new Exception("nested secret"));
 
         public override void Write(
             Utf8JsonWriter writer,
@@ -679,6 +809,45 @@ public sealed class NestgridResponseReaderTests
 
         protected override Task<Stream> CreateContentReadStreamAsync() =>
             Task.FromResult<Stream>(new MemoryStream(bytes, writable: false));
+    }
+
+    private sealed class ChunkedContent : HttpContent
+    {
+        private readonly byte[] bytes;
+        private readonly int chunkSize;
+
+        public ChunkedContent(string body, int chunkSize)
+        {
+            bytes = Encoding.UTF8.GetBytes(body);
+            this.chunkSize = chunkSize;
+        }
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
+            stream.WriteAsync(bytes, 0, bytes.Length);
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = bytes.Length;
+            return true;
+        }
+
+        protected override Task<Stream> CreateContentReadStreamAsync() =>
+            Task.FromResult<Stream>(new ChunkedReadStream(bytes, chunkSize));
+    }
+
+    private sealed class ChunkedReadStream : MemoryStream
+    {
+        private readonly int chunkSize;
+
+        public ChunkedReadStream(byte[] bytes, int chunkSize)
+            : base(bytes, writable: false) => this.chunkSize = chunkSize;
+
+        public override Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken) =>
+            base.ReadAsync(buffer, offset, Math.Min(count, chunkSize), cancellationToken);
     }
 
     private sealed class TrackingContent : HttpContent

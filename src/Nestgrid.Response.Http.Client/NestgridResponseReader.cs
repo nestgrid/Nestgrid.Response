@@ -33,7 +33,8 @@ public sealed class NestgridResponseReader
         this.options = new NestgridResponseClientOptions(
             options.PayloadMode,
             options.SerializerOptions,
-            options.StatusMappings);
+            options.StatusMappings,
+            options.MaxResponseBodyBytes);
     }
 
     /// <summary>
@@ -155,10 +156,17 @@ public sealed class NestgridResponseReader
         using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         using var bufferStream = new MemoryStream();
         var buffer = new byte[81920];
+        long totalBytesRead = 0;
         int bytesRead;
 
         while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
         {
+            if (bytesRead > options.MaxResponseBodyBytes - totalBytesRead)
+            {
+                throw Protocol("The response body exceeds the configured maximum size.", (int)response.StatusCode);
+            }
+
+            totalBytesRead += bytesRead;
             await bufferStream.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
         }
 
@@ -189,9 +197,9 @@ public sealed class NestgridResponseReader
 
             return envelope;
         }
-        catch (Exception exception) when (exception is JsonException or NotSupportedException)
+        catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            throw Protocol("The response body is not a valid Nestgrid envelope.", statusCode, exception);
+            throw Protocol("The response body is not a valid Nestgrid envelope.", statusCode);
         }
     }
 
@@ -207,19 +215,14 @@ public sealed class NestgridResponseReader
 
             return value!;
         }
-        catch (NestgridResponseProtocolException)
+        catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            throw;
-        }
-        catch (Exception exception) when (exception is JsonException or NotSupportedException)
-        {
-            throw Protocol("The response body is not a valid value for the requested type.", statusCode, exception);
+            throw Protocol("The response body is not a valid value for the requested type.", statusCode);
         }
     }
 
     private NestgridResponseProtocolException Protocol(
         string message,
-        int statusCode,
-        Exception? innerException = null) =>
-        new(message, statusCode, options.PayloadMode, innerException);
+        int statusCode) =>
+        new(message, statusCode, options.PayloadMode);
 }

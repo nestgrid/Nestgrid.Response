@@ -6,6 +6,9 @@ namespace Nestgrid.Response.Http.Client;
 /// <summary>Configures HTTP response interpretation for the client adapter.</summary>
 public sealed class NestgridResponseClientOptions
 {
+    /// <summary>Gets the default maximum response body size in bytes.</summary>
+    public const long DefaultMaxResponseBodyBytes = 1_048_576;
+
     private static readonly IReadOnlyDictionary<int, ResultStatus> DefaultStatusMappings =
         new ReadOnlyDictionary<int, ResultStatus>(new Dictionary<int, ResultStatus>
         {
@@ -28,9 +31,16 @@ public sealed class NestgridResponseClientOptions
     public NestgridResponseClientOptions(
         NestgridResponsePayloadMode payloadMode,
         JsonSerializerOptions? serializerOptions = null,
-        IReadOnlyDictionary<int, ResultStatus>? statusMappings = null)
+        IReadOnlyDictionary<int, ResultStatus>? statusMappings = null,
+        long maxResponseBodyBytes = DefaultMaxResponseBodyBytes)
     {
+        if (maxResponseBodyBytes <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxResponseBodyBytes), "The maximum response body size must be positive.");
+        }
+
         PayloadMode = payloadMode;
+        MaxResponseBodyBytes = maxResponseBodyBytes;
         SerializerOptions = CreateSerializerOptions(serializerOptions);
 
         var mappings = new Dictionary<int, ResultStatus>();
@@ -85,4 +95,7 @@ public sealed class NestgridResponseClientOptions
 
     /// <summary>Gets the immutable client-owned status mappings.</summary>
     public IReadOnlyDictionary<int, ResultStatus> StatusMappings { get; }
+
+    /// <summary>Gets the maximum response body size accepted by the reader, in bytes.</summary>
+    public long MaxResponseBodyBytes { get; }
 }
