@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Assessment
-version: 1.7
+version: 1.8
 status: In Review
 owner: Security Engineer
 contributors:
   - Morgan profile
 produced_by: Security Engineer
 consumed_by: Solution Architect, Software Engineer, Quality Engineer, Platform Engineer, Project Sponsor
-date: 2026-08-26
+date: 2026-08-27
 supersedes: Security Assessment v1.6
 related_decisions:
   - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
@@ -26,6 +26,7 @@ related_work_items:
   - SEC-006
   - SEC-007
   - SEC-008
+  - SEC-009
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -67,7 +68,7 @@ The new package stays within the approved additive boundary: it targets `netstan
 
 The current evidence is strong for normal protocol behaviour. The full Release suite passes 366/366, the client suite passes 77/77, client coverage is reported at 98.30% line and 95.76% branch, and mutation testing is reported at 90.08%. Tests cover malformed JSON, invalid messages and severities, media types, cancellation, response ownership, custom converters, status mappings and safe public protocol messages. The generated package metadata declares only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
 
-The normal `Results.Error(Exception)` safe-default control remains effective. The client also avoids placing response bodies or headers in its own fixed protocol messages. However, the current reader buffers the complete response body without a configured limit, and protocol exceptions can retain an inner exception supplied by a serializer or custom converter. These are material security conditions for a library processing remote content.
+The normal `Results.Error(Exception)` safe-default control remains effective. The client avoids placing response bodies or headers in its own fixed protocol messages. The previously identified unbounded buffering and exception-chain disclosure conditions have been remediated through a 1 MiB default cumulative limit, safe limit validation and normalised protocol exceptions with no inner exception. The remaining security concern is evidence traceability: the current Engineering report has not yet been synchronised with the latest Quality test counts and package evidence.
 
 ## Authentication
 
@@ -83,7 +84,7 @@ The package does not persist response data or secrets. Values, messages, propert
 
 ## Input and output handling
 
-The reader rejects malformed JSON, invalid message collections, invalid severities, unsupported media types and unmapped statuses with fixed protocol messages. It accepts missing media types for compatibility. The unresolved size and exception-chain issues are recorded as SEC-007 and SEC-008.
+The reader rejects malformed JSON, invalid message collections, invalid severities, unsupported media types and unmapped statuses with fixed protocol messages. It accepts missing media types for compatibility. The previously unresolved size and exception-chain issues are recorded as remediated SEC-007 and SEC-008. The remaining traceability condition is SEC-009.
 
 ## Secrets and configuration
 
@@ -107,8 +108,9 @@ The package performs no logging, telemetry, retry or resilience policy. Consumer
 | SEC-004 | P2 | Risk controlled | Client-safe, diagnostic and consumer-controlled output boundaries are documented. | Consumers can still disclose validation or diagnostic content if they deliberately return it to an untrusted caller. | Safe defaults, explicit diagnostic APIs and consumer review remain required. Consumer application owner. |
 | SEC-005 | P2 | Risk controlled | Client HTTP status mappings are explicit, immutable by reader construction and independent of server mappings. | Consumer policy misconfiguration may assign misleading semantic outcomes. | Preserve ADR-011 mappings, review custom mappings and keep authentication/authorisation in consumers. Consumer and Architecture owners. |
 | SEC-006 | P1 | Vulnerability remediated for evaluated graph | Historical vulnerable dependency paths were remediated; current evaluated graphs contain no vulnerable packages. | A publication mismatch could reintroduce an unverified vulnerable path. | Security closes the evaluated candidate position; Platform/Release must prove protected-CI package identity and provenance. No vulnerability risk is accepted. |
-| SEC-007 | P2 | Vulnerability / availability | `NestgridResponseReader` copies the entire response stream into an unbounded `MemoryStream` before deserialisation. A remote endpoint or intermediary can return a very large body and cause excessive memory and allocation pressure. | A consumer processing an untrusted or compromised endpoint may suffer memory exhaustion or denial of service. Cancellation does not limit a response that continues to send data. | Engineering should add a secure bounded-response policy, preferably a conservative default maximum with an explicit, documented opt-in for larger payloads, enforcing the limit while reading and before allocation. Architecture should confirm the public option/compatibility shape; Quality should add over-limit and boundary tests. This is release-blocking until fixed or explicitly accepted by the authorised risk owner. |
-| SEC-008 | P2 | Vulnerability / disclosure condition | `NestgridResponseReader` wraps `JsonException`/`NotSupportedException` as an inner exception, and public protocol exceptions also accept arbitrary messages and inner exceptions. A custom converter or caller can place response-derived secrets in `InnerException` or the exception message, contrary to the stated safe protocol-exception contract. | Application logs or callers inspecting exception chains may disclose untrusted response content, implementation details or sensitive converter diagnostics. | Engineering should enforce the safe exception contract by removing or sanitising inner exceptions from public protocol failures, and define whether the public constructor is retained or restricted. Add tests asserting message and inner-exception disclosure safety, including a hostile custom converter. Architecture should review any public API change. This is release-blocking until fixed or explicitly accepted. |
+| SEC-007 | P2 | Vulnerability / availability remediated | The reader previously buffered an unbounded response body. | A malicious or compromised endpoint could cause excessive memory and allocation pressure. | **Resolved.** `MaxResponseBodyBytes` defaults to 1 MiB, validates positive limits and enforces the cumulative limit while streaming for successful and failed responses. Boundary, chunked and cancellation tests are present. |
+| SEC-008 | P2 | Vulnerability / disclosure condition remediated | Protocol failures previously retained serializer or custom-converter inner exceptions. | Exception inspection or logging could disclose response-derived or converter diagnostics. | **Resolved.** Protocol exception construction is package-internal, package-generated failures contain no inner exception, and hostile converter tests assert safe messages and null inner exceptions. |
+| SEC-009 | P2 | Evidence/control gap | The latest Quality evidence records 380 full-solution tests and 91 client tests, while the Engineering report still records 374 and 85 and its package hash points to an earlier evidence commit. | Release reviewers may be unable to identify the exact tested package and evidence baseline. | Engineering must refresh the v0.8.0 Implementation Report with the latest test counts, coverage/mutation results, package hash and current commit, then Quality/Security should re-check cross-artefact consistency. This is release-blocking as a traceability condition, not a confirmed product vulnerability. |
 
 ## Improvements, not confirmed vulnerabilities
 
@@ -120,12 +122,12 @@ The package performs no logging, telemetry, retry or resilience policy. Consumer
 
 ## Accepted risks
 
-No accepted security risks are recorded. In particular, no authority has accepted SEC-007, SEC-008, the v0.8.0 provenance gap or a known dependency vulnerability.
+No accepted security risks are recorded. In particular, no authority has accepted SEC-009, the v0.8.0 provenance gap or a known dependency vulnerability.
 
 ## Assumptions and evidence limitations
 
 - The Security assessment relies on the current Engineering and Quality evidence; the local advisory command did not complete in this environment because registry access did not return promptly.
-- The 366-test Release run and 77-test client run passed locally. The dedicated client mutation result is reported locally, but its configuration is not yet included in the GitHub mutation matrix.
+- The current local Release run passed 380 tests, including 91 HTTP client tests. The dedicated client mutation result is reported locally, but its configuration is not yet included in the GitHub mutation matrix.
 - The deterministic sample does not establish live endpoint, authentication, TLS or production logging behaviour.
 
 ## Residual risks requiring ownership
@@ -139,4 +141,4 @@ No accepted security risks are recorded. In particular, no authority has accepte
 
 Security recommends **conditional progression to Platform and Release review**, but does not recommend final release approval for v0.8.0 at this stage.
 
-Platform and Release may consume this assessment for planning and evidence review. Before final release approval, Engineering must resolve or obtain explicit authorised disposition for SEC-007 and SEC-008; Platform/Release must retain the protected-CI publication run, package hashes and supported consumer/provenance evidence; and Release must record the final candidate and decision. This assessment remains at Recommend pending approval and does not authorise implementation or publication.
+Platform and Release may consume this assessment for planning and evidence review. Before final release approval, Engineering must synchronise the Implementation Report and resolve or obtain explicit authorised disposition for SEC-009; Platform/Release must retain the protected-CI publication run, package hashes and supported consumer/provenance evidence; and Release must record the final candidate and decision. SEC-007 and SEC-008 are closed. This assessment remains at Recommend pending approval and does not authorise implementation or publication.

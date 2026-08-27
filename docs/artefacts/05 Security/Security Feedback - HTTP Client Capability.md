@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Feedback - HTTP Client Capability
-version: 1.0
+version: 1.2
 status: In Review
 owner: Security Engineer
 contributors:
   - Morgan profile
 produced_by: Security Engineer
 consumed_by: Software Engineer, Solution Architect, Quality Engineer, Platform Engineer, Project Sponsor
-date: 2026-08-26
+date: 2026-08-27
 related_decisions:
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -18,6 +18,7 @@ related_decisions:
 related_work_items:
   - SEC-007
   - SEC-008
+  - SEC-009
 related_artefacts:
   - Security Assessment.md
   - ../03 Implementation/Implementation Report - HTTP Client Capability.md
@@ -32,8 +33,9 @@ The v0.8.0 candidate adds a client adapter that reads HTTP response content from
 
 | ID | Severity | Finding | Required action | Owner |
 | --- | --- | --- | --- | --- |
-| SEC-007 | P2 | The reader buffers an unbounded response body in memory. | Add a bounded response-size policy with a safe default, an explicit documented opt-in for larger payloads, enforcement during reading and over-limit tests. Escalate the public option shape to Architecture. | Software Engineer / Solution Architect / Quality Engineer |
-| SEC-008 | P2 | Public protocol exceptions can expose retained inner exception details from serializer or custom-converter failures. | Remove or sanitise inner exceptions from public protocol failures, decide the safe public-constructor contract and add hostile-converter tests covering exception message and inner exception. Escalate public API changes to Architecture. | Software Engineer / Solution Architect / Quality Engineer |
+| SEC-007 | P2 | The reader previously buffered an unbounded response body in memory. | **Resolved.** A 1 MiB default cumulative limit, positive-limit validation and boundary/chunked/cancellation tests are in place. | Software Engineer / Quality Engineer |
+| SEC-008 | P2 | Protocol exceptions previously retained inner exception details from serializer or custom-converter failures. | **Resolved.** Package-generated protocol exceptions now have fixed safe messages and no inner exception; hostile-converter tests cover the boundary. | Software Engineer / Quality Engineer |
+| SEC-009 | P2 | The latest Quality and Engineering reports record different test counts and package evidence baselines. | Refresh the Implementation Report against latest HEAD and reconcile counts, coverage, mutation, package hash and evidence commit before Release approval. | Software Engineer / Quality Engineer |
 
 ## Controls confirmed
 
@@ -46,4 +48,4 @@ The v0.8.0 candidate adds a client adapter that reads HTTP response content from
 
 ## Recommendation
 
-Do not approve final publication while SEC-007 or SEC-008 remains unresolved or explicitly accepted by the authorised risk owner. Platform and Release review may proceed in parallel for evidence planning. This feedback is a Security recommendation, not implementation or release approval.
+SEC-007 and SEC-008 are closed from Security’s perspective. Do not approve final publication while SEC-009 remains unresolved, or while protected-CI provenance and final Release evidence are absent. Platform and Release review may proceed in parallel for evidence planning. This feedback is a Security recommendation, not implementation or release approval.
