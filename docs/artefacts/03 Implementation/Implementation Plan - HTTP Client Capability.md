@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Plan
-version: 1.3
-status: In Review — SEC-007/SEC-008 implementation plan
+version: 1.4
+status: Complete with conditions — SEC-007/SEC-008 handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -237,7 +237,7 @@ The plan is implementation-ready within the approved Architecture boundary. Appr
 
 ## Execution outcome
 
-The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 366 passing solution tests, current package metadata evidence, known limitations and downstream conditions.
+The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 374 passing solution tests, current package metadata evidence, known limitations and downstream conditions.
 
 Engineering Assurance is **Assured with conditions**. The evidence is handed to Quality and Security for validation. Protected publication, final provenance and Release-stage decisions remain explicitly deferred to Platform, Release and the Project Sponsor.
 
@@ -252,11 +252,11 @@ Architecture Feedback — HTTP Client Implementation Review v1.0 was reviewed on
 - the convenience operation is named `SendAndReadNestgridResponseAsync`; and
 - the package README, tests and evidence were expanded accordingly.
 
-The new client suite contains 77 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
+The new client suite contains 85 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
 
 ## Quality feedback amendment
 
-Quality finding Q-HTTP-003 identified an inconsistent defensive fallback in wire-message severity conversion. The approved correction restores `NestgridResponseProtocolException` for invalid severities while preserving the existing safe public message and removing the redundant enum guard. Commit `f4d17a5` records the implementation; focused and full regression tests pass, and the dedicated client mutation score is 90.08%, above the configured 90% threshold.
+Quality finding Q-HTTP-003 identified an inconsistent defensive fallback in wire-message severity conversion. The approved correction restores `NestgridResponseProtocolException` for invalid severities while preserving the existing safe public message and removing the redundant enum guard. Commit `f4d17a5` records the implementation; focused and full regression tests pass, and the dedicated client mutation score is 90.85%, above the configured 90% threshold.
 
 ## Architecture and Security handover amendment — SEC-007/SEC-008
 
@@ -310,3 +310,9 @@ The approved Architecture and Security direction is sufficiently specific to imp
 **Recommendation: approve this amendment for implementation, subject to ADR-012, the stated scope, and the evidence gates above.**
 
 Implementation should begin only after the Project Sponsor or delegated Engineering approver confirms this amendment. Architecture must be re-engaged if the implementation requires an unlimited default, changes the Result-versus-exception boundary, exposes new diagnostic context, or alters the public contract beyond the approved pre-1.0 safety correction.
+
+## SEC-007/SEC-008 execution outcome
+
+The approved amendment was implemented in commit `ee09c35 [Engineering] Enforce client safety boundaries`. Engineering added the 1 MiB default response limit with positive larger-limit opt-in, enforced it cumulatively during streaming, removed public protocol-exception construction and normalised serializer/converter failures without inner exceptions. The focused suite passes 85 tests, the full solution passes 374 tests, refreshed client coverage is 97.95% line and 95.90% branch, and mutation effectiveness is 90.85% against the 90% threshold.
+
+Engineering Assurance is **Assured with conditions**. SEC-007 and SEC-008 are implemented within ADR-012; Quality and Security must complete their role-owned re-review. Protected publication, provenance and Release-stage decisions remain outside Engineering authority.

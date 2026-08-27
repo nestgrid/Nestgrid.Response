@@ -2,25 +2,28 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Report
-version: 1.2
-status: Complete with conditions — handed to Quality and Security
+version: 1.3
+status: Complete with conditions — SEC-007/SEC-008 handed to Quality and Security
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Quality Engineer, Security Engineer, Solution Architect, Platform Engineer, Project Sponsor
-date: 2026-08-26
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
   - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
   - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
 related_work_items:
   - IR-011
   - IR-012
   - IR-013
   - IR-014
   - IR-015
+  - SEC-007
+  - SEC-008
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -53,6 +56,7 @@ This report does not approve publication, protected CI, release progression or a
 - Added package documentation, root documentation, changelog entry, v0.8.0 version metadata and IDE/solution visibility.
 - Resolved Architecture Feedback v1.0 conditions for serializer isolation, cancellation, media types, non-generic ValueOnly behaviour, convenience naming and evidence completeness.
 - Resolved Quality finding Q-HTTP-003 by preserving protocol-safe exception handling for invalid wire-message severities, including the defensive switch fallback.
+- Implemented the approved ADR-012 safety boundaries for SEC-007 and SEC-008.
 
 ## Conformance and implementation decisions
 
@@ -79,7 +83,7 @@ Conformant. HTTP status is interpreted before body shape. 200, 201, 202, 204, 40
 
 ## Tests written and executed
 
-The new client test project contains 77 passing tests covering:
+The new client test project contains 85 passing tests covering:
 
 - options defaults, copied serializer settings and copied custom mappings;
 - FullResult generic success and structured messages;
@@ -100,6 +104,9 @@ The new client test project contains 77 passing tests covering:
 - accepted/missing and rejected/non-JSON media types;
 - non-generic ValueOnly result envelopes; and
 - missing/null message collections, null messages and invalid severities.
+- below-limit, exact-limit, over-limit and multi-read response-size enforcement;
+- positive response-limit validation; and
+- hostile serializer/converter failures with safe message and inner-exception assertions.
 
 The complete solution suite passed after implementation:
 
@@ -110,8 +117,8 @@ The complete solution suite passed after implementation:
 | MVC | 28 | 0 | 0 |
 | HTTP policy | 15 | 0 | 0 |
 | Validation | 30 | 0 | 0 |
-| HTTP client | 77 | 0 | 0 |
-| **Total** | **366** | **0** | **0** |
+| HTTP client | 85 | 0 | 0 |
+| **Total** | **374** | **0** | **0** |
 
 The reusable client sample builds with zero warnings and runs successfully, producing successful licence-service and Portal-to-Finance results.
 
@@ -124,7 +131,7 @@ The reusable client sample builds with zero warnings and runs successfully, prod
 | Representation and media type | Resolved. JSON and `+json` are accepted, missing media type is accepted, and non-JSON content is rejected. | Media-type tests; package README |
 | Non-generic ValueOnly | Resolved. Explicit envelope handling is supported for messages and empty 200/201/202 responses. | Reader test; package README |
 | Consumer-facing documentation/API naming | Resolved. README expanded and convenience methods renamed to `SendAndReadNestgridResponseAsync`. | XML docs, README, sample and tests |
-| Additional evidence | Resolved. Invalid message collections/severity and ownership paths are covered. | 77 client tests |
+| Additional evidence | Resolved. Invalid message collections/severity, safety boundaries and ownership paths are covered. | 85 client tests |
 
 The feedback is conditional for downstream Quality and Security review; it is not a release approval.
 
@@ -143,7 +150,7 @@ The generated `.nuspec` declares only:
 - `Nestgrid.Response` `0.8.0`; and
 - `System.Text.Json` `4.6.0`.
 
-The refreshed locally packed candidate hash is `de6c43a6175c38abd47bcde650e012256af38450a6ea8468d52feb09972fa5b2`. Its generated repository metadata points to Engineering evidence commit `f4d17a5a5b9dc5fd2cdab8a871f1280f80daeff1`. Protected publication and final provenance are intentionally not performed by Engineering.
+The refreshed locally packed candidate hash is `a49c564b4b9de97041cf911976219dc02d54d2637732e63f9ec32ef443251aad`. Its generated repository metadata points to Engineering evidence commit `ee09c35c6efa38fa251e892daa3f253e217d8a9e`. Protected publication and final provenance are intentionally not performed by Engineering.
 
 ## Known limitations
 
@@ -152,13 +159,15 @@ The refreshed locally packed candidate hash is `de6c43a6175c38abd47bcde650e01225
 - `JsonSerializerOptions` exposes the copied .NET serializer object required by the approved API direction; readers isolate themselves from later mutation of the options object.
 - The repository’s existing Independent Review IR-011 through IR-015 findings remain open for 1.0 API stability and are not closed by this additive package.
 - Mutation-testing and protected-CI evidence remain downstream Quality/Platform evidence.
+- Security re-review of SEC-007 and SEC-008 remains outstanding; no security risk is accepted by Engineering.
 
 ## Risks and outstanding work
 
 | Item | Owner | Status |
 | --- | --- | --- |
-| Quality validation of the 366-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
+| Quality validation of the 374-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
 | Security review of protocol exception disclosure, dependency metadata and package closure | Security Engineer | Outstanding downstream validation |
+| Security re-review of SEC-007 bounded response handling and SEC-008 safe protocol exceptions | Security Engineer | Outstanding role-owned validation |
 | API compatibility baseline for all public packages (IR-012) | Architecture / Engineering / Quality | Open 1.0 work item |
 | Existing `Result` extensibility and mapper invariant decisions (IR-011, IR-015) | Architecture / Product / Sponsor | Open 1.0 work items |
 | Existing nullable/NoContent semantics and normative server mapping decisions (IR-013, IR-014) | Architecture / Product / Sponsor | Open 1.0 work items |
@@ -175,8 +184,16 @@ The conditions are downstream validation of the retained evidence, including Qua
 
 ## Quality feedback disposition
 
-Q-HTTP-003 is resolved by commit `f4d17a5 [Engineering] Restore protocol severity failures`. Unknown wire-message severities now use `NestgridResponseProtocolException` with the existing safe message, status code and payload mode. The redundant enum guard was removed so the switch fallback remains the protocol boundary for invalid severity values. Focused tests pass 77/77, full solution regression passes 366/366, and the dedicated client mutation score is 90.08%, above the configured 90% threshold.
+Q-HTTP-003 is resolved by commit `f4d17a5 [Engineering] Restore protocol severity failures`. Unknown wire-message severities now use `NestgridResponseProtocolException` with the existing safe message, status code and payload mode. The redundant enum guard was removed so the switch fallback remains the protocol boundary for invalid severity values. Focused tests pass 85/85, full solution regression passes 374/374, and the dedicated client mutation score is 90.85%, above the configured 90% threshold.
 
 ## Handover recommendation
 
 Engineering hands this report, the implementation plan, package evidence, test results and sample evidence to Quality and Security for validation. Platform and Release should consume the evidence only after those validation stages complete. Protected publication and final release decisions remain outside Engineering authority.
+
+## Security feedback disposition — SEC-007/SEC-008
+
+SEC-007 is implemented through `MaxResponseBodyBytes`, defaulting to 1 MiB and rejecting non-positive values. The reader enforces the limit cumulatively while streaming before writing beyond the configured bound or deserialising, for both successful and failed responses.
+
+SEC-008 is implemented by restricting `NestgridResponseProtocolException` construction to the package, removing inner exceptions from package-generated failures, preserving cancellation, and normalising serializer and hostile converter failures to fixed safe messages. API-provided failure results remain results with their structured messages unchanged.
+
+Evidence: 85 focused tests, 374 full-solution tests, 97.95% line coverage, 95.90% branch coverage, 90.85% mutation score, refreshed package metadata and successful proving sample. Security must complete the role-owned re-review before final publication consideration.

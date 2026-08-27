@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Release Quality Recommendation
-version: 1.3
+version: 1.4
 status: Complete with conditions
 owner: Quality Engineer
 contributors:
@@ -10,7 +10,7 @@ contributors:
   - Solution Architect
 produced_by: Quality Engineer
 consumed_by: Project Sponsor, Software Engineer, Security Engineer, Platform Engineer
-date: 2026-08-26
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -33,7 +33,7 @@ related_artefacts:
 
 ## Scope
 
-This report assesses the additive `Nestgrid.Response.Http.Client` v0.8.0 candidate. It covers the six-package solution, the new `netstandard2.0` client package, its 77-test suite, HTTP wire and status contracts, protocol safety, resource ownership, package metadata, consumer evidence, sample proving scenarios and downstream release conditions.
+This report assesses the additive `Nestgrid.Response.Http.Client` v0.8.0 candidate. It covers the six-package solution, the new `netstandard2.0` client package, its 85-test suite, HTTP wire and status contracts, protocol safety, resource ownership, package metadata, consumer evidence, sample proving scenarios and downstream release conditions.
 
 The existing five-package v0.7.0 release remains the compatibility baseline. This report does not approve publication, resolve the open 1.0 API findings or change the approved MVC `2.1.38` support boundary.
 
@@ -55,13 +55,13 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 | Test Area | Status | Notes |
 | --- | --- | --- |
-| Unit/contract | Passed | 77 HTTP client tests passed, 0 failed, 0 skipped |
+| Unit/contract | Passed | 85 HTTP client tests passed, 0 failed, 0 skipped |
 | Integration | Passed | Fake-handler composition and thin `HttpClient` conveniences passed |
 | API | Passed with 1.0 follow-up | New public API is additive; compatibility inventory and IR-011–IR-015 remain open |
-| Regression | Passed | 366 full-solution tests passed, 0 failed, 0 skipped |
+| Regression | Passed | 374 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
-| Coverage | Passed | HTTP client package-owned line coverage 98.30%, branch coverage 95.76%; existing package evidence remains 97.7–100% |
-| Mutation | Passed | HTTP client mutation score 90.08% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
+| Coverage | Passed | HTTP client package-owned line coverage 97.95%, branch coverage 95.90%; existing package evidence remains 97.7–100% |
+| Mutation | Passed | HTTP client mutation score 90.85% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
 | Package/consumer | Passed with release follow-up | `0.8.0` package and symbols created; README, XML, icon and dependency metadata inspected; supported-CI consumer/provenance evidence remains open |
 
 ## Defects
@@ -72,6 +72,8 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Q-HTTP-001 | P1 | Client mutation score was below threshold in the previous Quality run. Mason’s refactor and tests raised the score above threshold. | Closed by Engineering commits `104f197` and `f4d17a5`; retain mutation gate in CI |
 | Q-HTTP-002 | P2 | Local proving-sample execution could not be independently completed because the build hung in the local environment. | Open evidence limitation; supported CI confirmation required |
 | Q-HTTP-003 | P2 | The defensive invalid-severity switch used a different exception type from the rest of the protocol-invalid wire boundary. | Resolved by Engineering commit `f4d17a5`; invalid severities now produce the existing safe `NestgridResponseProtocolException`. |
+| SEC-007 | P2 | Unbounded response buffering could permit response-size denial of service. | Engineering implementation complete in `ee09c35`; Security re-review required. |
+| SEC-008 | P2 | Protocol exceptions could retain inner exception details. | Engineering implementation complete in `ee09c35`; Security re-review required. |
 
 ## Regression Risks
 
@@ -87,24 +89,24 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 ## Outstanding Issues
 
 - Q-HTTP-002: repeat the client proving sample and package-consumer checks in supported CI.
-- Security to review protocol exception disclosure, dependency metadata and the new package boundary.
+- Security to re-review SEC-007 response-size enforcement and SEC-008 exception safety, including dependency metadata and the new package boundary.
 - Platform/Release to retain protected publication, package provenance and final consumer evidence for the v0.8.0 candidate.
 - Architecture/Product/Sponsor to resolve IR-011–IR-015 before 1.0 API freeze; these are not v0.8 implementation defects but remain compatibility risks.
 
 ## Test Evidence
 
-- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 366 passed, 0 failed, 0 skipped.
-- Focused client suite: 77 passed, 0 failed, 0 skipped.
-- Client coverage report: package-owned line coverage 98.30%, branch coverage 95.76%.
+- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 374 passed, 0 failed, 0 skipped.
+- Focused client suite: 85 passed, 0 failed, 0 skipped.
+- Client coverage report: package-owned line coverage 97.95%, branch coverage 95.90%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
-- Dedicated Stryker result: 90.08%, 117 killed, 13 surviving mutants, 1 timeout and 5 compile errors in the configured report; the suite passed its 90% break threshold.
-- Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage` and `f4d17a5 [Engineering] Restore protocol severity failures`.
+- Dedicated Stryker result: 90.85%, 128 killed, 60 surviving mutants, 1 timeout and 3 compile errors in the local report; the suite passed its 90% break threshold.
+- Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage`, `f4d17a5 [Engineering] Restore protocol severity failures` and `ee09c35 [Engineering] Enforce client safety boundaries`.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
 
 ## Release Confidence
 
-Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gap is independently supported sample/consumer evidence.
+Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gaps are Security re-review and independently supported sample/consumer evidence.
 
 Overall release confidence is **conditional**. The candidate may proceed beyond the Quality mutation gate; downstream Security, Platform and consumer evidence remains required.
 
