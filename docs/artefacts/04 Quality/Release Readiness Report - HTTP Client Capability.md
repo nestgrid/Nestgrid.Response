@@ -2,7 +2,7 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Release Quality Recommendation
-version: 1.4
+version: 1.5
 status: Complete with conditions
 owner: Quality Engineer
 contributors:
@@ -33,7 +33,7 @@ related_artefacts:
 
 ## Scope
 
-This report assesses the additive `Nestgrid.Response.Http.Client` v0.8.0 candidate. It covers the six-package solution, the new `netstandard2.0` client package, its 85-test suite, HTTP wire and status contracts, protocol safety, resource ownership, package metadata, consumer evidence, sample proving scenarios and downstream release conditions.
+This report assesses the additive `Nestgrid.Response.Http.Client` v0.8.0 candidate. It covers the six-package solution, the new `netstandard2.0` client package, its 77-test suite, HTTP wire and status contracts, protocol safety, resource ownership, package metadata, consumer evidence, sample proving scenarios and downstream release conditions.
 
 The existing five-package v0.7.0 release remains the compatibility baseline. This report does not approve publication, resolve the open 1.0 API findings or change the approved MVC `2.1.38` support boundary.
 
@@ -55,13 +55,13 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 | Test Area | Status | Notes |
 | --- | --- | --- |
-| Unit/contract | Passed | 85 HTTP client tests passed, 0 failed, 0 skipped |
+| Unit/contract | Passed | 77 HTTP client tests passed, 0 failed, 0 skipped |
 | Integration | Passed | Fake-handler composition and thin `HttpClient` conveniences passed |
 | API | Passed with 1.0 follow-up | New public API is additive; compatibility inventory and IR-011–IR-015 remain open |
-| Regression | Passed | 374 full-solution tests passed, 0 failed, 0 skipped |
+| Regression | Passed | 366 full-solution tests passed, 0 failed, 0 skipped |
 | Exploratory/sample | Partially completed | Engineering sample evidence is positive; local rerun encountered the known build hang and needs supported-CI confirmation |
-| Coverage | Passed | HTTP client package-owned line coverage 97.95%, branch coverage 95.90%; existing package evidence remains 97.7–100% |
-| Mutation | Passed | HTTP client mutation score 90.85% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
+| Coverage | Passed | HTTP client package-owned line coverage 98.30%, branch coverage 95.76%; existing package evidence remains 97.7–100% |
+| Mutation | Passed | HTTP client mutation score 90.08% against the configured 90% break threshold; existing five-package mutation evidence remains 100% |
 | Package/consumer | Passed with release follow-up | `0.8.0` package and symbols created; README, XML, icon and dependency metadata inspected; supported-CI consumer/provenance evidence remains open |
 
 ## Defects
@@ -74,6 +74,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Q-HTTP-003 | P2 | The defensive invalid-severity switch used a different exception type from the rest of the protocol-invalid wire boundary. | Resolved by Engineering commit `f4d17a5`; invalid severities now produce the existing safe `NestgridResponseProtocolException`. |
 | SEC-007 | P2 | Unbounded response buffering could permit response-size denial of service. | Engineering implementation complete in `ee09c35`; Security re-review required. |
 | SEC-008 | P2 | Protocol exceptions could retain inner exception details. | Engineering implementation complete in `ee09c35`; Security re-review required. |
+| Q-HTTP-004 | P2 | The Engineering handover records 85/374 tests, 97.95%/95.90% coverage and 90.85% mutation, while the same current checkout independently produces 77/366 tests, 98.30%/95.76% coverage and 90.08% mutation. | Open evidence reconciliation; Engineering must align the Implementation Report with reproducible current-checkout evidence before final release approval |
 
 ## Regression Risks
 
@@ -95,12 +96,13 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Test Evidence
 
-- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 374 passed, 0 failed, 0 skipped.
-- Focused client suite: 85 passed, 0 failed, 0 skipped.
-- Client coverage report: package-owned line coverage 97.95%, branch coverage 95.90%.
+- Full Release regression command: `dotnet test Nestgrid.Response.sln --configuration Release --no-restore --verbosity minimal -m:1 -p:UseSharedCompilation=false` — 366 passed, 0 failed, 0 skipped.
+- Focused client suite: 77 passed, 0 failed, 0 skipped.
+- Client coverage report: package-owned line coverage 98.30%, branch coverage 95.76%.
 - Dedicated mutation configuration: `stryker/stryker-config-http-client.json`.
-- Dedicated Stryker result: 90.85%, 128 killed, 60 surviving mutants, 1 timeout and 3 compile errors in the local report; the suite passed its 90% break threshold.
+- Dedicated Stryker result: 90.08%, 117 killed, 13 surviving mutants, 1 timeout and 5 compile errors in the local report; the suite passed its 90% break threshold.
 - Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage`, `f4d17a5 [Engineering] Restore protocol severity failures` and `ee09c35 [Engineering] Enforce client safety boundaries`.
+- Independent verification used the current checkout at commit `158a77d`; the Engineering Report’s 85/374 figures require reconciliation with this reproducible run.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
 

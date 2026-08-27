@@ -24,4 +24,4 @@ Quality execution is complete for the post-Engineering handover candidate. Quali
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md)
 - [Release Readiness Report — HTTP Client Capability](Release%20Readiness%20Report%20-%20HTTP%20Client%20Capability.md)
 
-The v0.8.0 additive HTTP client candidate has 374 passing solution tests, 97.95% package-owned line coverage, 95.90% branch coverage and 90.85% mutation effectiveness. Quality independently verified Mason’s handover and recommends proceeding with the remaining Security, Platform and consumer conditions; Q-HTTP-003 is resolved by Engineering commit `f4d17a5`, while SEC-007 and SEC-008 await Security re-review.
+The v0.8.0 additive HTTP client candidate has 366 passing solution tests, 98.30% package-owned line coverage, 95.76% branch coverage and 90.08% mutation effectiveness. Quality independently verified the current checkout and recommends proceeding with the remaining Security, Platform and consumer conditions; Q-HTTP-003 is resolved by Engineering commit `f4d17a5`, while SEC-007 and SEC-008 await Security re-review.
