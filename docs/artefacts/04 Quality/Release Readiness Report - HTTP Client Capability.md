@@ -72,8 +72,8 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Q-HTTP-001 | P1 | Client mutation score was below threshold in the previous Quality run. Mason’s refactor and tests raised the score above threshold. | Closed by Engineering commits `104f197` and `f4d17a5`; retain mutation gate in CI |
 | Q-HTTP-002 | P2 | Local proving-sample execution could not be independently completed because the build hung in the local environment. | Open evidence limitation; supported CI confirmation required |
 | Q-HTTP-003 | P2 | The defensive invalid-severity switch used a different exception type from the rest of the protocol-invalid wire boundary. | Resolved by Engineering commit `f4d17a5`; invalid severities now produce the existing safe `NestgridResponseProtocolException`. |
-| SEC-007 | P2 | Unbounded response buffering could permit response-size denial of service. | Engineering implementation complete in `ee09c35`; Security re-review required. |
-| SEC-008 | P2 | Protocol exceptions could retain inner exception details. | Engineering implementation complete in `ee09c35`; Security re-review required. |
+| SEC-007 | P2 | Unbounded response buffering could permit response-size denial of service. | Closed by Engineering implementation `ee09c35` and Security assessment; protected-CI provenance remains a release condition. |
+| SEC-008 | P2 | Protocol exceptions could retain inner exception details. | Closed by Engineering implementation `ee09c35` and Security assessment; protected-CI provenance remains a release condition. |
 | Q-HTTP-004 | P2 | The previous Quality review identified a mismatch between the Engineering handover and local build evidence. | Closed: latest HEAD verification agrees with the Engineering handover at 91/380 tests, 97.95%/95.90% coverage and 90.85% mutation |
 
 ## Regression Risks
@@ -110,7 +110,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 
 ## Release Confidence
 
-Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gaps are Security re-review and independently supported sample/consumer evidence.
+Functional and mutation confidence is high: the complete solution passes, the client contract suite passes, package-owned coverage exceeds 90%, mutation effectiveness exceeds the release threshold, and package metadata is correct for the approved boundary. The remaining confidence gaps are independently supported sample/consumer evidence, protected-CI provenance and final Release evidence.
 
 Overall release confidence is **conditional**. The candidate may proceed beyond the Quality mutation gate; downstream Security, Platform and consumer evidence remains required.
 

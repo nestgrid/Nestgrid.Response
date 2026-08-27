@@ -161,7 +161,7 @@ The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb
 - `JsonSerializerOptions` exposes the captured .NET serializer object required by the approved API direction; the package documents the supported copied subset, readers isolate themselves from later mutation, and full framework-options preservation remains open under IR-018.
 - The repository’s existing Independent Review IR-011 through IR-015 findings remain open for 1.0 API stability and are not closed by this additive package.
 - Mutation-testing and protected-CI evidence remain downstream Quality/Platform evidence.
-- Security re-review of SEC-007 and SEC-008 remains outstanding; no security risk is accepted by Engineering.
+- Security has closed SEC-007, SEC-008 and SEC-009 for the evaluated candidate; no security risk is accepted by Engineering. Protected-CI provenance and final Release evidence remain outstanding.
 
 ## Risks and outstanding work
 
@@ -169,7 +169,7 @@ The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb
 | --- | --- | --- |
 | Quality validation of the 380-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
 | Security review of protocol exception disclosure, dependency metadata and package closure | Security Engineer | Outstanding downstream validation |
-| Security re-review of SEC-007 bounded response handling and SEC-008 safe protocol exceptions | Security Engineer | Outstanding role-owned validation |
+| Security closure of SEC-007, SEC-008 and SEC-009 | Security Engineer | Closed for the evaluated candidate |
 | API compatibility baseline for all public packages (IR-012) | Architecture / Engineering / Quality | Open 1.0 work item |
 | Existing `Result` extensibility and mapper invariant decisions (IR-011, IR-015) | Architecture / Product / Sponsor | Open 1.0 work items |
 | Existing nullable/NoContent semantics and normative server mapping decisions (IR-013, IR-014) | Architecture / Product / Sponsor | Open 1.0 work items |
@@ -182,7 +182,7 @@ The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb
 
 The implementation is coherent with the approved handover and ADRs, builds without warnings for the approved package target, passes the complete automated suite, produces the expected package metadata and demonstrates both proving scenarios. No unapproved architecture or security-boundary deviation was identified.
 
-The conditions are downstream validation of the retained evidence, including Quality mutation/coverage expectations, Security dependency and disclosure review, protected publication provenance and Release-stage approval. Engineering recommends progression to Quality and Security validation.
+The conditions are downstream validation of the retained evidence, including protected publication provenance, supported consumer evidence and Release-stage approval. Engineering records Security closure of SEC-007, SEC-008 and SEC-009 for the evaluated candidate and recommends progression to Platform and Release review.
 
 ## Quality feedback disposition
 
