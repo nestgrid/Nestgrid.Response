@@ -2,14 +2,14 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Plan
-version: 1.2
-status: Complete with conditions — handed to Quality and Security
+version: 1.3
+status: In Review — SEC-007/SEC-008 implementation plan
 owner: Software Engineer
 contributors:
   - Mason profile
 produced_by: Software Engineer
 consumed_by: Project Sponsor, Solution Architect, Quality Engineer, Security Engineer, Platform Engineer
-date: 2026-08-26
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
@@ -17,12 +17,15 @@ related_decisions:
   - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
   - ../../decisions/ADR-007-Minimum-Compatible-Dependency-Policy.md
   - ../../decisions/ADR-008-Safe-Exception-Result-Conversion.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
 related_work_items:
   - IR-011
   - IR-012
   - IR-013
   - IR-014
   - IR-015
+  - SEC-007
+  - SEC-008
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -254,3 +257,56 @@ The new client suite contains 77 passing tests. Architecture re-engagement is no
 ## Quality feedback amendment
 
 Quality finding Q-HTTP-003 identified an inconsistent defensive fallback in wire-message severity conversion. The approved correction restores `NestgridResponseProtocolException` for invalid severities while preserving the existing safe public message and removing the redundant enum guard. Commit `f4d17a5` records the implementation; focused and full regression tests pass, and the dedicated client mutation score is 90.08%, above the configured 90% threshold.
+
+## Architecture and Security handover amendment — SEC-007/SEC-008
+
+Architecture Feedback v1.1 and accepted ADR-012 introduce an approved safety-boundary implementation task for the additive HTTP client package. Security findings SEC-007 and SEC-008 are release-blocking until resolved or explicitly accepted by the authorised risk owner. This amendment is the Engineering Recommend checkpoint for that work; no implementation is authorised by this document alone.
+
+### Engineering Readiness Assessment
+
+**Outcome: Ready with conditions for implementation planning; not yet authorised for implementation.**
+
+The approved Architecture and Security direction is sufficiently specific to implement without inventing product scope. The conditions are preservation of the existing Result-versus-exception boundary, explicit public option and exception decisions within ADR-012, bounded streaming enforcement for success and failure responses, hostile-converter coverage, package documentation, and Quality/Security re-review. No MVC, target-framework, package-boundary or serializer-boundary change is required by the handover.
+
+### Planned scope
+
+- Add `MaxResponseBodyBytes` as a positive public client option with a default of `1_048_576` bytes.
+- Enforce the limit while reading, before unbounded accumulation or deserialisation, for successful and failed HTTP responses.
+- Return API-provided non-2xx outcomes as `Result`/`Result<T>` with their structured messages unchanged.
+- Normalise package-generated protocol failures to fixed safe messages carrying only approved status and payload-mode context; do not retain inner exceptions or response-derived diagnostic text.
+- Define and document the safe public construction contract for `NestgridResponseProtocolException` within the approved pre-1.0 boundary.
+- Add below-limit, exact-limit and over-limit tests for generic and non-generic success/failure paths, plus hostile serializer/converter tests covering message and inner-exception disclosure.
+- Update package README, Implementation Report, Quality evidence and Security handover with the final option and exception contract.
+
+### Explicit exclusions
+
+- No conversion of remote API failures into exceptions.
+- No response-body or header inclusion in fixed protocol messages.
+- No unlimited default or silent truncation.
+- No new serializer, wire DTO, retry/resilience policy, authentication, logging or telemetry capability.
+- No change to MVC support, target frameworks, package identity or the public core Result model.
+
+### Implementation principles and decisions to record
+
+1. Count bytes during streaming using overflow-safe arithmetic and reject the response before allocating beyond the configured limit.
+2. Treat the configured limit as a local resource-protection policy; consumers may explicitly configure a larger positive value.
+3. Preserve the existing safe protocol message, status code and payload mode while removing package-generated inner exceptions from the public surface.
+4. Keep transport and cancellation exceptions as standard exceptions and preserve normal API failure results.
+5. Record any public constructor adjustment for `NestgridResponseProtocolException` as an additive pre-1.0 compatibility correction and reflect it in XML documentation and the package README.
+
+### Evidence and Definition of Done
+
+- Focused and full regression tests pass without changes to existing package behaviour.
+- Boundary tests prove below-limit, exact-limit and over-limit behaviour for successful and failed responses.
+- Hostile custom converter tests prove fixed public messages contain neither converter text nor inner exceptions.
+- Mutation and coverage evidence remains at the approved thresholds.
+- The package builds and packs with updated XML/README and dependency metadata unchanged except for the current repository commit.
+- Quality and Security artefacts are reconciled and receive the updated evidence.
+- Engineering Assurance is updated; SEC-007 and SEC-008 are explicitly resolved or returned for authorised risk disposition.
+- Protected publication, provenance and Release-stage decisions remain outside Engineering authority.
+
+### Recommend checkpoint
+
+**Recommendation: approve this amendment for implementation, subject to ADR-012, the stated scope, and the evidence gates above.**
+
+Implementation should begin only after the Project Sponsor or delegated Engineering approver confirms this amendment. Architecture must be re-engaged if the implementation requires an unlimited default, changes the Result-versus-exception boundary, exposes new diagnostic context, or alters the public contract beyond the approved pre-1.0 safety correction.
