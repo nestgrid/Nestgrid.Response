@@ -74,7 +74,7 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 | Q-HTTP-003 | P2 | The defensive invalid-severity switch used a different exception type from the rest of the protocol-invalid wire boundary. | Resolved by Engineering commit `f4d17a5`; invalid severities now produce the existing safe `NestgridResponseProtocolException`. |
 | SEC-007 | P2 | Unbounded response buffering could permit response-size denial of service. | Engineering implementation complete in `ee09c35`; Security re-review required. |
 | SEC-008 | P2 | Protocol exceptions could retain inner exception details. | Engineering implementation complete in `ee09c35`; Security re-review required. |
-| Q-HTTP-004 | P2 | The previous Quality review identified a mismatch between the Engineering handover and local build evidence. | Closed: latest HEAD verification agrees with the Engineering handover at 85/374 tests, 97.95%/95.90% coverage and 90.85% mutation |
+| Q-HTTP-004 | P2 | The previous Quality review identified a mismatch between the Engineering handover and local build evidence. | Closed: latest HEAD verification agrees with the Engineering handover at 91/380 tests, 97.95%/95.90% coverage and 90.85% mutation |
 
 ## Regression Risks
 
@@ -103,7 +103,8 @@ The existing five-package v0.7.0 release remains the compatibility baseline. Thi
 - Dedicated Stryker result: 90.85%, 128 killed, 60 surviving mutants, 1 timeout and 3 compile errors in the local report; the suite passed its 90% break threshold.
 - Engineering implementation commits reviewed: `104f197 [Engineering] Improve HTTP client mutation coverage`, `f4d17a5 [Engineering] Restore protocol severity failures` and `ee09c35 [Engineering] Enforce client safety boundaries`.
 - Quality hardening tests add UTF-8 byte-limit, mid-stream failure, cancellation under size policy, stream disposal, request cancellation and request ownership coverage.
-- Independent verification used the latest HEAD `0e165ab`; the test, coverage and mutation figures agree with the Engineering handover.
+- Independent verification used the latest HEAD `8e91306`; the test, coverage, mutation and package hash now agree with the Engineering handover.
+- Locally packed package hash: `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484`; package repository metadata points to `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`.
 - New package pack: `Nestgrid.Response.Http.Client.0.8.0.nupkg` and `.snupkg`; package contains assembly, XML, README, icon and approved dependency metadata.
 - [Test Strategy — HTTP Client Capability](Test%20Strategy%20-%20HTTP%20Client%20Capability.md), [HTTP Client Implementation Report](../03%20Implementation/Implementation%20Report%20-%20HTTP%20Client%20Capability.md), [Security Assessment](../05%20Security/Security%20Assessment.md), [Platform Operational Readiness Review](../06%20Platform/Operational%20Readiness%20Review.md) and [Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md).
 

@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Report
-version: 1.3
-status: Complete with conditions — SEC-007/SEC-008 handed to Quality and Security
+version: 1.4
+status: Complete with conditions — SEC-009 evidence reconciled and handed to Quality/Security
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -24,6 +24,7 @@ related_work_items:
   - IR-015
   - SEC-007
   - SEC-008
+  - SEC-009
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -83,7 +84,7 @@ Conformant. HTTP status is interpreted before body shape. 200, 201, 202, 204, 40
 
 ## Tests written and executed
 
-The new client test project contains 85 passing tests covering:
+The new client test project contains 91 passing tests covering:
 
 - options defaults, copied serializer settings and copied custom mappings;
 - FullResult generic success and structured messages;
@@ -117,8 +118,8 @@ The complete solution suite passed after implementation:
 | MVC | 28 | 0 | 0 |
 | HTTP policy | 15 | 0 | 0 |
 | Validation | 30 | 0 | 0 |
-| HTTP client | 85 | 0 | 0 |
-| **Total** | **374** | **0** | **0** |
+| HTTP client | 91 | 0 | 0 |
+| **Total** | **380** | **0** | **0** |
 
 The reusable client sample builds with zero warnings and runs successfully, producing successful licence-service and Portal-to-Finance results.
 
@@ -131,7 +132,7 @@ The reusable client sample builds with zero warnings and runs successfully, prod
 | Representation and media type | Resolved. JSON and `+json` are accepted, missing media type is accepted, and non-JSON content is rejected. | Media-type tests; package README |
 | Non-generic ValueOnly | Resolved. Explicit envelope handling is supported for messages and empty 200/201/202 responses. | Reader test; package README |
 | Consumer-facing documentation/API naming | Resolved. README expanded and convenience methods renamed to `SendAndReadNestgridResponseAsync`. | XML docs, README, sample and tests |
-| Additional evidence | Resolved. Invalid message collections/severity, safety boundaries and ownership paths are covered. | 85 client tests |
+| Additional evidence | Resolved. Invalid message collections/severity, safety boundaries, UTF-8 byte limits, mid-stream failures and ownership paths are covered. | 91 client tests |
 
 The feedback is conditional for downstream Quality and Security review; it is not a release approval.
 
@@ -150,7 +151,7 @@ The generated `.nuspec` declares only:
 - `Nestgrid.Response` `0.8.0`; and
 - `System.Text.Json` `4.6.0`.
 
-The refreshed locally packed candidate hash is `a49c564b4b9de97041cf911976219dc02d54d2637732e63f9ec32ef443251aad`. Its generated repository metadata points to Engineering evidence commit `ee09c35c6efa38fa251e892daa3f253e217d8a9e`. Protected publication and final provenance are intentionally not performed by Engineering.
+The refreshed locally packed candidate hash is `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484`. Its generated repository metadata points to the current evidence commit `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`. Protected publication and final provenance are intentionally not performed by Engineering.
 
 ## Known limitations
 
@@ -165,7 +166,7 @@ The refreshed locally packed candidate hash is `a49c564b4b9de97041cf911976219dc0
 
 | Item | Owner | Status |
 | --- | --- | --- |
-| Quality validation of the 374-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
+| Quality validation of the 380-test candidate, package content and consumer evidence | Quality Engineer | Outstanding downstream validation |
 | Security review of protocol exception disclosure, dependency metadata and package closure | Security Engineer | Outstanding downstream validation |
 | Security re-review of SEC-007 bounded response handling and SEC-008 safe protocol exceptions | Security Engineer | Outstanding role-owned validation |
 | API compatibility baseline for all public packages (IR-012) | Architecture / Engineering / Quality | Open 1.0 work item |
@@ -184,7 +185,7 @@ The conditions are downstream validation of the retained evidence, including Qua
 
 ## Quality feedback disposition
 
-Q-HTTP-003 is resolved by commit `f4d17a5 [Engineering] Restore protocol severity failures`. Unknown wire-message severities now use `NestgridResponseProtocolException` with the existing safe message, status code and payload mode. The redundant enum guard was removed so the switch fallback remains the protocol boundary for invalid severity values. Focused tests pass 85/85, full solution regression passes 374/374, and the dedicated client mutation score is 90.85%, above the configured 90% threshold.
+Q-HTTP-003 is resolved by commit `f4d17a5 [Engineering] Restore protocol severity failures`. Unknown wire-message severities now use `NestgridResponseProtocolException` with the existing safe message, status code and payload mode. The redundant enum guard was removed so the switch fallback remains the protocol boundary for invalid severity values. Focused tests pass 91/91, full solution regression passes 380/380, and the dedicated client mutation score is 90.85%, above the configured 90% threshold.
 
 ## Handover recommendation
 
@@ -196,4 +197,4 @@ SEC-007 is implemented through `MaxResponseBodyBytes`, defaulting to 1 MiB and r
 
 SEC-008 is implemented by restricting `NestgridResponseProtocolException` construction to the package, removing inner exceptions from package-generated failures, preserving cancellation, and normalising serializer and hostile converter failures to fixed safe messages. API-provided failure results remain results with their structured messages unchanged.
 
-Evidence: 85 focused tests, 374 full-solution tests, 97.95% line coverage, 95.90% branch coverage, 90.85% mutation score, refreshed package metadata and successful proving sample. Security must complete the role-owned re-review before final publication consideration.
+Evidence: 91 focused tests, 380 full-solution tests, 97.95% line coverage, 95.90% branch coverage, 90.85% mutation score, refreshed package metadata and successful proving sample. Security must complete the role-owned re-review before final publication consideration.

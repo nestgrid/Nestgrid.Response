@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 HTTP Client Capability Implementation Plan
-version: 1.4
-status: Complete with conditions — SEC-007/SEC-008 handed to Quality and Security
+version: 1.5
+status: Complete with conditions — SEC-009 evidence reconciled and handed to Quality/Security
 owner: Software Engineer
 contributors:
   - Mason profile
@@ -26,6 +26,7 @@ related_work_items:
   - IR-015
   - SEC-007
   - SEC-008
+  - SEC-009
 related_repositories:
   - Nestgrid.Response
 related_artefacts:
@@ -237,7 +238,7 @@ The plan is implementation-ready within the approved Architecture boundary. Appr
 
 ## Execution outcome
 
-The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 374 passing solution tests, current package metadata evidence, known limitations and downstream conditions.
+The plan was approved and executed. Engineering completed the package, reader, policy, convenience API, tests, proving sample, documentation, solution visibility and package inspection described in this plan. The final implementation report records 380 passing solution tests, current package metadata evidence, known limitations and downstream conditions.
 
 Engineering Assurance is **Assured with conditions**. The evidence is handed to Quality and Security for validation. Protected publication, final provenance and Release-stage decisions remain explicitly deferred to Platform, Release and the Project Sponsor.
 
@@ -252,7 +253,7 @@ Architecture Feedback — HTTP Client Implementation Review v1.0 was reviewed on
 - the convenience operation is named `SendAndReadNestgridResponseAsync`; and
 - the package README, tests and evidence were expanded accordingly.
 
-The new client suite contains 85 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
+The new client suite contains 91 passing tests. Architecture re-engagement is not required for these corrections because they remain within the approved public and dependency boundaries.
 
 ## Quality feedback amendment
 
@@ -313,6 +314,10 @@ Implementation should begin only after the Project Sponsor or delegated Engineer
 
 ## SEC-007/SEC-008 execution outcome
 
-The approved amendment was implemented in commit `ee09c35 [Engineering] Enforce client safety boundaries`. Engineering added the 1 MiB default response limit with positive larger-limit opt-in, enforced it cumulatively during streaming, removed public protocol-exception construction and normalised serializer/converter failures without inner exceptions. The focused suite passes 85 tests, the full solution passes 374 tests, refreshed client coverage is 97.95% line and 95.90% branch, and mutation effectiveness is 90.85% against the 90% threshold.
+The approved amendment was implemented in commit `ee09c35 [Engineering] Enforce client safety boundaries`. Engineering added the 1 MiB default response limit with positive larger-limit opt-in, enforced it cumulatively during streaming, removed public protocol-exception construction and normalised serializer/converter failures without inner exceptions. The focused suite passes 91 tests, the full solution passes 380 tests, refreshed client coverage is 97.95% line and 95.90% branch, and mutation effectiveness is 90.85% against the 90% threshold.
 
 Engineering Assurance is **Assured with conditions**. SEC-007 and SEC-008 are implemented within ADR-012; Quality and Security must complete their role-owned re-review. Protected publication, provenance and Release-stage decisions remain outside Engineering authority.
+
+## SEC-009 evidence reconciliation outcome
+
+Engineering refreshed the implementation evidence against `HEAD` `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`. The focused client suite contains 91 passing tests and the full solution contains 380 passing tests; coverage is 97.95% line and 95.90% branch, and mutation effectiveness is 90.85%. The locally packed package hash is `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484`, with package repository metadata pointing to the same evidence commit. Quality’s Q-HTTP-004 is closed against this baseline; Security re-check of SEC-009 remains required.
