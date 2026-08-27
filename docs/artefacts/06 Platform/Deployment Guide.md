@@ -1,14 +1,14 @@
 # Deployment Guide
 
 ```yaml
-title: Nestgrid.Response v0.7.0 Deployment Guide
-version: 1.0
+title: Nestgrid.Response v0.8.0 Deployment Guide
+version: 1.1
 status: Complete with conditions
 owner: Platform Engineer
 contributors: Knight
 produced_by: Platform Engineer
 consumed_by: Operations, Project Sponsor, Release Owner, package maintainers
-date: 2026-08-17
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -20,7 +20,7 @@ related_repositories:
 
 ## Scope
 
-This guide covers the five NuGet packages in Nestgrid.Response v0.7.0. It does not deploy a hosted process or shared infrastructure. Consumers deploy applications that reference the packages through their own release process.
+This guide covers the six NuGet packages in Nestgrid.Response v0.8.0, including the additive `Nestgrid.Response.Http.Client` package. It does not deploy a hosted process or shared infrastructure. Consumers deploy applications that reference the packages through their own release process.
 
 ## Environments
 
@@ -40,7 +40,7 @@ This guide covers the five NuGet packages in Nestgrid.Response v0.7.0. It does n
 
 ## Packaging and Publication
 
-The repository builds the solution once in Release configuration and packs all five projects, including symbol packages and package README files. The controlled publication workflow is [`.github/workflows/publish.yml`](../../../.github/workflows/publish.yml).
+The repository builds the solution once in Release configuration and packs all six projects, including symbol packages and package README files. The controlled publication workflow is [`.github/workflows/publish.yml`](../../../.github/workflows/publish.yml).
 
 Publication is tag-driven:
 
@@ -58,6 +58,7 @@ Consumers should install only the package required by their layer:
 
 - `Nestgrid.Response` for framework-independent application or domain code.
 - `Nestgrid.Response.Http` plus the appropriate adapter for HTTP mapping.
+- `Nestgrid.Response.Http.Client` to interpret responses from a remote Nestgrid.Response endpoint using standard `HttpClient` composition.
 - `Nestgrid.Response.AspNetCore` for the supported .NET 8 ASP.NET Core baseline.
 - `Nestgrid.Response.Mvc` with `Microsoft.AspNetCore.Mvc.Core` 2.1.38 for the documented MVC baseline.
 - `Nestgrid.Response.Extensions.Validation` for DataAnnotations conversion.
@@ -82,7 +83,7 @@ The library has no runtime secrets. NuGet Trusted Publishing identity and reposi
 2. Run or confirm Release build, solution tests, package-owned coverage, mutation suites, package inspection and package-consumer smoke validation.
 3. Confirm the CI workflow repeats the checks in its supported environment.
 4. Create the approved version tag.
-5. Monitor the publish workflow and confirm all five packages and symbol packages are published.
+5. Monitor the publish workflow and confirm all six packages and symbol packages are published.
 6. Verify package pages, version metadata, README content, dependency graphs and install commands.
 7. Record the immutable commit, tag, workflow run, package versions and evidence links in the Release Report.
 
@@ -104,8 +105,9 @@ None. The product has no persistence, schema, migration or startup database beha
 
 No product health endpoint is applicable. Deployment validation is package- and consumer-based:
 
-- all five packages restore from the generated package feed;
+- all six packages restore from the generated package feed;
 - representative core, validation, ASP.NET Core and MVC paths compile or execute;
+- the HTTP client package restores and its standard `HttpClient` consumer path is validated;
 - package metadata, README files and dependency graphs are correct;
 - the consuming application's own health and smoke checks pass after it adopts the package.
 
@@ -122,7 +124,7 @@ If a published package causes consumer failures, stop further adoption, identify
 The release owner should verify:
 
 - the tag and `Directory.Build.props` version agree;
-- five `.nupkg` and five `.snupkg` files were produced;
+- six `.nupkg` and six `.snupkg` files were produced;
 - package READMEs, symbols, target frameworks and dependencies are present;
 - the documented MVC baseline remains `Microsoft.AspNetCore.Mvc.Core` 2.1.38;
 - the packages can be restored from a clean package source;
@@ -130,7 +132,7 @@ The release owner should verify:
 
 Historical execution evidence confirms that the CI, mutation and publish workflows have completed successfully and that all five v0.6.0 packages have been published to NuGet. Treat this as evidence that the operational path has worked previously; current v0.7.0 release approval still requires the hardened workflow run and current package provenance.
 
-The current local v0.7.0 run passed the Release build and 289 tests. Core, HTTP and Validation package creation and README checks passed; ASP.NET Core metadata was cross-checked; MVC metadata, package hash and supported consumer execution are retained in the Engineering closure evidence. The protected CI workflow remains authoritative for final five-package publication and provenance.
+The current v0.8.0 Quality evidence records a successful 380-test Release baseline, package metadata inspection and HTTP client package evidence. The local proving sample has an environment limitation and supported CI remains authoritative for the six-package consumer check, mutation job and protected publication provenance.
 
 ## Operational Documentation
 
@@ -142,6 +144,6 @@ The root README, package READMEs, CONTRIBUTING guide, Test Strategy, this guide 
 | --- | --- | --- |
 | The protected publication environment is misconfigured | Trusted publication may be unavailable or insufficiently restricted | Retain a successful `nuget`-environment workflow run and review the GitHub/NuGet policy evidence. |
 | Tag, project version and release notes diverge | Wrong or ambiguous package version is published | The publication workflow performs an explicit version-consistency check. |
-| Publish workflow does not validate package installation from generated packages | A package can publish despite consumer-facing packaging defects | CI and publication run the package-feed consumer smoke matrix. |
+| Publish workflow does not validate package installation from generated packages | A package can publish despite consumer-facing packaging defects | CI and publication run the six-package package-feed consumer smoke matrix. |
 | MVC support promise drifts from the common library lifecycle | Consumers may receive inconsistent upgrade signals | Keep the common MVC maintenance, versioning, support and review policy current in the Architecture and package guidance. |
 | Consumer runtime telemetry is absent | Library defects may be harder to diagnose in downstream applications | Keep the library provider-neutral and document consumer-side telemetry expectations. |
