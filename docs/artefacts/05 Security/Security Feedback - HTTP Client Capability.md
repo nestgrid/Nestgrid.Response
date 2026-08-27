@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Feedback - HTTP Client Capability
-version: 1.3
-status: In Review
+version: 1.4
+status: Complete with conditions
 owner: Security Engineer
 contributors:
   - Morgan profile

@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Assessment
-version: 1.9
-status: In Review
+version: 2.0
+status: Complete with conditions
 owner: Security Engineer
 contributors:
   - Morgan profile
@@ -17,6 +17,7 @@ related_decisions:
   - ../../decisions/ADR-009-HTTP-Client-Adapter-Boundary.md
   - ../../decisions/ADR-010-HTTP-Client-Wire-Contract.md
   - ../../decisions/ADR-011-HTTP-Client-Outcome-Semantics.md
+  - ../../decisions/ADR-012-HTTP-Client-Safety-Boundaries.md
 related_work_items:
   - SEC-001
   - SEC-002
@@ -66,9 +67,9 @@ The principal new boundary is `HttpResponseMessage` content and headers entering
 
 The new package stays within the approved additive boundary: it targets `netstandard2.0`, depends on core and the centrally managed `System.Text.Json` baseline, uses internal wire DTOs, constructs results through existing factories and does not introduce authentication, credentials, DI, retries, logging or telemetry. Status interpretation is explicit and does not reverse server mappings.
 
-The current evidence is strong for normal protocol behaviour. The full Release suite passes 366/366, the client suite passes 77/77, client coverage is reported at 98.30% line and 95.76% branch, and mutation testing is reported at 90.08%. Tests cover malformed JSON, invalid messages and severities, media types, cancellation, response ownership, custom converters, status mappings and safe public protocol messages. The generated package metadata declares only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
+The current evidence is strong for normal protocol behaviour. The full Release suite passes 380/380, the client suite passes 91/91, client coverage is 97.95% line and 95.90% branch, and mutation testing is 90.85%. Tests cover malformed JSON, invalid messages and severities, media types, cancellation, response ownership, custom converters, status mappings and safe public protocol messages. The generated package metadata declares only `Nestgrid.Response 0.8.0` and `System.Text.Json 4.6.0`.
 
-The normal `Results.Error(Exception)` safe-default control remains effective. The client avoids placing response bodies or headers in its own fixed protocol messages. The previously identified unbounded buffering and exception-chain disclosure conditions have been remediated through a 1 MiB default cumulative limit, safe limit validation and normalised protocol exceptions with no inner exception. The remaining security concern is evidence traceability: the current Engineering report has not yet been synchronised with the latest Quality test counts and package evidence.
+The normal `Results.Error(Exception)` safe-default control remains effective. The client avoids placing response bodies or headers in its own fixed protocol messages. The previously identified unbounded buffering and exception-chain disclosure conditions have been remediated through a 1 MiB default cumulative limit, safe limit validation and normalised protocol exceptions with no inner exception. SEC-009 evidence traceability is remediated; the remaining security/release condition is protected-CI provenance and final Release evidence.
 
 ## Authentication
 
@@ -88,7 +89,7 @@ The reader rejects malformed JSON, invalid message collections, invalid severiti
 
 ## Secrets and configuration
 
-The package stores no runtime secrets. Serializer and status-mapping options are consumer configuration; the reader copies them at construction. NuGet OIDC identity and repository permissions remain GitHub/NuGet operational controls.
+The package stores no runtime secrets. Serializer and status-mapping options are consumer configuration; the reader captures the documented supported serializer subset at construction. Full framework-options preservation remains an open IR-018 pre-1.0 contract decision. NuGet OIDC identity and repository permissions remain GitHub/NuGet operational controls.
 
 ## Dependencies
 
@@ -110,7 +111,7 @@ The package performs no logging, telemetry, retry or resilience policy. Consumer
 | SEC-006 | P1 | Vulnerability remediated for evaluated graph | Historical vulnerable dependency paths were remediated; current evaluated graphs contain no vulnerable packages. | A publication mismatch could reintroduce an unverified vulnerable path. | Security closes the evaluated candidate position; Platform/Release must prove protected-CI package identity and provenance. No vulnerability risk is accepted. |
 | SEC-007 | P2 | Vulnerability / availability remediated | The reader previously buffered an unbounded response body. | A malicious or compromised endpoint could cause excessive memory and allocation pressure. | **Resolved.** `MaxResponseBodyBytes` defaults to 1 MiB, validates positive limits and enforces the cumulative limit while streaming for successful and failed responses. Boundary, chunked and cancellation tests are present. |
 | SEC-008 | P2 | Vulnerability / disclosure condition remediated | Protocol failures previously retained serializer or custom-converter inner exceptions. | Exception inspection or logging could disclose response-derived or converter diagnostics. | **Resolved.** Protocol exception construction is package-internal, package-generated failures contain no inner exception, and hostile converter tests assert safe messages and null inner exceptions. |
-| SEC-009 | P2 | Evidence/control gap remediated | Earlier Engineering and Quality reports carried different test counts and package evidence baselines. | Release reviewers could have been unable to identify the exact tested package and evidence baseline. | **Resolved.** Engineering and Quality now agree on 91 client tests, 380 full-solution tests, 97.95% line coverage, 95.90% branch coverage and 90.85% mutation effectiveness. The package hash `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484` and repository metadata identify build/evidence commit `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`; latest `79ef468` is documentation-only. |
+| SEC-009 | P2 | Evidence/control gap remediated | Earlier Engineering and Quality reports carried different test counts and package evidence baselines. | Release reviewers could have been unable to identify the exact tested package and evidence baseline. | **Resolved.** Engineering and Quality now agree on 91 client tests, 380 full-solution tests, 97.95% line coverage, 95.90% branch coverage and 90.85% mutation effectiveness. The package hash `94dd1dbe24f0f1d08ca2783eee488ceb4e05892ab585150560696e71f0aa5484` and repository metadata identify build/evidence commit `8e9130693548c1799fcbfdbdfcbf7b4184d954b8`; subsequent commits are documentation-only reconciliation. |
 
 ## Improvements, not confirmed vulnerabilities
 
@@ -127,7 +128,7 @@ No accepted security risks are recorded. In particular, no authority has accepte
 ## Assumptions and evidence limitations
 
 - The Security assessment relies on the current Engineering and Quality evidence; the local advisory command did not complete in this environment because registry access did not return promptly.
-- The current local Release run passed 380 tests, including 91 HTTP client tests. The dedicated client mutation result is reported locally, but its configuration is not yet included in the GitHub mutation matrix. The package was built at `8e91306`; latest `79ef468` contains documentation-only reconciliation.
+- The current local Release run passed 380 tests, including 91 HTTP client tests. The dedicated client mutation result is reported locally and is now represented in the solution-visible mutation configuration, but supported-CI execution and protected provenance remain outstanding. The package was built at `8e91306`; subsequent commits contain documentation-only reconciliation.
 - The deterministic sample does not establish live endpoint, authentication, TLS or production logging behaviour.
 
 ## Residual risks requiring ownership

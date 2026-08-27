@@ -2,8 +2,8 @@
 
 ```yaml
 title: Nestgrid.Response v0.8.0 Security Artefacts
-version: 1.7
-status: In Review
+version: 1.8
+status: Complete with conditions
 owner: Security Engineer
 produced_by: Security Engineer
 consumed_by: Solution Architect, Software Engineer, Platform Engineer, Project Sponsor
