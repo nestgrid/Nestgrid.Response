@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "stryker", "stryker", "{8F28
 		stryker\stryker-config-validation.json = stryker\stryker-config-validation.json
 		stryker\stryker-config-http.json = stryker\stryker-config-http.json
 		stryker\stryker-config-mvc.json = stryker\stryker-config-mvc.json
+		stryker\stryker-config-http-client.json = stryker\stryker-config-http-client.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C7E0D643-0102-4CD0-AA54-1464932B3828}"
@@ -58,9 +59,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http.Tests", "tests\Nestgrid.Response.Http.Tests\Nestgrid.Response.Http.Tests.csproj", "{7D650EE5-AA96-4475-9C90-53A0832863EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http.Client.Tests", "tests\Nestgrid.Response.Http.Client.Tests\Nestgrid.Response.Http.Client.Tests.csproj", "{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc.Tests", "tests\Nestgrid.Response.Mvc.Tests\Nestgrid.Response.Mvc.Tests.csproj", "{B022D9C0-15FC-485D-8D52-E88B36D798C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http", "src\Nestgrid.Response.Http\Nestgrid.Response.Http.csproj", "{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http.Client", "src\Nestgrid.Response.Http.Client\Nestgrid.Response.Http.Client.csproj", "{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc", "src\Nestgrid.Response.Mvc\Nestgrid.Response.Mvc.csproj", "{2EF077E3-96CD-44F7-8835-F74FD3472ADD}"
 EndProject
@@ -79,6 +84,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Mvc.Sample", "samples\Nestgrid.Response.Mvc.Sample\Nestgrid.Response.Mvc.Sample.csproj", "{233BD5EF-3ACA-4767-A418-1193D2F6B1F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestgrid.Response.Http.Client.Sample", "samples\Nestgrid.Response.Http.Client.Sample\Nestgrid.Response.Http.Client.Sample.csproj", "{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "decisions", "decisions", "{3A764065-EFA8-43A3-8934-0AC422F63225}"
 	ProjectSection(SolutionItems) = preProject
 		docs\decisions\ADR-001-Result-Pattern-Philosophy.md = docs\decisions\ADR-001-Result-Pattern-Philosophy.md
@@ -89,8 +96,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "decisions", "decisions", "{
 		docs\decisions\ADR-006-AspNetCore-And-Mvc-Package-Separation.md = docs\decisions\ADR-006-AspNetCore-And-Mvc-Package-Separation.md
 		docs\decisions\ADR-007-Minimum-Compatible-Dependency-Policy.md = docs\decisions\ADR-007-Minimum-Compatible-Dependency-Policy.md
 		docs\decisions\ADR-008-Safe-Exception-Result-Conversion.md = docs\decisions\ADR-008-Safe-Exception-Result-Conversion.md
+		docs\decisions\ADR-009-HTTP-Client-Adapter-Boundary.md = docs\decisions\ADR-009-HTTP-Client-Adapter-Boundary.md
+		docs\decisions\ADR-010-HTTP-Client-Wire-Contract.md = docs\decisions\ADR-010-HTTP-Client-Wire-Contract.md
+		docs\decisions\ADR-011-HTTP-Client-Outcome-Semantics.md = docs\decisions\ADR-011-HTTP-Client-Outcome-Semantics.md
 		docs\decisions\TDR-001-Validation-Result-Conversion-Detail.md = docs\decisions\TDR-001-Validation-Result-Conversion-Detail.md
 		docs\decisions\README.md = docs\decisions\README.md
+		docs\decisions\ADR-012-HTTP-Client-Safety-Boundaries.md = docs\decisions\ADR-012-HTTP-Client-Safety-Boundaries.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "artefacts", "artefacts", "{65C947DC-B875-407D-9121-81C0CBD116DC}"
@@ -154,13 +165,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Architecture", "02 Archi
 		docs\artefacts\02 Architecture\Engineering Handover.md = docs\artefacts\02 Architecture\Engineering Handover.md
 		docs\artefacts\02 Architecture\Architecture Feedback - Security.md = docs\artefacts\02 Architecture\Architecture Feedback - Security.md
 		docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md = docs\artefacts\02 Architecture\Architecture Feedback - SEC-006 Dependency Remediation.md
+		docs\artefacts\02 Architecture\Architecture Investigation - OpenAPI Metadata Integration.md = docs\artefacts\02 Architecture\Architecture Investigation - OpenAPI Metadata Integration.md
+		docs\artefacts\02 Architecture\Architecture Recommendation - HTTP Client Capability.md = docs\artefacts\02 Architecture\Architecture Recommendation - HTTP Client Capability.md
+		docs\artefacts\02 Architecture\Architecture Feedback - HTTP Client Implementation Review.md = docs\artefacts\02 Architecture\Architecture Feedback - HTTP Client Implementation Review.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Implementation", "03 Implementation", "{D0F4A2E6-7C30-4B56-AE3F-4D3D3E5E9F1B}"
 	ProjectSection(SolutionItems) = preProject
 		docs\artefacts\03 Implementation\README.md = docs\artefacts\03 Implementation\README.md
 		docs\artefacts\03 Implementation\Implementation Plan.md = docs\artefacts\03 Implementation\Implementation Plan.md
+		docs\artefacts\03 Implementation\Implementation Plan - HTTP Client Capability.md = docs\artefacts\03 Implementation\Implementation Plan - HTTP Client Capability.md
 		docs\artefacts\03 Implementation\Implementation Report.md = docs\artefacts\03 Implementation\Implementation Report.md
+		docs\artefacts\03 Implementation\Implementation Report - HTTP Client Capability.md = docs\artefacts\03 Implementation\Implementation Report - HTTP Client Capability.md
 		docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md = docs\artefacts\03 Implementation\SEC-006 Dependency Path Matrix.md
 		docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md = docs\artefacts\03 Implementation\SEC-006 Closure Evidence.md
 	EndProjectSection
@@ -170,6 +186,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Quality", "04 Quality", 
 		docs\artefacts\04 Quality\README.md = docs\artefacts\04 Quality\README.md
 		docs\artefacts\04 Quality\Test Strategy.md = docs\artefacts\04 Quality\Test Strategy.md
 		docs\artefacts\04 Quality\Release Readiness Report.md = docs\artefacts\04 Quality\Release Readiness Report.md
+		docs\artefacts\04 Quality\Test Strategy - HTTP Client Capability.md = docs\artefacts\04 Quality\Test Strategy - HTTP Client Capability.md
+		docs\artefacts\04 Quality\Release Readiness Report - HTTP Client Capability.md = docs\artefacts\04 Quality\Release Readiness Report - HTTP Client Capability.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Security", "05 Security", "{B7F9E0A1-2C34-4D56-8E78-9A0B1C2D3E4F}"
@@ -179,6 +197,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Security", "05 Security"
 		docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md = docs\artefacts\05 Security\Security Feedback - Exception and Output Disclosure.md
 		docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md = docs\artefacts\05 Security\Security Feedback - Publication and Dependency Controls.md
 		docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md = docs\artefacts\05 Security\Security Feedback - SEC-006 Candidate A Approval.md
+		docs\artefacts\05 Security\Security Feedback - HTTP Client Capability.md = docs\artefacts\05 Security\Security Feedback - HTTP Client Capability.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Platform", "06 Platform", "{F6A1B2C3-D4E5-4678-9012-3456789ABCDE}"
@@ -211,8 +230,11 @@ Global
 		{B0644996-8739-4AC2-B701-2C734F0644E5} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 		{7D650EE5-AA96-4475-9C90-53A0832863EE} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 		{B022D9C0-15FC-485D-8D52-E88B36D798C7} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
+		{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5} = {C7E0D643-0102-4CD0-AA54-1464932B3828}
 		{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301} = {754924BC-2928-4E93-B399-71BA4638D122}
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD} = {754924BC-2928-4E93-B399-71BA4638D122}
+		{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
 		{7A320B8D-2756-4F4D-BECB-0FA4372A43E0} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
 		{06262423-E75A-41BB-8544-5550C74FE0C5} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
 		{60AAE6C4-A23D-44E7-8A75-C97A64437AA0} = {27EE8E7F-4A1D-4E95-83D0-E998C1B58160}
@@ -270,6 +292,18 @@ Global
 		{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F82ABED5-D1AC-4384-A03D-8D35F3DE15D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1C9C89-1A08-4EE4-9F86-4BD8C2E8E301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9A9EA9-5B7E-4D61-9B1E-82AB3DEAA6C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3E8C6B4-42D7-4B4B-A3DA-BD8DD7E30E3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EF077E3-96CD-44F7-8835-F74FD3472ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU

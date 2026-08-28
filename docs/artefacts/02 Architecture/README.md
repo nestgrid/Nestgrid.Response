@@ -11,6 +11,11 @@ The existing v0.6.0 implementation is the baseline for review. Architecture appr
 3. [Engineering Handover](Engineering%20Handover.md)
 4. [Architecture Feedback - Security](Architecture%20Feedback%20-%20Security.md)
 5. [Architecture Feedback - SEC-006 Dependency Remediation](Architecture%20Feedback%20-%20SEC-006%20Dependency%20Remediation.md)
+6. [Architecture Investigation - OpenAPI Metadata Integration](Architecture%20Investigation%20-%20OpenAPI%20Metadata%20Integration.md)
+7. [Architecture Recommendation - HTTP Client Capability](Architecture%20Recommendation%20-%20HTTP%20Client%20Capability.md)
+8. [Architecture Feedback - HTTP Client Implementation Review](Architecture%20Feedback%20-%20HTTP%20Client%20Implementation%20Review.md)
+
+The HTTP client capability is approved for detailed Architecture and Engineering handover under ADR-009 through ADR-012. The current canonical Independent Review is [Nestgrid.Response Independent Review](../../reviews/Nestgrid.Response%20Independent%20Review.md); Architecture feedback records its responsible-role disposition. Implementation is complete with downstream Quality, Security, Platform and Release conditions still governed by their own artefacts.
 
 The Architecture Pack and related decision records are the approved basis for Engineering handover. Conditional release items remain governed by the downstream Security, Quality and Platform gates.
 

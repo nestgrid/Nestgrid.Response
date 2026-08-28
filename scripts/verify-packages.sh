@@ -17,6 +17,7 @@ echo "Expected package version: ${EXPECTED_VERSION}"
 packages=(
   Nestgrid.Response
   Nestgrid.Response.Http
+  Nestgrid.Response.Http.Client
   Nestgrid.Response.AspNetCore
   Nestgrid.Response.Mvc
   Nestgrid.Response.Extensions.Validation

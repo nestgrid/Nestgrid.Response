@@ -17,6 +17,10 @@ These records explain why the library uses immutable results, status-driven beha
 7. [TDR-001 Detailed Validation Result Conversion](TDR-001-Validation-Result-Conversion-Detail.md)
 8. [ADR-007 Minimum-Compatible Dependency Policy](ADR-007-Minimum-Compatible-Dependency-Policy.md)
 9. [ADR-008 Safe Exception Result Conversion](ADR-008-Safe-Exception-Result-Conversion.md)
+10. [ADR-009 HTTP Client Adapter Boundary](ADR-009-HTTP-Client-Adapter-Boundary.md)
+11. [ADR-010 Client Wire Contract and Result Construction](ADR-010-HTTP-Client-Wire-Contract.md)
+12. [ADR-011 Client HTTP Outcome Semantics](ADR-011-HTTP-Client-Outcome-Semantics.md)
+13. [ADR-012 HTTP Client Safety Boundaries](ADR-012-HTTP-Client-Safety-Boundaries.md)
 
 ## Navigation
 

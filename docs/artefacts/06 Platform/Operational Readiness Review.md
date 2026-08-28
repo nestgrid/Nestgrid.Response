@@ -1,14 +1,14 @@
 # Operational Readiness Review
 
 ```yaml
-title: Nestgrid.Response v0.7.0 Operational Readiness Review
-version: 1.3
+title: Nestgrid.Response v0.8.0 Operational Readiness Review
+version: 1.4
 status: Complete with conditions
 owner: Platform Engineer
 contributors: Knight
 produced_by: Platform Engineer
 consumed_by: Operations, Project Sponsor, Release Owner
-date: 2026-08-17
+date: 2026-08-27
 supersedes:
 related_decisions:
   - ../../decisions/ADR-006-AspNetCore-And-Mvc-Package-Separation.md
@@ -22,31 +22,30 @@ related_repositories:
 
 ## Scope
 
-This review assesses operational readiness for the five-package NuGet library, not for a hosted application. The assessment uses the approved Product Brief, Architecture Pack, Engineering Handover, Implementation Report, Quality Test Strategy, Quality Release Readiness Report and the canonical Independent Review.
+This review assesses operational readiness for the six-package NuGet library, including the additive `Nestgrid.Response.Http.Client` package, not for a hosted application. The assessment uses the approved Architecture Pack, Engineering Handover, HTTP client Implementation Report, Quality Test Strategy, Quality Release Readiness Report, Security Assessment and the canonical Independent Review.
 
 ## Deployment Readiness
 
-The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, third-party actions are pinned to immutable release SHAs, and publication is wired through the protected `nuget` GitHub Environment. Trusted Publishing is configured in the workflow, and the workflows verify project/tag version consistency and generated-package consumer installation. Quality has also recorded successful local Release build/test/pack, five-package consumer restore/build, mutation and coverage evidence.
+The package publication path is repeatable and traceable through the tag-triggered GitHub Actions workflow. Build, test and pack are automated, third-party actions are pinned to immutable release SHAs, and publication is wired through the protected `nuget` GitHub Environment. Trusted Publishing is configured in the workflow, and the workflows verify project/tag version consistency and generated-package consumer installation. The CI mutation matrix now includes the HTTP client package, and Quality has recorded successful v0.8.0 Release build/test/pack, six-package evidence, coverage and mutation results.
 
-Condition: the supported CI environment must repeat the package and installation checks through the protected publication path before release approval, Security must complete SEC-006 closure against the retained MVC package-closure and supported-consumer evidence, and all release evidence must be retained with the Release Report.
+Condition: the supported CI environment must repeat the six-package installation checks, HTTP client mutation job and proving-sample checks through the protected publication path before release approval, and all release evidence must be retained with the Release Report.
 
 ## Execution Evidence
 
 Historical user-supplied evidence shows successful GitHub Actions runs for the CI, mutation and publish workflows, and successful NuGet publication of all five v0.6.0 packages. This confirms that the repository's package build, validation and public distribution path has operated successfully in practice.
 
-The evidence predates the v0.7.0 action-SHA pinning, protected `nuget` environment wiring and dependency remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, package provenance or final Security closure. Current MVC package metadata, hash and supported consumer evidence are retained in the Engineering closure artefact.
+The evidence predates the v0.8.0 HTTP client package, action-SHA pinning, protected `nuget` environment wiring and current security remediation. It therefore supports the operational model and repeatability claim but does not replace current-candidate protected-environment execution, six-package provenance or final Release evidence.
 
-The current local v0.7.0 verification run also recorded:
+The current v0.8.0 Quality and Engineering evidence records:
 
-- Release solution build succeeded with 0 warnings and 0 errors.
-- 289 Release tests passed with 0 failures and 0 skips.
-- Core, HTTP and Validation 0.7.0 packages and symbol packages were created; ASP.NET Core metadata was cross-checked; the MVC current-commit evidence package was assembled from the inspected metadata and current Release assembly.
-- Package existence and README checks passed for the generated/evidence outputs.
-- Clean consumer restore was attempted and was blocked by the local environment's DNS restriction for `api.nuget.org`; CI remains the authoritative execution path for that network-dependent check.
+- 380 Release tests passed with 0 failures and 0 skips, including 91 HTTP client tests.
+- The six-package v0.8.0 candidate and symbols were packed and the HTTP client package metadata, README, icon, XML and dependencies were inspected.
+- HTTP client coverage reached 97.95% line and 95.90% branch coverage; its mutation score reached 90.85% against the configured 90% threshold.
+- The local proving sample encountered a build-hang limitation; supported CI remains required for independent sample and clean consumer confirmation.
 
 ## Operationalisation Readiness
 
-The product is packageable, publishable and consumable as intended. Installation guidance, package selection, target frameworks, dependencies, samples and upgrade/rollback expectations exist. No service registration, runtime hosting, uninstall infrastructure or application deployment is required.
+The product is packageable, publishable and consumable as intended. Installation guidance now covers the six-package set, including explicit HTTP client payload modes, standard `HttpClient` composition, response ownership and consumer-owned transport/resilience concerns. No service registration, runtime hosting, uninstall infrastructure or application deployment is required.
 
 ## Configuration Readiness
 
@@ -78,24 +77,24 @@ RTO/RPO: no product runtime RTO/RPO is applicable. Package recovery depends on t
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| CI has not yet repeated the complete platform validation in its supported environment | Release confidence is lower than the local evidence alone | Repeat build, test, pack and package-feed installation checks in CI and retain the run. |
+| CI has not yet repeated the complete six-package platform validation in its supported environment | Release confidence is lower than the local evidence alone | Repeat build, test, pack, HTTP client mutation and package-feed installation checks in CI and retain the run. |
 | The protected publication environment has not yet produced a retained workflow run after hardening | The final trusted-publication control is not yet evidenced | Run the tag workflow only after Release approval and retain the protected-environment evidence. |
-| Candidate A dependency closure requires final Security/provenance confirmation for the MVC package | A protected release package could differ from the evaluated dependency graph | Engineering has retained current MVC metadata, package hash and supported consumer evidence; Security/Platform must complete closure and protected-CI provenance. |
+| The v0.8.0 HTTP client package and consumer evidence have not yet been confirmed through supported CI | A protected release package could differ from the evaluated dependency graph or consumer result | Repeat the six-package package-feed consumer check, sample proving path and protected-CI provenance before release approval. |
 | MVC support expectations drift from the common library lifecycle | Consumers may receive inconsistent maintenance or review signals | The common maintenance, versioning, support and review lifecycle is now recorded in ADR-006, the Architecture Pack and package guidance. |
-| Web samples were startup-checked but not exercised through HTTP calls | Adapter response regressions may escape smoke validation | Add representative endpoint assertions as a follow-up; Quality currently treats this as non-blocking. |
+| The proving sample was not independently completed in the local environment | Consumer composition regressions may escape smoke validation | Repeat the sample and generated-package consumer checks in supported CI; retain the result with release evidence. |
 
 ## Outstanding Actions
 
 | Action | Owner | Due Date |
 | --- | --- | --- |
-| Repeat Release build, tests, pack and generated-package consumer checks in supported CI. | Platform / Release | Before release decision |
+| Repeat Release build, tests, pack, six-package consumer checks and HTTP client mutation in supported CI. | Platform / Release | Before release decision |
 | Confirm the pinned actions and `nuget` environment pass in the publication workflow. | Platform / Release | Before publication |
-| Retain final MVC dependency metadata and supported consumer evidence for SEC-006/Q-007. | Engineering / Quality / Security | Before release decision |
+| Retain v0.8.0 package hashes, supported consumer evidence and protected publication provenance. | Engineering / Quality / Security / Platform | Before release decision |
 | Keep the common MVC support and review policy current. | Architecture / Product | Ongoing through normal library review |
 | Add HTTP endpoint assertions for web samples if release confidence requires them. | Quality | Follow-up; non-blocking per current Quality report |
 
 ## Recommendation
 
-Platform recommends proceeding to Release review with the conditions above. Nestgrid.Response is operationally ready as a NuGet library for release consideration once CI repeats the package validation and the release record captures the retained artefacts and any accepted residual risks.
+Platform recommends proceeding to Release review with the conditions above. Nestgrid.Response v0.8.0 is operationally ready as a six-package NuGet library for release consideration once supported CI repeats package validation, the HTTP client mutation and proving-sample checks complete, and the release record captures immutable package provenance and any accepted residual risks.
 
 This recommendation does not approve release. Final release approval belongs to the Project Sponsor.
